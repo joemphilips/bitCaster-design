@@ -34,17 +34,17 @@ export interface ProductRoadmap {
 }
 
 // =============================================================================
-// Data Shape
+// Event Model
 // =============================================================================
 
-export interface Entity {
+export interface DomainEvent {
   name: string
   description: string
 }
 
-export interface DataShape {
-  entities: Entity[]
-  relationships: string[]
+export interface EventModel {
+  events: DomainEvent[]
+  flows: string[]
 }
 
 // =============================================================================
@@ -91,7 +91,7 @@ export interface ShellInfo {
 export interface ProductData {
   overview: ProductOverview | null
   roadmap: ProductRoadmap | null
-  dataShape: DataShape | null
+  eventModel: EventModel | null
   designSystem: DesignSystem | null
   shell: ShellInfo | null
 }
