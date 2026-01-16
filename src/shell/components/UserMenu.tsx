@@ -1,0 +1,84 @@
+import React, { useState } from 'react'
+import { User, LogOut, ChevronDown, Wallet } from 'lucide-react'
+
+interface UserMenuProps {
+  user: { name: string; avatarUrl?: string; balance?: number }
+  onLogout?: () => void
+  onNavigate?: (href: string) => void
+}
+
+export function UserMenu({ user, onLogout, onNavigate }: UserMenuProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const formatBalance = (sats?: number) => {
+    if (sats === undefined) return '0 sats'
+    return `${sats.toLocaleString()} sats`
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+      >
+        {/* Avatar */}
+        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name}
+              className="w-8 h-8 rounded-full"
+            />
+          ) : (
+            <User className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+          )}
+        </div>
+
+        {/* User Info */}
+        <div className="text-left">
+          <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+            {user.name}
+          </div>
+          <div className="text-xs text-amber-600 dark:text-amber-400 font-mono">
+            {formatBalance(user.balance)}
+          </div>
+        </div>
+
+        <ChevronDown className="w-4 h-4 text-slate-500" />
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 z-20 overflow-hidden">
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                onNavigate?.('/mypage')
+              }}
+              className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-2"
+            >
+              <Wallet className="w-4 h-4" />
+              <span>MyPage</span>
+            </button>
+            <div className="border-t border-slate-200 dark:border-slate-700" />
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                onLogout?.()
+              }}
+              className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-2"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
