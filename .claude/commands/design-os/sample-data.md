@@ -10,6 +10,12 @@ Read `/product/product-roadmap.md` to get the list of available sections.
 
 If there's only one section, auto-select it. If there are multiple sections, use the AskUserQuestion tool to ask which section the user wants to generate data for.
 
+The section-id is the slug version of the section title:
+- Lowercase
+- Spaces become hyphens
+- " & " becomes "-and-" (e.g., "Market Discovery & Trading" → "market-discovery-and-trading")
+- Remove any other special characters
+
 Then check if `product/sections/[section-id]/spec.md` exists. If it doesn't:
 
 "I don't see a specification for **[Section Title]** yet. Please run `/shape-section` first to define the section's requirements, then come back to generate sample data."

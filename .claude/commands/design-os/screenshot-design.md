@@ -50,6 +50,12 @@ After starting the server, wait a few seconds for it to be ready before navigati
 
 Use the Playwright MCP tool to navigate to the screen design and capture a screenshot.
 
+The section-id is the slug version of the section title:
+- Lowercase
+- Spaces become hyphens
+- " & " becomes "-and-" (e.g., "Market Discovery & Trading" → "market-discovery-and-trading")
+- Remove any other special characters
+
 The screen design URL pattern is: `http://localhost:3000/sections/[section-id]/screen-designs/[screen-design-name]`
 
 1. First, use `browser_navigate` to go to the screen design URL

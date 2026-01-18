@@ -10,6 +10,12 @@ Read `/product/product-roadmap.md` to get the list of available sections.
 
 If there's only one section, auto-select it. If there are multiple sections, use the AskUserQuestion tool to ask which section the user wants to create a screen design for.
 
+The section-id is the slug version of the section title:
+- Lowercase
+- Spaces become hyphens
+- " & " becomes "-and-" (e.g., "Market Discovery & Trading" → "market-discovery-and-trading")
+- Remove any other special characters
+
 Then verify all required files exist:
 
 - `product/sections/[section-id]/spec.md`
