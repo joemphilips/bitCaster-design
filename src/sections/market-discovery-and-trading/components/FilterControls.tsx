@@ -1,6 +1,5 @@
-import React from 'react'
 import { Search, Filter } from 'lucide-react'
-import type { MarketType, VolumeRange } from '@/../product/sections/market-discovery-trading/types'
+import type { MarketType, VolumeRange } from '@/../product/sections/market-discovery-and-trading/types'
 
 interface FilterControlsProps {
   searchQuery: string

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { TrendingUp, Users, Droplet, X } from 'lucide-react'
-import type { Market, YesNoMarket, CategoricalMarket, TwoDimensionalMarket } from '@/../product/sections/market-discovery-trading/types'
+import type { Market, YesNoMarket, CategoricalMarket, TwoDimensionalMarket } from '@/../product/sections/market-discovery-and-trading/types'
 
 interface MarketCardProps {
   market: Market

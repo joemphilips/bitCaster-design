@@ -1,5 +1,4 @@
-import React from 'react'
-import type { MetaTag, CategoryTag } from '@/../product/sections/market-discovery-trading/types'
+import type { MetaTag, CategoryTag } from '@/../product/sections/market-discovery-and-trading/types'
 
 interface TagBarProps {
   metaTags: MetaTag[]

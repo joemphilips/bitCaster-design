@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import data from '@/../product/sections/market-discovery-trading/data.json'
+import data from '@/../product/sections/market-discovery-and-trading/data.json'
 import { MarketDiscovery } from './components/MarketDiscovery'
-import type { FilterState } from '@/../product/sections/market-discovery-trading/types'
+import type { FilterState, Market } from '@/../product/sections/market-discovery-and-trading/types'
 
 export default function MarketDiscoveryPreview() {
   const [filters, setFilters] = useState<FilterState>({
@@ -17,7 +17,7 @@ export default function MarketDiscoveryPreview() {
     <MarketDiscovery
       metaTags={data.metaTags}
       categoryTags={data.categoryTags}
-      markets={data.markets}
+      markets={data.markets as Market[]}
       filters={filters}
       onSearch={(query) => {
         console.log('Search:', query)

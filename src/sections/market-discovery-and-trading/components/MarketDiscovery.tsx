@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { TagBar } from './TagBar'
 import { FilterControls } from './FilterControls'
 import { MarketCard } from './MarketCard'
-import type { MarketDiscoveryProps } from '@/../product/sections/market-discovery-trading/types'
+import type { MarketDiscoveryProps } from '@/../product/sections/market-discovery-and-trading/types'
 
 export function MarketDiscovery({
   metaTags,
