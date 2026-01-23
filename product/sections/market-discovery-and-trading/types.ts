@@ -14,6 +14,9 @@ export interface CategoryTag {
   marketCount: number
 }
 
+// Combined tag type for single-select behavior
+export type Tag = MetaTag | CategoryTag
+
 // =============================================================================
 // Market Data Types
 // =============================================================================
@@ -91,11 +94,22 @@ export interface VolumeRange {
 
 export interface FilterState {
   searchQuery: string
-  selectedCategoryTags: string[]
-  selectedMetaTags: string[]
+  selectedTag: string | null // Single selected tag (meta or category)
   marketTypes: MarketType[]
   volumeRange: VolumeRange
   closingInDays?: number
+}
+
+// =============================================================================
+// Trade Mode Types
+// =============================================================================
+
+export interface TradeState {
+  marketId: string
+  outcomeId?: string // For categorical markets
+  side: 'yes' | 'no'
+  amount: number
+  predictedOdds: number
 }
 
 // =============================================================================
@@ -112,17 +126,17 @@ export interface MarketDiscoveryProps {
   /** List of markets to display */
   markets: Market[]
 
-  /** Current filter state */
-  filters: FilterState
+  /** Currently selected tag ID (single-select) */
+  selectedTag: string | null
+
+  /** Search query */
+  searchQuery?: string
 
   /** Called when user searches for markets */
   onSearch?: (query: string) => void
 
-  /** Called when user selects/deselects a meta tag */
-  onMetaTagToggle?: (tagId: string) => void
-
-  /** Called when user selects/deselects a category tag */
-  onCategoryTagToggle?: (tagId: string) => void
+  /** Called when user selects a tag (single-select - only one active at a time) */
+  onTagSelect?: (tagId: string) => void
 
   /** Called when user changes market type filter */
   onMarketTypeChange?: (types: MarketType[]) => void
@@ -139,8 +153,11 @@ export interface MarketDiscoveryProps {
   /** Called when user clicks Buy No on a yes/no market (triggers Bought event) */
   onBuyNo?: (marketId: string, amount: number) => void
 
-  /** Called when user buys a specific outcome in a categorical market (triggers Bought event) */
-  onBuyOutcome?: (marketId: string, outcomeId: string, amount: number) => void
+  /** Called when user buys Yes on a specific outcome in a categorical market */
+  onBuyOutcomeYes?: (marketId: string, outcomeId: string, amount: number) => void
+
+  /** Called when user buys No on a specific outcome in a categorical market */
+  onBuyOutcomeNo?: (marketId: string, outcomeId: string, amount: number) => void
 
   /** Called when user navigates to market detail page */
   onViewMarket?: (marketId: string) => void

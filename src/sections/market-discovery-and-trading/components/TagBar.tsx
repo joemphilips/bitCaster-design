@@ -3,67 +3,59 @@ import type { MetaTag, CategoryTag } from '@/../product/sections/market-discover
 interface TagBarProps {
   metaTags: MetaTag[]
   categoryTags: CategoryTag[]
-  selectedMetaTags: string[]
-  selectedCategoryTags: string[]
-  onMetaTagToggle?: (tagId: string) => void
-  onCategoryTagToggle?: (tagId: string) => void
+  selectedTag: string | null
+  onTagSelect?: (tagId: string) => void
 }
 
 export function TagBar({
   metaTags,
   categoryTags,
-  selectedMetaTags,
-  selectedCategoryTags,
-  onMetaTagToggle,
-  onCategoryTagToggle,
+  selectedTag,
+  onTagSelect,
 }: TagBarProps) {
   return (
-    <div className="sticky top-16 md:top-16 z-40 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 py-3 px-4 overflow-x-auto">
-      <div className="flex gap-6 min-w-max">
-        {/* Meta Tags Section */}
-        <div className="flex items-center gap-2">
-          {metaTags.map((tag) => {
-            const isSelected = selectedMetaTags.includes(tag.id)
-            return (
-              <button
-                key={tag.id}
-                onClick={() => onMetaTagToggle?.(tag.id)}
-                className={`px-4 py-2 rounded-full font-bold text-sm transition-all transform hover:scale-105 whitespace-nowrap ${
-                  isSelected
-                    ? 'bg-amber-500 dark:bg-amber-400 text-white shadow-lg scale-105'
-                    : 'bg-amber-100 dark:bg-amber-900/30 text-amber-900 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/40'
-                }`}
-                title={tag.description}
-              >
-                {tag.label}
-              </button>
-            )
-          })}
-        </div>
+    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md overflow-x-auto">
+      <div className="flex gap-2 min-w-max px-4 sm:px-6 lg:px-8 py-3">
+        {/* Meta Tags */}
+        {metaTags.map((tag) => {
+          const isSelected = selectedTag === tag.id
+          return (
+            <button
+              key={tag.id}
+              onClick={() => onTagSelect?.(tag.id)}
+              className={`px-4 py-2 rounded-full font-bold text-sm transition-all transform hover:scale-105 whitespace-nowrap ${
+                isSelected
+                  ? 'bg-amber-500 dark:bg-amber-400 text-white shadow-lg scale-105'
+                  : 'bg-amber-100 dark:bg-amber-900/30 text-amber-900 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/40'
+              }`}
+              title={tag.description}
+            >
+              {tag.label}
+            </button>
+          )
+        })}
 
         {/* Divider */}
-        <div className="w-px bg-slate-300 dark:bg-slate-700" />
+        <div className="w-px bg-slate-300 dark:bg-slate-700 mx-2" />
 
-        {/* Category Tags Section */}
-        <div className="flex items-center gap-2">
-          {categoryTags.map((tag) => {
-            const isSelected = selectedCategoryTags.includes(tag.id)
-            return (
-              <button
-                key={tag.id}
-                onClick={() => onCategoryTagToggle?.(tag.id)}
-                className={`px-4 py-2 rounded-full font-semibold text-sm transition-all transform hover:scale-105 whitespace-nowrap ${
-                  isSelected
-                    ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-lg scale-105'
-                    : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
-                }`}
-              >
-                <span>{tag.label}</span>
-                <span className="ml-2 text-xs opacity-75 font-mono">{tag.marketCount}</span>
-              </button>
-            )
-          })}
-        </div>
+        {/* Category Tags */}
+        {categoryTags.map((tag) => {
+          const isSelected = selectedTag === tag.id
+          return (
+            <button
+              key={tag.id}
+              onClick={() => onTagSelect?.(tag.id)}
+              className={`px-4 py-2 rounded-full font-semibold text-sm transition-all transform hover:scale-105 whitespace-nowrap ${
+                isSelected
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-lg scale-105'
+                  : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
+              }`}
+            >
+              <span>{tag.label}</span>
+              <span className="ml-2 text-xs opacity-75 font-mono">{tag.marketCount}</span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )

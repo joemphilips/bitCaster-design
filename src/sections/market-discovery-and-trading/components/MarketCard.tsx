@@ -1,75 +1,244 @@
-import React, { useState } from 'react'
-import { TrendingUp, Users, Droplet, X } from 'lucide-react'
-import type { Market, YesNoMarket, CategoricalMarket, TwoDimensionalMarket } from '@/../product/sections/market-discovery-and-trading/types'
+import React, { useState, useRef, useEffect } from 'react'
+import { Users, Droplet, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import type {
+  Market,
+  YesNoMarket,
+  CategoricalMarket,
+  TwoDimensionalMarket,
+  Outcome,
+} from '@/../product/sections/market-discovery-and-trading/types'
 
 interface MarketCardProps {
   market: Market
   onBuyYes?: (marketId: string, amount: number) => void
   onBuyNo?: (marketId: string, amount: number) => void
-  onBuyOutcome?: (marketId: string, outcomeId: string, amount: number) => void
+  onBuyOutcomeYes?: (marketId: string, outcomeId: string, amount: number) => void
+  onBuyOutcomeNo?: (marketId: string, outcomeId: string, amount: number) => void
   onViewMarket?: (marketId: string) => void
 }
 
-export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMarket }: MarketCardProps) {
+interface TradeState {
+  side: 'yes' | 'no'
+  outcomeId?: string
+  outcomeLabel?: string
+}
+
+function formatVolume(sats: number): string {
+  const btc = sats / 100_000_000
+  if (btc >= 1) {
+    return `₿${btc.toFixed(2)}`
+  }
+  if (btc >= 0.1) {
+    return `₿${btc.toFixed(3)}`
+  }
+  if (btc >= 0.01) {
+    return `₿${btc.toFixed(4)}`
+  }
+  return `₿${btc.toFixed(5)}`
+}
+
+function formatLiquidity(sats: number): string {
+  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(1)}M`
+  if (sats >= 1_000) return `${(sats / 1_000).toFixed(0)}K`
+  return sats.toString()
+}
+
+function CategoricalOutcomes({
+  outcomes,
+  onYesClick,
+  onNoClick,
+}: {
+  outcomes: Outcome[]
+  onYesClick: (outcomeId: string, label: string) => void
+  onNoClick: (outcomeId: string, label: string) => void
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+      setCanScrollLeft(scrollLeft > 2)
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 2)
+    }
+  }
+
+  useEffect(() => {
+    checkScroll()
+    const resizeObserver = new ResizeObserver(checkScroll)
+    if (scrollRef.current) {
+      resizeObserver.observe(scrollRef.current)
+    }
+    return () => resizeObserver.disconnect()
+  }, [outcomes])
+
+  const scroll = (direction: 'left' | 'right', e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (scrollRef.current) {
+      const scrollAmount = 150
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      })
+    }
+  }
+
+  return (
+    <div className="relative group/outcomes">
+      {/* Left scroll button */}
+      {canScrollLeft && (
+        <button
+          onClick={(e) => scroll('left', e)}
+          className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+      )}
+
+      {/* Scrollable outcomes */}
+      <div
+        ref={scrollRef}
+        onScroll={checkScroll}
+        className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {outcomes.map((outcome) => (
+          <div
+            key={outcome.id}
+            className="flex-shrink-0 w-32 bg-slate-50 dark:bg-slate-800/60 rounded-lg p-2.5 border border-slate-200 dark:border-slate-700"
+          >
+            <div className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate mb-1">
+              {outcome.label}
+            </div>
+            <div className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-2">
+              {outcome.odds.toFixed(1)}%
+            </div>
+            <div className="flex gap-1.5">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onYesClick(outcome.id, outcome.label)
+                }}
+                className="flex-1 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 rounded text-emerald-600 dark:text-emerald-400 font-bold text-xs transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Yes
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onNoClick(outcome.id, outcome.label)
+                }}
+                className="flex-1 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 rounded text-rose-600 dark:text-rose-400 font-bold text-xs transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Right scroll button */}
+      {canScrollRight && (
+        <button
+          onClick={(e) => scroll('right', e)}
+          className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      )}
+    </div>
+  )
+}
+
+export function MarketCard({
+  market,
+  onBuyYes,
+  onBuyNo,
+  onBuyOutcomeYes,
+  onBuyOutcomeNo,
+  onViewMarket,
+}: MarketCardProps) {
   const [isTrading, setIsTrading] = useState(false)
+  const [tradeState, setTradeState] = useState<TradeState | null>(null)
   const [amount, setAmount] = useState(1000)
-  const [selectedOutcome, setSelectedOutcome] = useState<string | null>(null)
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // Only navigate if clicking on the card itself, not buttons
     if ((e.target as HTMLElement).closest('button')) return
+    if ((e.target as HTMLElement).closest('input')) return
     onViewMarket?.(market.id)
   }
 
-  const handleBuyClick = (e: React.MouseEvent, type: 'yes' | 'no' | string) => {
+  const handleYesNoClick = (e: React.MouseEvent, side: 'yes' | 'no') => {
     e.stopPropagation()
-    if (market.type === 'yesno') {
-      setSelectedOutcome(type)
-      setIsTrading(true)
-    } else if (market.type === 'categorical') {
-      setSelectedOutcome(type)
-      setIsTrading(true)
-    }
+    setTradeState({ side })
+    setIsTrading(true)
+  }
+
+  const handleOutcomeClick = (
+    outcomeId: string,
+    label: string,
+    side: 'yes' | 'no'
+  ) => {
+    setTradeState({ side, outcomeId, outcomeLabel: label })
+    setIsTrading(true)
   }
 
   const handleConfirmBuy = (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (!tradeState) return
+
     if (market.type === 'yesno') {
-      if (selectedOutcome === 'yes') {
+      if (tradeState.side === 'yes') {
         onBuyYes?.(market.id, amount)
       } else {
         onBuyNo?.(market.id, amount)
       }
-    } else if (market.type === 'categorical' && selectedOutcome) {
-      onBuyOutcome?.(market.id, selectedOutcome, amount)
+    } else if (market.type === 'categorical' && tradeState.outcomeId) {
+      if (tradeState.side === 'yes') {
+        onBuyOutcomeYes?.(market.id, tradeState.outcomeId, amount)
+      } else {
+        onBuyOutcomeNo?.(market.id, tradeState.outcomeId, amount)
+      }
     }
     setIsTrading(false)
+    setTradeState(null)
     setAmount(1000)
   }
 
   const handleCancelTrade = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsTrading(false)
-    setSelectedOutcome(null)
+    setTradeState(null)
     setAmount(1000)
   }
 
-  const formatVolume = (volume: number) => {
-    if (volume >= 1000000) return `${(volume / 1000000).toFixed(1)}M`
-    if (volume >= 1000) return `${(volume / 1000).toFixed(0)}K`
-    return volume.toString()
-  }
-
-  const formatLiquidity = (liquidity: number) => {
-    if (liquidity >= 1000000) return `${(liquidity / 1000000).toFixed(1)}M`
-    if (liquidity >= 1000) return `${(liquidity / 1000).toFixed(0)}K`
-    return liquidity.toString()
-  }
-
   const getPredictedOdds = (currentOdd: number, buyAmount: number) => {
-    // Simple simulation: odds shift by 0.5% per 10K sats
     const shift = (buyAmount / 10000) * 0.5
-    return Math.min(100, currentOdd + shift)
+    return Math.min(99.9, Math.max(0.1, currentOdd + shift))
+  }
+
+  const getCurrentOdds = (): number => {
+    if (!tradeState) return 50
+
+    if (market.type === 'yesno') {
+      const yesNoMarket = market as YesNoMarket
+      return tradeState.side === 'yes'
+        ? yesNoMarket.currentOdds.yes
+        : yesNoMarket.currentOdds.no
+    }
+
+    if (market.type === 'categorical' && tradeState.outcomeId) {
+      const categoricalMarket = market as CategoricalMarket
+      const outcome = categoricalMarket.outcomes.find(
+        (o) => o.id === tradeState.outcomeId
+      )
+      return tradeState.side === 'yes'
+        ? outcome?.odds || 50
+        : 100 - (outcome?.odds || 50)
+    }
+
+    return 50
   }
 
   const renderNormalView = () => {
@@ -85,13 +254,13 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={(e) => handleBuyClick(e, 'yes')}
+              onClick={(e) => handleYesNoClick(e, 'yes')}
               className="py-2.5 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white rounded-lg font-semibold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
             >
               Buy YES
             </button>
             <button
-              onClick={(e) => handleBuyClick(e, 'no')}
+              onClick={(e) => handleYesNoClick(e, 'no')}
               className="py-2.5 bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600 text-white rounded-lg font-semibold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
             >
               Buy NO
@@ -101,24 +270,12 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
       )
     } else if (market.type === 'categorical') {
       const categoricalMarket = market as CategoricalMarket
-      const topOutcomes = categoricalMarket.outcomes.slice(0, 3)
       return (
-        <div className="space-y-1.5">
-          {topOutcomes.map((outcome) => (
-            <button
-              key={outcome.id}
-              onClick={(e) => handleBuyClick(e, outcome.id)}
-              className="w-full flex items-center justify-between px-3 py-2 bg-slate-100 hover:bg-blue-100 dark:bg-slate-800 dark:hover:bg-blue-900/30 rounded-lg transition-all group"
-            >
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                {outcome.label}
-              </span>
-              <span className="text-sm font-bold text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                {outcome.odds.toFixed(1)}%
-              </span>
-            </button>
-          ))}
-        </div>
+        <CategoricalOutcomes
+          outcomes={categoricalMarket.outcomes}
+          onYesClick={(id, label) => handleOutcomeClick(id, label, 'yes')}
+          onNoClick={(id, label) => handleOutcomeClick(id, label, 'no')}
+        />
       )
     } else if (market.type === 'twodimensional') {
       const twoDMarket = market as TwoDimensionalMarket
@@ -130,7 +287,7 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
                 {twoDMarket.dimensions.x.label}
               </span>
               <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                {twoDMarket.dimensions.x.currentEstimate}
+                {twoDMarket.dimensions.x.currentEstimate.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between items-center">
@@ -138,7 +295,7 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
                 {twoDMarket.dimensions.y.label}
               </span>
               <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
-                {twoDMarket.dimensions.y.currentEstimate}
+                {twoDMarket.dimensions.y.currentEstimate.toLocaleString()}
               </span>
             </div>
           </div>
@@ -148,25 +305,15 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
   }
 
   const renderTradingView = () => {
-    if (!selectedOutcome) return null
+    if (!tradeState) return null
 
-    let oddValue = 0
-    let oddLabel = ''
+    const currentOdds = getCurrentOdds()
+    const predictedOdd = getPredictedOdds(currentOdds, amount)
 
-    if (market.type === 'yesno') {
-      const yesNoMarket = market as YesNoMarket
-      oddValue = selectedOutcome === 'yes' ? yesNoMarket.currentOdds.yes : yesNoMarket.currentOdds.no
-      oddLabel = selectedOutcome === 'yes' ? 'YES' : 'NO'
-    } else if (market.type === 'categorical') {
-      const categoricalMarket = market as CategoricalMarket
-      const outcome = categoricalMarket.outcomes.find((o) => o.id === selectedOutcome)
-      if (outcome) {
-        oddValue = outcome.odds
-        oddLabel = outcome.label
-      }
+    let tradeLabel = tradeState.side.toUpperCase()
+    if (tradeState.outcomeLabel) {
+      tradeLabel = `${tradeState.side.toUpperCase()} on "${tradeState.outcomeLabel}"`
     }
-
-    const predictedOdd = getPredictedOdds(oddValue, amount)
 
     return (
       <div className="space-y-4 animate-in fade-in-0 duration-200">
@@ -179,10 +326,18 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
         </button>
 
         {/* Predicted Odds */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-400 text-white rounded-lg p-4 text-center">
-          <div className="text-xs font-medium opacity-90 mb-1">Predicted odds after purchase</div>
+        <div
+          className={`rounded-lg p-4 text-center ${
+            tradeState.side === 'yes'
+              ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 dark:from-emerald-500 dark:to-emerald-400'
+              : 'bg-gradient-to-r from-rose-600 to-rose-500 dark:from-rose-500 dark:to-rose-400'
+          } text-white`}
+        >
+          <div className="text-xs font-medium opacity-90 mb-1">
+            Predicted odds after purchase
+          </div>
           <div className="text-3xl font-bold">{predictedOdd.toFixed(1)}%</div>
-          <div className="text-xs font-medium opacity-75 mt-1">{oddLabel}</div>
+          <div className="text-xs font-medium opacity-75 mt-1">{tradeLabel}</div>
         </div>
 
         {/* Amount Picker */}
@@ -207,9 +362,13 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
                   e.stopPropagation()
                   setAmount(preset)
                 }}
-                className="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded text-xs font-medium transition-colors"
+                className={`flex-1 py-1.5 rounded text-xs font-medium transition-colors ${
+                  amount === preset
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300'
+                }`}
               >
-                {formatVolume(preset)}
+                {preset >= 1000 ? `${preset / 1000}K` : preset}
               </button>
             ))}
           </div>
@@ -218,7 +377,11 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
         {/* Buy Button */}
         <button
           onClick={handleConfirmBuy}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg font-bold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+          className={`w-full py-3 rounded-lg font-bold text-sm text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg ${
+            tradeState.side === 'yes'
+              ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600'
+              : 'bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600'
+          }`}
         >
           BUY {amount.toLocaleString()} SATS
         </button>
@@ -271,9 +434,8 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
         {/* Metrics Footer */}
         {!isTrading && (
           <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700">
-            <div className="flex items-center gap-1" title="Volume">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span className="font-mono font-medium">{formatVolume(market.volume)}</span>
+            <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
+              {formatVolume(market.volume)}
             </div>
             <div className="flex items-center gap-1" title="Liquidity">
               <Droplet className="w-3.5 h-3.5" />
@@ -281,7 +443,7 @@ export function MarketCard({ market, onBuyYes, onBuyNo, onBuyOutcome, onViewMark
             </div>
             <div className="flex items-center gap-1" title="Traders">
               <Users className="w-3.5 h-3.5" />
-              <span className="font-mono font-medium">{market.traderCount}</span>
+              <span className="font-mono font-medium">{market.traderCount.toLocaleString()}</span>
             </div>
           </div>
         )}

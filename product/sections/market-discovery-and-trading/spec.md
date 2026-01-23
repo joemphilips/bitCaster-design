@@ -1,25 +1,27 @@
 # Market Discovery & Trading Specification
 
 ## Overview
-Core marketplace where users browse prediction markets through a tag-based navigation system, filter and search markets, and execute quick trades directly from market cards. The page features a horizontal tag bar with meta tags (Trending, Popular, New) and category tags, a searchable and filterable market grid, and inline trading without leaving the discovery view.
+Core marketplace where users browse prediction markets through a single-select tag navigation system, filter and search markets, and execute quick trades directly from market cards. The default view shows Trending markets.
 
 ## User Flows
-- User lands on page and sees most popular markets by default
-- User searches markets using search box or filters by tag selection
-- User applies filters: Market Type (Yes/No, Categorical, TwoDimensional), Volume range, and Closing date
-- User clicks Buy Yes/No on a market card → card transforms to show trade interface with × cancel button, predicted odds after purchase, amount picker, and BUY confirmation button
+- User lands on page and sees Trending markets by default (Trending tag pre-selected)
+- User taps a different tag to switch view (only one tag active at a time)
+- User searches markets using search box or applies filters (Market Type, Volume range, Closing date)
+- For Yes/No markets: User clicks Buy Yes/No button → card transforms to trade interface
+- For categorical markets: User scrolls horizontally through choices, clicks Yes/No on a specific choice → card transforms to trade interface
 - User confirms trade or cancels with × button to return card to normal state
 - User clicks anywhere else on market card → navigates to full market detail page
 - User scrolls down → more markets load automatically (infinite scroll)
 
 ## UI Requirements
-- Horizontal tag bar with two sections: left side shows meta tags (Trending, Popular, New), right side shows popular category tags
-- Search box at top of page for keyword filtering
-- Three filter controls: Market Type dropdown, Volume range (two dropdowns for min/max), Closing date slider ("Closing in X days")
-- Market cards in responsive grid layout showing: market image, title/question, current odds percentage, Buy Yes/No action buttons, and metrics footer (volume, liquidity, trader count)
-- Inline card transformation for quick trading: card flips to trade mode showing × button (top right), predicted odds, amount picker, and BUY button
-- Infinite scroll loading for market list
-- Market card click (outside action buttons) navigates to market detail page
+- Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags (Sports, Politics, etc.) - only one tag can be selected at a time
+- Search box directly above tags (no gap between search and tag bar)
+- Three filter controls: Market Type dropdown, Volume range, Closing date slider
+- Market cards showing: image, title/question, current odds, action buttons, and metrics footer
+- Volume displayed with ₿ symbol (e.g., "₿0.05")
+- Categorical market cards: horizontal scrollable row of choices, each with its own Yes/No buttons
+- Inline card transformation for quick trading with × cancel, predicted odds, amount picker, BUY button
+- Infinite scroll loading
 
 ## Configuration
 - shell: true
