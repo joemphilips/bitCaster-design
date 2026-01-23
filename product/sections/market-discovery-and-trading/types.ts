@@ -58,6 +58,8 @@ interface BaseMarket {
   createdDate: string
   approvedDate: string
   creatorFeePercent: number
+  likeCount: number
+  isLiked: boolean
 }
 
 // Yes/No market type

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Users, Droplet, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Users, Droplet, X, ChevronUp, ChevronDown, Heart } from 'lucide-react'
 import type {
   Market,
   YesNoMarket,
@@ -15,6 +15,7 @@ interface MarketCardProps {
   onBuyOutcomeYes?: (marketId: string, outcomeId: string, amount: number) => void
   onBuyOutcomeNo?: (marketId: string, outcomeId: string, amount: number) => void
   onViewMarket?: (marketId: string) => void
+  onLike?: (marketId: string) => void
 }
 
 interface TradeState {
@@ -53,14 +54,14 @@ function CategoricalOutcomes({
   onNoClick: (outcomeId: string, label: string) => void
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(false)
+  const [canScrollUp, setCanScrollUp] = useState(false)
+  const [canScrollDown, setCanScrollDown] = useState(false)
 
   const checkScroll = () => {
     if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
-      setCanScrollLeft(scrollLeft > 2)
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 2)
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current
+      setCanScrollUp(scrollTop > 2)
+      setCanScrollDown(scrollTop < scrollHeight - clientHeight - 2)
     }
   }
 
@@ -73,12 +74,12 @@ function CategoricalOutcomes({
     return () => resizeObserver.disconnect()
   }, [outcomes])
 
-  const scroll = (direction: 'left' | 'right', e: React.MouseEvent) => {
+  const scroll = (direction: 'up' | 'down', e: React.MouseEvent) => {
     e.stopPropagation()
     if (scrollRef.current) {
-      const scrollAmount = 150
+      const scrollAmount = 100
       scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        top: direction === 'up' ? -scrollAmount : scrollAmount,
         behavior: 'smooth',
       })
     }
@@ -86,33 +87,35 @@ function CategoricalOutcomes({
 
   return (
     <div className="relative group/outcomes">
-      {/* Left scroll button */}
-      {canScrollLeft && (
+      {/* Up scroll button */}
+      {canScrollUp && (
         <button
-          onClick={(e) => scroll('left', e)}
-          className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
+          onClick={(e) => scroll('up', e)}
+          className="absolute left-1/2 -translate-x-1/2 -top-2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronUp className="w-4 h-4" />
         </button>
       )}
 
-      {/* Scrollable outcomes */}
+      {/* Scrollable outcomes (vertical) */}
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1"
+        className="flex flex-col gap-2 overflow-y-auto max-h-48 scrollbar-hide -mx-1 px-1 py-1"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {outcomes.map((outcome) => (
           <div
             key={outcome.id}
-            className="flex-shrink-0 w-32 bg-slate-50 dark:bg-slate-800/60 rounded-lg p-2.5 border border-slate-200 dark:border-slate-700"
+            className="flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 rounded-lg p-2.5 border border-slate-200 dark:border-slate-700"
           >
-            <div className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate mb-1">
-              {outcome.label}
-            </div>
-            <div className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-2">
-              {outcome.odds.toFixed(1)}%
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate">
+                {outcome.label}
+              </div>
+              <div className="text-sm font-bold text-slate-900 dark:text-slate-100 ml-2">
+                {outcome.odds.toFixed(1)}%
+              </div>
             </div>
             <div className="flex gap-1.5">
               <button
@@ -138,13 +141,13 @@ function CategoricalOutcomes({
         ))}
       </div>
 
-      {/* Right scroll button */}
-      {canScrollRight && (
+      {/* Down scroll button */}
+      {canScrollDown && (
         <button
-          onClick={(e) => scroll('right', e)}
-          className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
+          onClick={(e) => scroll('down', e)}
+          className="absolute left-1/2 -translate-x-1/2 -bottom-2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronDown className="w-4 h-4" />
         </button>
       )}
     </div>
@@ -158,6 +161,7 @@ export function MarketCard({
   onBuyOutcomeYes,
   onBuyOutcomeNo,
   onViewMarket,
+  onLike,
 }: MarketCardProps) {
   const [isTrading, setIsTrading] = useState(false)
   const [tradeState, setTradeState] = useState<TradeState | null>(null)
@@ -211,6 +215,11 @@ export function MarketCard({
     setIsTrading(false)
     setTradeState(null)
     setAmount(1000)
+  }
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onLike?.(market.id)
   }
 
   const getPredictedOdds = (currentOdd: number, buyAmount: number) => {
@@ -394,7 +403,7 @@ export function MarketCard({
       onClick={handleCardClick}
       className={`group relative bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all duration-300 ${
         isTrading
-          ? 'shadow-2xl scale-[1.02] ring-2 ring-blue-500'
+          ? 'shadow-2xl ring-2 ring-blue-500'
           : 'shadow-md hover:shadow-xl hover:scale-[1.01] cursor-pointer'
       }`}
     >
@@ -405,20 +414,6 @@ export function MarketCard({
           style={{ backgroundImage: `url(${market.imageUrl})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-        {/* Meta Tags */}
-        {market.metaTags.length > 0 && (
-          <div className="absolute top-4 left-4 flex gap-2">
-            {market.metaTags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 bg-amber-500/90 dark:bg-amber-400/90 backdrop-blur-sm text-white text-xs font-bold rounded shadow-md uppercase"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Content */}
@@ -445,6 +440,18 @@ export function MarketCard({
               <Users className="w-3.5 h-3.5" />
               <span className="font-mono font-medium">{market.traderCount.toLocaleString()}</span>
             </div>
+            <button
+              onClick={handleLike}
+              className={`flex items-center gap-1 cursor-pointer transition-colors ${
+                market.isLiked
+                  ? 'text-rose-500'
+                  : 'hover:text-rose-500'
+              }`}
+              title="Like"
+            >
+              <Heart className="w-3.5 h-3.5" fill={market.isLiked ? 'currentColor' : 'none'} />
+              <span className="font-mono font-medium">{market.likeCount}</span>
+            </button>
           </div>
         )}
       </div>

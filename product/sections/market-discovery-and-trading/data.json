@@ -92,7 +92,9 @@
       "closingDate": "2026-06-30T23:59:59Z",
       "createdDate": "2025-11-15T10:30:00Z",
       "approvedDate": "2025-11-15T14:20:00Z",
-      "creatorFeePercent": 2.0
+      "creatorFeePercent": 2.0,
+      "likeCount": 342,
+      "isLiked": true
     },
     {
       "id": "mkt-002",
@@ -114,7 +116,9 @@
       "closingDate": "2026-06-15T23:59:59Z",
       "createdDate": "2025-10-01T08:00:00Z",
       "approvedDate": "2025-10-01T09:15:00Z",
-      "creatorFeePercent": 1.5
+      "creatorFeePercent": 1.5,
+      "likeCount": 287,
+      "isLiked": false
     },
     {
       "id": "mkt-003",
@@ -133,7 +137,9 @@
       "closingDate": "2026-06-08T20:00:00Z",
       "createdDate": "2026-01-10T15:45:00Z",
       "approvedDate": "2026-01-10T16:30:00Z",
-      "creatorFeePercent": 2.5
+      "creatorFeePercent": 2.5,
+      "likeCount": 156,
+      "isLiked": true
     },
     {
       "id": "mkt-004",
@@ -162,7 +168,9 @@
       "closingDate": "2026-03-31T23:59:59Z",
       "createdDate": "2025-12-20T11:00:00Z",
       "approvedDate": "2025-12-20T13:45:00Z",
-      "creatorFeePercent": 1.8
+      "creatorFeePercent": 1.8,
+      "likeCount": 198,
+      "isLiked": false
     },
     {
       "id": "mkt-005",
@@ -181,7 +189,9 @@
       "closingDate": "2027-03-28T23:59:59Z",
       "createdDate": "2026-01-15T09:20:00Z",
       "approvedDate": "2026-01-15T10:05:00Z",
-      "creatorFeePercent": 2.0
+      "creatorFeePercent": 2.0,
+      "likeCount": 89,
+      "isLiked": false
     },
     {
       "id": "mkt-006",
@@ -203,7 +213,9 @@
       "closingDate": "2026-02-28T23:59:59Z",
       "createdDate": "2026-01-05T14:30:00Z",
       "approvedDate": "2026-01-05T15:15:00Z",
-      "creatorFeePercent": 1.5
+      "creatorFeePercent": 1.5,
+      "likeCount": 124,
+      "isLiked": true
     },
     {
       "id": "mkt-007",
@@ -222,7 +234,9 @@
       "closingDate": "2026-12-31T23:59:59Z",
       "createdDate": "2025-09-12T07:00:00Z",
       "approvedDate": "2025-09-12T08:30:00Z",
-      "creatorFeePercent": 2.0
+      "creatorFeePercent": 2.0,
+      "likeCount": 412,
+      "isLiked": false
     },
     {
       "id": "mkt-008",
@@ -251,7 +265,9 @@
       "closingDate": "2026-06-30T20:00:00Z",
       "createdDate": "2025-11-01T10:00:00Z",
       "approvedDate": "2025-11-01T11:20:00Z",
-      "creatorFeePercent": 1.2
+      "creatorFeePercent": 1.2,
+      "likeCount": 523,
+      "isLiked": true
     },
     {
       "id": "mkt-009",
@@ -270,7 +286,9 @@
       "closingDate": "2026-12-31T23:59:59Z",
       "createdDate": "2026-01-12T16:00:00Z",
       "approvedDate": "2026-01-12T16:45:00Z",
-      "creatorFeePercent": 2.5
+      "creatorFeePercent": 2.5,
+      "likeCount": 267,
+      "isLiked": false
     },
     {
       "id": "mkt-010",
@@ -293,7 +311,9 @@
       "closingDate": "2027-02-14T23:00:00Z",
       "createdDate": "2026-01-08T12:30:00Z",
       "approvedDate": "2026-01-08T13:10:00Z",
-      "creatorFeePercent": 1.5
+      "creatorFeePercent": 1.5,
+      "likeCount": 45,
+      "isLiked": false
     }
   ]
 }
