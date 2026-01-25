@@ -1,16 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { TagBar } from './TagBar'
 import { FilterControls } from './FilterControls'
 import { MarketCard } from './MarketCard'
-import type { MarketDiscoveryProps } from '@/../product/sections/market-discovery-and-trading/types'
+import type { MarketDiscoveryProps, MarketType, VolumeRange } from '@/../product/sections/market-discovery-and-trading/types'
 
 export function MarketDiscovery({
   metaTags,
   categoryTags,
   markets,
   selectedTag,
-  searchQuery = '',
-  onSearch,
+  searchQuery: _searchQuery = '',
+  onSearch: _onSearch,
   onTagSelect,
   onMarketTypeChange,
   onVolumeRangeChange,
@@ -23,6 +23,17 @@ export function MarketDiscovery({
   onLoadMore,
 }: MarketDiscoveryProps) {
   const observerTarget = useRef<HTMLDivElement>(null)
+  const [filtersVisible, setFiltersVisible] = useState(false)
+  const [selectedMarketTypes, setSelectedMarketTypes] = useState<MarketType[]>([])
+  const [volumeRange, setVolumeRange] = useState<VolumeRange>({})
+  const [closingInDays, setClosingInDays] = useState<number | undefined>(undefined)
+
+  // Calculate active filter count
+  const activeFilterCount = [
+    selectedMarketTypes.length > 0 ? 1 : 0,
+    volumeRange.min !== undefined ? 1 : 0,
+    closingInDays !== undefined ? 1 : 0,
+  ].reduce((a, b) => a + b, 0)
 
   // Infinite scroll
   useEffect(() => {
@@ -56,19 +67,32 @@ export function MarketDiscovery({
             metaTags={metaTags}
             categoryTags={categoryTags}
             selectedTag={selectedTag}
+            filtersVisible={filtersVisible}
+            activeFilterCount={activeFilterCount}
             onTagSelect={onTagSelect}
+            onToggleFilters={() => setFiltersVisible(!filtersVisible)}
           />
         </div>
       </div>
 
       {/* Filter Controls */}
       <FilterControls
-        selectedMarketTypes={[]}
-        volumeRange={{}}
-        closingInDays={undefined}
-        onMarketTypeChange={onMarketTypeChange}
-        onVolumeRangeChange={onVolumeRangeChange}
-        onClosingDateChange={onClosingDateChange}
+        isVisible={filtersVisible}
+        selectedMarketTypes={selectedMarketTypes}
+        volumeRange={volumeRange}
+        closingInDays={closingInDays}
+        onMarketTypeChange={(types) => {
+          setSelectedMarketTypes(types)
+          onMarketTypeChange?.(types)
+        }}
+        onVolumeRangeChange={(range) => {
+          setVolumeRange(range)
+          onVolumeRangeChange?.(range)
+        }}
+        onClosingDateChange={(days) => {
+          setClosingInDays(days)
+          onClosingDateChange?.(days)
+        }}
       />
 
       {/* Market Grid */}

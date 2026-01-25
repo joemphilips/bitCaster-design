@@ -30,7 +30,7 @@ export function MarketCreationDashboard({
   onCreateMarket,
   onCancelMarket,
   onClaimFees,
-  onSaveDraft,
+  onSaveDraft: _onSaveDraft,
   onDiscardDraft,
   onTimeScaleChange,
   onChartModeChange,

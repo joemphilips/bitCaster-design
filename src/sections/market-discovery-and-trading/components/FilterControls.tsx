@@ -2,6 +2,7 @@ import { Filter } from 'lucide-react'
 import type { MarketType, VolumeRange } from '@/../product/sections/market-discovery-and-trading/types'
 
 interface FilterControlsProps {
+  isVisible: boolean
   selectedMarketTypes: MarketType[]
   volumeRange: VolumeRange
   closingInDays?: number
@@ -35,6 +36,7 @@ const CLOSING_DATE_OPTIONS = [
 ]
 
 export function FilterControls({
+  isVisible,
   selectedMarketTypes,
   volumeRange,
   closingInDays,
@@ -49,8 +51,12 @@ export function FilterControls({
     onMarketTypeChange?.(newTypes)
   }
 
+  if (!isVisible) {
+    return null
+  }
+
   return (
-    <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-[7rem] md:top-[7rem] z-30">
+    <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-[7rem] md:top-[7rem] z-30 animate-in slide-in-from-top-2 duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         {/* Filter Controls */}
         <div className="flex flex-wrap items-center gap-3">

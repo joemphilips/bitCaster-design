@@ -15,6 +15,7 @@ Core marketplace where users browse prediction markets through a single-select t
 
 ## UI Requirements
 - Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags (Sports, Politics, etc.) - only one tag can be selected at a time
+- Filter row is hidden by default; user clicks a slider/filter icon in the tag bar to reveal/collapse it
 - Three filter controls: Market Type dropdown, Volume range, Closing date slider
 - Market cards showing: image, title/question, current odds, action buttons, and metrics footer
 - Volume displayed with ₿ symbol (e.g., "₿0.05")
