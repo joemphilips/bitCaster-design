@@ -1,0 +1,339 @@
+{
+  "_meta": {
+    "events": {
+      "UserRegistered": "User joins the platform with identifier and basic registration information",
+      "UserProfileUpdated": "User updates profile information such as display name or avatar",
+      "DepositReceived": "Bitcoin (sats) deposited into user's wallet with transaction details",
+      "WithdrawalRequested": "User initiates withdrawal of sats to external wallet",
+      "WithdrawalCompleted": "Withdrawal finalized and sats successfully sent",
+      "Bought": "User buys shares in a market outcome, creating or adding to a position",
+      "Sold": "User sells shares in a market outcome, reducing or closing a position",
+      "MarketCreated": "User creates a new prediction market",
+      "MarketApproved": "Market passes quality controls and goes live",
+      "MarketRejected": "Market fails quality controls with rejection reason",
+      "MarketResolved": "Outcome determined and market closed",
+      "PayoutClaimed": "Winner claims payout from resolved market",
+      "CreatorFeeClaimed": "Market creator claims fee earnings from resolved market"
+    },
+    "currentState": {
+      "profile": "User profile derived from UserRegistered + UserProfileUpdated events",
+      "plSummary": "Profit/Loss metrics computed from Bought, Sold, and PayoutClaimed events over various time windows",
+      "positions": "Active and closed positions derived from Bought, Sold, and MarketResolved events",
+      "orderHistory": "Deposits and withdrawals from DepositReceived, WithdrawalRequested, and WithdrawalCompleted events",
+      "createdMarkets": "Markets created by user from MarketCreated, MarketApproved, MarketRejected, and MarketResolved events"
+    },
+    "eventFlows": [
+      "UserRegistered creates initial profile, UserProfileUpdated modifies avatar/display name",
+      "DepositReceived adds sats to wallet, WithdrawalRequested+WithdrawalCompleted removes sats",
+      "Bought creates position or adds shares, Sold reduces shares or closes position",
+      "MarketResolved triggers PayoutClaimed for winning positions",
+      "MarketCreated starts pending, MarketApproved enables trading, MarketResolved enables CreatorFeeClaimed"
+    ]
+  },
+  "profile": {
+    "userId": "usr-a1b2c3d4",
+    "displayName": "SatoshiTrader",
+    "avatarUrl": "/images/avatars/satoshi-trader.png",
+    "registeredDate": "2025-08-15T09:30:00Z"
+  },
+  "plSummary": {
+    "last24h": {
+      "amountSats": 12500,
+      "percentChange": 2.4
+    },
+    "last7d": {
+      "amountSats": -8200,
+      "percentChange": -1.5
+    },
+    "last30d": {
+      "amountSats": 87350,
+      "percentChange": 8.7
+    },
+    "allTime": {
+      "amountSats": 234580,
+      "percentChange": 23.5
+    }
+  },
+  "positions": [
+    {
+      "id": "pos-001",
+      "marketId": "mkt-001",
+      "marketTitle": "Will Bitcoin reach $100,000 before end of Q2 2026?",
+      "marketImageUrl": "/images/markets/bitcoin-100k.jpg",
+      "side": "yes",
+      "shares": 150,
+      "avgBuyPrice": 620,
+      "currentPrice": 675,
+      "currentValueSats": 101250,
+      "profitLossSats": 8250,
+      "profitLossPercent": 8.87,
+      "status": "active",
+      "acquiredDate": "2025-12-10T14:22:00Z"
+    },
+    {
+      "id": "pos-002",
+      "marketId": "mkt-003",
+      "marketTitle": "Will Apple announce AR glasses at WWDC 2026?",
+      "marketImageUrl": "/images/markets/apple-ar-glasses.jpg",
+      "side": "no",
+      "shares": 200,
+      "avgBuyPrice": 540,
+      "currentPrice": 572,
+      "currentValueSats": 114400,
+      "profitLossSats": 6400,
+      "profitLossPercent": 5.93,
+      "status": "active",
+      "acquiredDate": "2026-01-12T11:05:00Z"
+    },
+    {
+      "id": "pos-003",
+      "marketId": "mkt-002",
+      "marketTitle": "Who will win the 2026 NBA Championship?",
+      "marketImageUrl": "/images/markets/nba-championship.jpg",
+      "side": "yes",
+      "outcomeId": "celtics",
+      "outcomeLabel": "Boston Celtics",
+      "shares": 80,
+      "avgBuyPrice": 195,
+      "currentPrice": 210,
+      "currentValueSats": 16800,
+      "profitLossSats": 1200,
+      "profitLossPercent": 7.69,
+      "status": "active",
+      "acquiredDate": "2025-11-28T16:40:00Z"
+    },
+    {
+      "id": "pos-004",
+      "marketId": "mkt-007",
+      "marketTitle": "Will NASA successfully land Artemis III on the Moon in 2026?",
+      "marketImageUrl": "/images/markets/artemis-moon-landing.jpg",
+      "side": "no",
+      "shares": 300,
+      "avgBuyPrice": 680,
+      "currentPrice": 711,
+      "currentValueSats": 213300,
+      "profitLossSats": 9300,
+      "profitLossPercent": 4.56,
+      "status": "active",
+      "acquiredDate": "2025-10-05T08:15:00Z"
+    },
+    {
+      "id": "pos-005",
+      "marketId": "mkt-resolved-001",
+      "marketTitle": "Will Ethereum merge to PoS successfully complete by end of 2025?",
+      "marketImageUrl": "/images/markets/eth-merge.jpg",
+      "side": "yes",
+      "shares": 100,
+      "avgBuyPrice": 450,
+      "currentPrice": 1000,
+      "currentValueSats": 100000,
+      "profitLossSats": 55000,
+      "profitLossPercent": 122.22,
+      "status": "closed",
+      "closedDate": "2025-12-31T23:59:59Z",
+      "acquiredDate": "2025-09-20T10:30:00Z"
+    },
+    {
+      "id": "pos-006",
+      "marketId": "mkt-resolved-002",
+      "marketTitle": "Will the Fed raise interest rates in December 2025?",
+      "marketImageUrl": "/images/markets/fed-rates.jpg",
+      "side": "yes",
+      "shares": 250,
+      "avgBuyPrice": 380,
+      "currentPrice": 0,
+      "currentValueSats": 0,
+      "profitLossSats": -95000,
+      "profitLossPercent": -100,
+      "status": "closed",
+      "closedDate": "2025-12-18T19:00:00Z",
+      "acquiredDate": "2025-11-01T13:45:00Z"
+    },
+    {
+      "id": "pos-007",
+      "marketId": "mkt-006",
+      "marketTitle": "Ethereum gas price average in February 2026",
+      "marketImageUrl": "/images/markets/eth-gas-price.jpg",
+      "side": "yes",
+      "outcomeId": "10-20",
+      "outcomeLabel": "10-20 Gwei",
+      "shares": 120,
+      "avgBuyPrice": 365,
+      "currentPrice": 387,
+      "currentValueSats": 46440,
+      "profitLossSats": 2640,
+      "profitLossPercent": 6.03,
+      "status": "active",
+      "acquiredDate": "2026-01-08T09:20:00Z"
+    },
+    {
+      "id": "pos-008",
+      "marketId": "mkt-resolved-003",
+      "marketTitle": "Will SpaceX Starship complete a successful orbital flight by November 2025?",
+      "marketImageUrl": "/images/markets/starship-orbital.jpg",
+      "side": "yes",
+      "shares": 180,
+      "avgBuyPrice": 520,
+      "currentPrice": 1000,
+      "currentValueSats": 180000,
+      "profitLossSats": 86400,
+      "profitLossPercent": 92.31,
+      "status": "closed",
+      "closedDate": "2025-11-30T23:59:59Z",
+      "acquiredDate": "2025-07-15T11:00:00Z"
+    }
+  ],
+  "orderHistory": [
+    {
+      "id": "ord-001",
+      "type": "deposit",
+      "amountSats": 500000,
+      "date": "2025-08-15T09:35:00Z",
+      "status": "completed",
+      "txId": "a1b2c3d4e5f6789012345678901234567890abcd",
+      "lightningInvoice": null
+    },
+    {
+      "id": "ord-002",
+      "type": "deposit",
+      "amountSats": 150000,
+      "date": "2025-10-22T14:10:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": "lnbc1500u1pjq8xyzpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52dl"
+    },
+    {
+      "id": "ord-003",
+      "type": "withdrawal",
+      "amountSats": 75000,
+      "date": "2025-11-05T18:30:00Z",
+      "status": "completed",
+      "txId": "b2c3d4e5f6789012345678901234567890abcdef",
+      "lightningInvoice": null
+    },
+    {
+      "id": "ord-004",
+      "type": "deposit",
+      "amountSats": 250000,
+      "date": "2025-12-01T10:45:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": "lnbc2500u1pjq8abcpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x9"
+    },
+    {
+      "id": "ord-005",
+      "type": "withdrawal",
+      "amountSats": 100000,
+      "date": "2025-12-20T16:20:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": "lnbc1m1pjq8defpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52mn"
+    },
+    {
+      "id": "ord-006",
+      "type": "deposit",
+      "amountSats": 50000,
+      "date": "2026-01-05T08:00:00Z",
+      "status": "completed",
+      "txId": "c3d4e5f6789012345678901234567890abcdefab",
+      "lightningInvoice": null
+    },
+    {
+      "id": "ord-007",
+      "type": "withdrawal",
+      "amountSats": 200000,
+      "date": "2026-01-15T12:30:00Z",
+      "status": "pending",
+      "txId": null,
+      "lightningInvoice": null
+    },
+    {
+      "id": "ord-008",
+      "type": "deposit",
+      "amountSats": 30000,
+      "date": "2026-01-18T15:45:00Z",
+      "status": "failed",
+      "txId": null,
+      "lightningInvoice": "lnbc300u1pjq8ghipp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52fa",
+      "failureReason": "Invoice expired before payment received"
+    },
+    {
+      "id": "ord-009",
+      "type": "withdrawal",
+      "amountSats": 25000,
+      "date": "2026-01-10T09:15:00Z",
+      "status": "failed",
+      "txId": null,
+      "lightningInvoice": null,
+      "failureReason": "Insufficient routing liquidity"
+    },
+    {
+      "id": "ord-010",
+      "type": "deposit",
+      "amountSats": 80000,
+      "date": "2026-01-22T11:30:00Z",
+      "status": "pending",
+      "txId": "d4e5f6789012345678901234567890abcdefabcd",
+      "lightningInvoice": null
+    }
+  ],
+  "createdMarkets": [
+    {
+      "id": "mkt-user-001",
+      "title": "Will the Lightning Network reach 100,000 public channels by end of Q1 2026?",
+      "imageUrl": "/images/markets/lightning-channels.jpg",
+      "status": "approved",
+      "createdDate": "2025-11-20T14:00:00Z",
+      "approvedDate": "2025-11-20T16:30:00Z",
+      "volume": 456200,
+      "creatorFeesEarned": 9124,
+      "creatorFeePercent": 2.0
+    },
+    {
+      "id": "mkt-user-002",
+      "title": "Will any country adopt Bitcoin as legal tender in 2026?",
+      "imageUrl": "/images/markets/btc-legal-tender.jpg",
+      "status": "approved",
+      "createdDate": "2025-12-05T10:15:00Z",
+      "approvedDate": "2025-12-05T11:45:00Z",
+      "volume": 234800,
+      "creatorFeesEarned": 3522,
+      "creatorFeePercent": 1.5
+    },
+    {
+      "id": "mkt-user-003",
+      "title": "Will Nostr protocol reach 10 million users by December 2025?",
+      "imageUrl": "/images/markets/nostr-users.jpg",
+      "status": "resolved",
+      "createdDate": "2025-06-10T08:30:00Z",
+      "approvedDate": "2025-06-10T09:00:00Z",
+      "resolvedDate": "2025-12-31T23:59:59Z",
+      "volume": 892100,
+      "creatorFeesEarned": 17842,
+      "creatorFeePercent": 2.0
+    },
+    {
+      "id": "mkt-user-004",
+      "title": "This is a very long market title that tests how the UI handles extremely lengthy questions about hypothetical future events in the cryptocurrency and blockchain technology space during the year 2026",
+      "imageUrl": "/images/markets/long-title-test.jpg",
+      "status": "rejected",
+      "createdDate": "2026-01-08T16:00:00Z",
+      "rejectedDate": "2026-01-08T17:30:00Z",
+      "rejectionReason": "Market question is too vague and lacks clear resolution criteria",
+      "volume": 0,
+      "creatorFeesEarned": 0,
+      "creatorFeePercent": 2.5
+    },
+    {
+      "id": "mkt-user-005",
+      "title": "Will Cashu protocol implementations exceed 50 by mid-2026?",
+      "imageUrl": "/images/markets/cashu-implementations.jpg",
+      "status": "pending",
+      "createdDate": "2026-01-20T09:45:00Z",
+      "volume": 0,
+      "creatorFeesEarned": 0,
+      "creatorFeePercent": 1.8
+    }
+  ],
+  "positionsTab": "active"
+}
