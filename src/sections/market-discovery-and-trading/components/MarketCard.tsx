@@ -409,27 +409,29 @@ export function MarketCard({
   return (
     <div
       onClick={handleCardClick}
-      className={`group relative bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all duration-300 h-[420px] flex flex-col ${
+      className={`group relative bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all duration-300 h-[280px] flex flex-col ${
         isTrading
           ? 'shadow-2xl ring-2 ring-blue-500'
           : 'shadow-md hover:shadow-xl hover:scale-[1.01] cursor-pointer'
       }`}
     >
-      {/* Market Image */}
-      <div className="relative h-40 sm:h-48 flex-shrink-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-          style={{ backgroundImage: `url(${market.imageUrl})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      {/* Header with inline icon and title */}
+      <div className="flex items-start gap-3 p-4 pb-2 flex-shrink-0">
+        {/* Icon (48px square) */}
+        <div className="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+            style={{ backgroundImage: `url(${market.imageUrl})` }}
+          />
+        </div>
+        {/* Title */}
+        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-2 flex-1">
+          {market.title}
+        </h3>
       </div>
 
       {/* Content */}
-      <div className="p-4 flex-1 flex flex-col min-h-0">
-        {/* Title */}
-        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2 min-h-[3rem]">
-          {market.title}
-        </h3>
+      <div className="px-4 pb-4 flex-1 flex flex-col min-h-0">
 
         {/* Trading Area - Flex to fill available space */}
         <div className="flex-1 flex flex-col justify-between mt-3 min-h-0">
