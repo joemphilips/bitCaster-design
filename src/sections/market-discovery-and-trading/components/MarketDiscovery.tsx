@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { Search } from 'lucide-react'
 import { TagBar } from './TagBar'
 import { FilterControls } from './FilterControls'
 import { MarketCard } from './MarketCard'
@@ -50,25 +49,8 @@ export function MarketDiscovery({
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Sticky Header: Search + Tags (no gap) */}
+      {/* Sticky Header: Tags */}
       <div className="sticky top-14 md:top-16 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        {/* Search Bar */}
-        <div className="px-4 sm:px-6 lg:px-8 pt-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => onSearch?.(e.target.value)}
-                placeholder="Search markets by keyword..."
-                className="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Tag Bar - directly below search with no gap */}
         <div className="max-w-7xl mx-auto">
           <TagBar
             metaTags={metaTags}
@@ -81,11 +63,9 @@ export function MarketDiscovery({
 
       {/* Filter Controls */}
       <FilterControls
-        searchQuery={searchQuery}
         selectedMarketTypes={[]}
         volumeRange={{}}
         closingInDays={undefined}
-        onSearch={onSearch}
         onMarketTypeChange={onMarketTypeChange}
         onVolumeRangeChange={onVolumeRangeChange}
         onClosingDateChange={onClosingDateChange}

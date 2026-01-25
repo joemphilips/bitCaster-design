@@ -1,12 +1,10 @@
-import { Search, Filter } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import type { MarketType, VolumeRange } from '@/../product/sections/market-discovery-and-trading/types'
 
 interface FilterControlsProps {
-  searchQuery: string
   selectedMarketTypes: MarketType[]
   volumeRange: VolumeRange
   closingInDays?: number
-  onSearch?: (query: string) => void
   onMarketTypeChange?: (types: MarketType[]) => void
   onVolumeRangeChange?: (range: VolumeRange) => void
   onClosingDateChange?: (days?: number) => void
@@ -37,11 +35,9 @@ const CLOSING_DATE_OPTIONS = [
 ]
 
 export function FilterControls({
-  searchQuery,
   selectedMarketTypes,
   volumeRange,
   closingInDays,
-  onSearch,
   onMarketTypeChange,
   onVolumeRangeChange,
   onClosingDateChange,
@@ -54,22 +50,8 @@ export function FilterControls({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-[9.5rem] md:top-[9.5rem] z-30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        {/* Search Bar */}
-        <div className="mb-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => onSearch?.(e.target.value)}
-              placeholder="Search markets by keyword..."
-              className="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-            />
-          </div>
-        </div>
-
+    <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-[7rem] md:top-[7rem] z-30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         {/* Filter Controls */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
@@ -133,21 +115,18 @@ export function FilterControls({
           {/* Active Filter Count */}
           {(selectedMarketTypes.length > 0 ||
             volumeRange.min !== undefined ||
-            closingInDays !== undefined ||
-            searchQuery.length > 0) && (
+            closingInDays !== undefined) && (
             <div className="ml-auto flex items-center gap-2">
               <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
                 {[
                   selectedMarketTypes.length > 0 ? 1 : 0,
                   volumeRange.min !== undefined ? 1 : 0,
                   closingInDays !== undefined ? 1 : 0,
-                  searchQuery.length > 0 ? 1 : 0,
                 ].reduce((a, b) => a + b, 0)}{' '}
                 active
               </span>
               <button
                 onClick={() => {
-                  onSearch?.('')
                   onMarketTypeChange?.([])
                   onVolumeRangeChange?.({})
                   onClosingDateChange?.(undefined)

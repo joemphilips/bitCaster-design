@@ -325,7 +325,7 @@ export function MarketCard({
     }
 
     return (
-      <div className="space-y-4 animate-in fade-in-0 duration-200">
+      <div className="flex flex-col h-full animate-in fade-in-0 duration-200">
         {/* Cancel Button */}
         <button
           onClick={handleCancelTrade}
@@ -333,6 +333,11 @@ export function MarketCard({
         >
           <X className="w-4 h-4 text-slate-700 dark:text-slate-300" />
         </button>
+
+        {/* Market Title in Trading View */}
+        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-2 mb-4 pr-8">
+          {market.title}
+        </h3>
 
         {/* Predicted Odds */}
         <div
@@ -350,7 +355,7 @@ export function MarketCard({
         </div>
 
         {/* Amount Picker */}
-        <div className="space-y-2">
+        <div className="space-y-2 mt-4 flex-1">
           <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
             Amount (sats)
           </label>
@@ -386,7 +391,7 @@ export function MarketCard({
         {/* Buy Button */}
         <button
           onClick={handleConfirmBuy}
-          className={`w-full py-3 rounded-lg font-bold text-sm text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg ${
+          className={`w-full py-3 rounded-lg font-bold text-sm text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg mt-4 ${
             tradeState.side === 'yes'
               ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600'
               : 'bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600'
@@ -401,14 +406,14 @@ export function MarketCard({
   return (
     <div
       onClick={handleCardClick}
-      className={`group relative bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all duration-300 ${
+      className={`group relative bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all duration-300 h-[420px] flex flex-col ${
         isTrading
           ? 'shadow-2xl ring-2 ring-blue-500'
           : 'shadow-md hover:shadow-xl hover:scale-[1.01] cursor-pointer'
       }`}
     >
       {/* Market Image */}
-      <div className="relative h-40 sm:h-48 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700 overflow-hidden">
+      <div className="relative h-40 sm:h-48 flex-shrink-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
           style={{ backgroundImage: `url(${market.imageUrl})` }}
@@ -417,44 +422,51 @@ export function MarketCard({
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 flex-1 flex flex-col">
         {/* Title */}
         <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2 min-h-[3rem]">
           {market.title}
         </h3>
 
-        {/* Trading Area */}
-        {isTrading ? renderTradingView() : renderNormalView()}
+        {/* Trading Area - Fixed height */}
+        <div className="flex-1 flex flex-col justify-between mt-3">
+          {renderNormalView()}
+        </div>
 
         {/* Metrics Footer */}
-        {!isTrading && (
-          <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700">
-            <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
-              {formatVolume(market.volume)}
-            </div>
-            <div className="flex items-center gap-1" title="Liquidity">
-              <Droplet className="w-3.5 h-3.5" />
-              <span className="font-mono font-medium">{formatLiquidity(market.liquidity)}</span>
-            </div>
-            <div className="flex items-center gap-1" title="Traders">
-              <Users className="w-3.5 h-3.5" />
-              <span className="font-mono font-medium">{market.traderCount.toLocaleString()}</span>
-            </div>
-            <button
-              onClick={handleLike}
-              className={`flex items-center gap-1 cursor-pointer transition-colors ${
-                market.isLiked
-                  ? 'text-rose-500'
-                  : 'hover:text-rose-500'
-              }`}
-              title="Like"
-            >
-              <Heart className="w-3.5 h-3.5" fill={market.isLiked ? 'currentColor' : 'none'} />
-              <span className="font-mono font-medium">{market.likeCount}</span>
-            </button>
+        <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-2 mt-auto border-t border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
+            {formatVolume(market.volume)}
           </div>
-        )}
+          <div className="flex items-center gap-1" title="Liquidity">
+            <Droplet className="w-3.5 h-3.5" />
+            <span className="font-mono font-medium">{formatLiquidity(market.liquidity)}</span>
+          </div>
+          <div className="flex items-center gap-1" title="Traders">
+            <Users className="w-3.5 h-3.5" />
+            <span className="font-mono font-medium">{market.traderCount.toLocaleString()}</span>
+          </div>
+          <button
+            onClick={handleLike}
+            className={`flex items-center gap-1 cursor-pointer transition-colors ${
+              market.isLiked
+                ? 'text-rose-500'
+                : 'hover:text-rose-500'
+            }`}
+            title="Like"
+          >
+            <Heart className="w-3.5 h-3.5" fill={market.isLiked ? 'currentColor' : 'none'} />
+            <span className="font-mono font-medium">{market.likeCount}</span>
+          </button>
+        </div>
       </div>
+
+      {/* Trading overlay - covers entire card when active */}
+      {isTrading && (
+        <div className="absolute inset-0 bg-white dark:bg-slate-900 z-20 p-6 flex flex-col rounded-xl">
+          {renderTradingView()}
+        </div>
+      )}
     </div>
   )
 }
