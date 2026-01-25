@@ -86,7 +86,7 @@ function CategoricalOutcomes({
   }
 
   return (
-    <div className="relative group/outcomes">
+    <div className="relative group/outcomes flex-1 flex flex-col min-h-0">
       {/* Up scroll button */}
       {canScrollUp && (
         <button
@@ -101,7 +101,7 @@ function CategoricalOutcomes({
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className="flex flex-col gap-2 overflow-y-auto max-h-48 scrollbar-hide -mx-1 px-1 py-1"
+        className="flex flex-col gap-2 overflow-y-auto flex-1 scrollbar-hide -mx-1 px-1 py-1"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {outcomes.map((outcome) => (
@@ -422,19 +422,19 @@ export function MarketCard({
       </div>
 
       {/* Content */}
-      <div className="p-4 flex-1 flex flex-col">
+      <div className="p-4 flex-1 flex flex-col min-h-0">
         {/* Title */}
         <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2 min-h-[3rem]">
           {market.title}
         </h3>
 
-        {/* Trading Area - Fixed height */}
-        <div className="flex-1 flex flex-col justify-between mt-3">
+        {/* Trading Area - Flex to fill available space */}
+        <div className="flex-1 flex flex-col justify-between mt-3 min-h-0">
           {renderNormalView()}
         </div>
 
         {/* Metrics Footer */}
-        <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-2 mt-auto border-t border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-2 mt-auto border-t border-slate-200 dark:border-slate-700 flex-shrink-0">
           <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
             {formatVolume(market.volume)}
           </div>

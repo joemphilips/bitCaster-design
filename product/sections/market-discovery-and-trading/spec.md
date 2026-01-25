@@ -23,6 +23,9 @@ Core marketplace where users browse prediction markets through a single-select t
 - Market Card should not show tag information (tags are only for market detail page)
 - Each market card includes a 'like' button with count in the metrics footer
 - Market Card should not change size when user clicks Yes/No button to toggle trading mode
+- Trading view overlay must cover the entire card (not just the content area)
+- All market types (Yes/No, Categorical, 2D) must have the same fixed card size
+- Metrics footer must always be visible when not in trading view overlay mode
 - Infinite scroll loading
 
 ## Configuration
