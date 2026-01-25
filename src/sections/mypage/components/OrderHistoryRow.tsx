@@ -36,7 +36,7 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
   const statusColors = {
     completed: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
     pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
-    failed: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+    failed: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400'
   }
 
   return (
@@ -52,7 +52,7 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
             className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${
               isDeposit
                 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
-                : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                : 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400'
             }`}
           >
             {isDeposit ? (
@@ -84,10 +84,10 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
         {/* Right: Amount */}
         <div className="text-right sm:text-left">
           <p
-            className={`font-mono text-lg font-semibold ${
+            className={`font-mono text-lg font-bold ${
               isDeposit
                 ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-red-600 dark:text-red-400'
+                : 'text-rose-600 dark:text-rose-400'
             }`}
           >
             {isDeposit ? '+' : '-'}{formatSats(order.amountSats)} sats
@@ -120,7 +120,7 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
         {/* Failure reason */}
         {order.failureReason && (
           <div className="w-full">
-            <span className="text-red-500 dark:text-red-400">
+            <span className="text-rose-500 dark:text-rose-400">
               {order.failureReason}
             </span>
           </div>

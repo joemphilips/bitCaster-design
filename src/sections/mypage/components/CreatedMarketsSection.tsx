@@ -25,7 +25,7 @@ export function CreatedMarketsSection({
       defaultExpanded={false}
     >
       {sortedMarkets.length > 0 ? (
-        <div>
+        <div className="space-y-3 p-4">
           {sortedMarkets.map((market) => (
             <CreatedMarketRow
               key={market.id}

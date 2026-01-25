@@ -26,7 +26,7 @@ export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
         relative overflow-hidden rounded-xl p-4 transition-all duration-200
         ${isHighlighted
           ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/20 ring-1 ring-blue-400/30'
-          : 'bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800'
+          : 'border border-slate-200 bg-white shadow-sm hover:shadow-md dark:border-slate-700 dark:bg-slate-900'
         }
       `}
     >
@@ -52,7 +52,7 @@ export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
               ? 'text-white'
               : isPositive
                 ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-red-600 dark:text-red-400'
+                : 'text-rose-600 dark:text-rose-400'
           }`}>
             {isPositive ? '+' : ''}{formatSats(metric.amountSats)}
           </span>
@@ -68,7 +68,7 @@ export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
             ? 'text-blue-100'
             : isPositive
               ? 'text-emerald-600 dark:text-emerald-400'
-              : 'text-red-600 dark:text-red-400'
+              : 'text-rose-600 dark:text-rose-400'
         }`}>
           <span className="text-lg">
             {isPositive ? '↑' : '↓'}

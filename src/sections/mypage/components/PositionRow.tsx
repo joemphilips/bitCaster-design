@@ -25,104 +25,101 @@ export function PositionRow({ position, onView, onSell, onClaimPayout }: Positio
 
   return (
     <div
-      className={`group flex flex-col gap-4 border-b border-slate-100 p-4 transition-colors last:border-b-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/30 sm:flex-row sm:items-center ${
-        isClosed ? 'opacity-75' : ''
+      onClick={onView}
+      className={`group relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white transition-all hover:shadow-lg hover:scale-[1.01] dark:border-slate-700 dark:bg-slate-900 ${
+        isClosed ? 'opacity-80' : ''
       }`}
     >
-      {/* Market info */}
-      <div className="flex min-w-0 flex-1 cursor-pointer items-center gap-3" onClick={onView}>
+      <div className="flex">
         {/* Market image */}
-        <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-700">
-          <img
-            src={position.marketImageUrl}
-            alt=""
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none'
-            }}
+        <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700 sm:h-32 sm:w-32">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+            style={{ backgroundImage: `url(${position.marketImageUrl})` }}
           />
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
 
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-sm font-medium text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-            {position.marketTitle}
-          </h3>
-
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
-            {/* Side badge */}
+          {/* Side badge overlaid on image */}
+          <div className="absolute bottom-2 left-2">
             <span
-              className={`inline-flex items-center rounded px-1.5 py-0.5 font-medium uppercase ${
+              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold uppercase shadow-lg ${
                 position.side === 'yes'
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-                  : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-rose-500 text-white'
               }`}
             >
               {position.side}
             </span>
-
-            {/* Outcome label for categorical markets */}
-            {position.outcomeLabel && (
-              <span className="text-slate-500 dark:text-slate-400">
-                {position.outcomeLabel}
-              </span>
-            )}
-
-            {/* Shares */}
-            <span className="text-slate-500 dark:text-slate-400">
-              {position.shares} shares
-            </span>
-
-            {/* Status badge for closed */}
-            {isClosed && (
-              <span className="rounded bg-slate-200 px-1.5 py-0.5 font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
-                Closed
-              </span>
-            )}
           </div>
         </div>
-      </div>
 
-      {/* Value & P/L */}
-      <div className="flex items-center justify-between gap-4 sm:justify-end">
-        <div className="text-right">
-          <p className="font-mono text-sm font-semibold text-slate-900 dark:text-white">
-            {formatSats(position.currentValueSats)} sats
-          </p>
-          <p
-            className={`font-mono text-xs ${
-              isPositive
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-red-600 dark:text-red-400'
-            }`}
-          >
-            {isPositive ? '+' : ''}{formatSats(position.profitLossSats)} ({isPositive ? '+' : ''}{position.profitLossPercent.toFixed(1)}%)
-          </p>
+        {/* Content */}
+        <div className="flex flex-1 flex-col justify-between p-4">
+          <div>
+            <h3 className="line-clamp-2 text-sm font-bold text-slate-900 group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-blue-400 sm:text-base">
+              {position.marketTitle}
+            </h3>
+
+            <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              {/* Outcome label for categorical markets */}
+              {position.outcomeLabel && (
+                <span className="rounded bg-slate-100 px-2 py-0.5 font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  {position.outcomeLabel}
+                </span>
+              )}
+
+              <span className="font-mono">{position.shares} shares</span>
+
+              {isClosed && (
+                <span className="rounded bg-slate-200 px-2 py-0.5 font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+                  Closed
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Value & Action */}
+          <div className="mt-3 flex items-end justify-between">
+            <div>
+              <p className="font-mono text-lg font-bold text-slate-900 dark:text-white sm:text-xl">
+                {formatSats(position.currentValueSats)}
+                <span className="ml-1 text-sm font-normal text-slate-500 dark:text-slate-400">sats</span>
+              </p>
+              <p
+                className={`font-mono text-sm font-semibold ${
+                  isPositive
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-rose-600 dark:text-rose-400'
+                }`}
+              >
+                {isPositive ? '+' : ''}{formatSats(position.profitLossSats)} ({isPositive ? '+' : ''}{position.profitLossPercent.toFixed(1)}%)
+              </p>
+            </div>
+
+            {/* Action button */}
+            {!isClosed ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSell?.()
+                }}
+                className="rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-rose-700 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] dark:bg-rose-500 dark:hover:bg-rose-600"
+              >
+                Sell
+              </button>
+            ) : canClaimPayout ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onClaimPayout?.()
+                }}
+                className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-emerald-700 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] dark:bg-emerald-500 dark:hover:bg-emerald-600"
+              >
+                Claim
+              </button>
+            ) : null}
+          </div>
         </div>
-
-        {/* Action button */}
-        {!isClosed ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onSell?.()
-            }}
-            className="flex-shrink-0 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-amber-600 hover:shadow active:scale-95"
-          >
-            Sell
-          </button>
-        ) : canClaimPayout ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onClaimPayout?.()
-            }}
-            className="flex-shrink-0 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-600 hover:shadow active:scale-95"
-          >
-            Claim
-          </button>
-        ) : (
-          <div className="w-[72px]" /> // Spacer to maintain alignment
-        )}
       </div>
     </div>
   )

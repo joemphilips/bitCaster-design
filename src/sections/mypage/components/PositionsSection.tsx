@@ -66,7 +66,7 @@ export function PositionsSection({
       </div>
 
       {/* Position list */}
-      <div>
+      <div className="space-y-3 p-4">
         {filteredPositions.length > 0 ? (
           filteredPositions.map((position) => (
             <PositionRow
