@@ -1,0 +1,392 @@
+{
+  "_meta": {
+    "events": {
+      "MarketCreated": "User creates a new prediction market with question, outcomes, resolution date, fee structure, and parameters",
+      "MarketApproved": "Market passes quality controls and goes live for trading",
+      "MarketRejected": "Market fails quality controls with rejection reason",
+      "MarketResolved": "Outcome determined and market closed",
+      "MarketCancelled": "Market cancelled before resolution, funds returned to participants",
+      "LiquidityDeposited": "Creator deposits initial liquidity when creating market",
+      "Bought": "User buys shares, contributing to market volume",
+      "Sold": "User sells shares, contributing to market volume",
+      "CreatorFeeClaimed": "Market creator claims fee earnings from resolved market"
+    },
+    "currentState": {
+      "dashboardStats": "Aggregate metrics computed from MarketCreated, MarketApproved, MarketResolved, Bought, Sold, and CreatorFeeClaimed events",
+      "creatorMarkets": "Full market details derived from MarketCreated + status events (Approved/Rejected/Resolved/Cancelled) + trading activity",
+      "volumeChartData": "Time-series volume data aggregated from Bought and Sold events across all creator's markets",
+      "wizardDraft": "Transient state for 5-step market creation wizard, persisted locally until submission"
+    },
+    "eventFlows": [
+      "MarketCreated initiates a new market in pending status with LiquidityDeposited for initial funds",
+      "MarketApproved or MarketRejected follows MarketCreated after quality review",
+      "Once MarketApproved, Bought and Sold events accumulate volume and generate creator fees",
+      "MarketResolved closes the market and enables CreatorFeeClaimed",
+      "MarketCancelled can occur anytime before resolution, returning funds"
+    ]
+  },
+  "dashboardStats": {
+    "activeMarketsCount": 3,
+    "resolvedMarketsCount": 2,
+    "pendingMarketsCount": 1,
+    "rejectedMarketsCount": 1,
+    "cancelledMarketsCount": 1,
+    "totalVolumeSats": 1583100,
+    "totalFeesEarnedSats": 30512,
+    "totalFeesClaimedSats": 17842,
+    "totalFeesUnclaimedSats": 12670
+  },
+  "creatorMarkets": [
+    {
+      "id": "mkt-creator-001",
+      "title": "Will Bitcoin reach $150,000 before end of 2026?",
+      "description": "This market resolves YES if Bitcoin's price reaches or exceeds $150,000 USD on any major exchange (Coinbase, Binance, Kraken) before December 31, 2026 23:59:59 UTC.",
+      "imageUrl": "/images/markets/bitcoin-150k.jpg",
+      "type": "yesno",
+      "categoryTags": ["crypto", "finance"],
+      "status": "approved",
+      "currentOdds": {
+        "yes": 58.3,
+        "no": 41.7
+      },
+      "volume": 847500,
+      "liquidity": 250000,
+      "traderCount": 1234,
+      "createdDate": "2025-10-15T10:30:00Z",
+      "approvedDate": "2025-10-15T14:20:00Z",
+      "closingDate": "2026-12-31T23:59:59Z",
+      "creatorFeePercent": 2.0,
+      "feesEarnedSats": 16950,
+      "feesClaimedSats": 0,
+      "answerUrls": [
+        "https://www.coinbase.com/price/bitcoin",
+        "https://www.binance.com/en/price/bitcoin"
+      ]
+    },
+    {
+      "id": "mkt-creator-002",
+      "title": "Will OpenAI release GPT-5 in 2026?",
+      "description": "This market resolves YES if OpenAI publicly releases a model officially named 'GPT-5' to any audience (paid or free) before December 31, 2026.",
+      "imageUrl": "/images/markets/gpt5-release.jpg",
+      "type": "yesno",
+      "categoryTags": ["technology"],
+      "status": "approved",
+      "currentOdds": {
+        "yes": 72.1,
+        "no": 27.9
+      },
+      "volume": 423200,
+      "liquidity": 120000,
+      "traderCount": 567,
+      "createdDate": "2025-11-20T08:15:00Z",
+      "approvedDate": "2025-11-20T10:45:00Z",
+      "closingDate": "2026-12-31T23:59:59Z",
+      "creatorFeePercent": 1.5,
+      "feesEarnedSats": 6348,
+      "feesClaimedSats": 0,
+      "answerUrls": [
+        "https://openai.com/blog"
+      ]
+    },
+    {
+      "id": "mkt-creator-003",
+      "title": "Who will win the 2026 FIFA World Cup?",
+      "description": "This market resolves to the team that wins the 2026 FIFA World Cup final. The tournament is hosted by USA, Canada, and Mexico.",
+      "imageUrl": "/images/markets/world-cup-2026.jpg",
+      "type": "categorical",
+      "categoryTags": ["sports"],
+      "status": "resolved",
+      "outcomes": [
+        { "id": "brazil", "label": "Brazil", "odds": 22.5, "isWinner": false },
+        { "id": "france", "label": "France", "odds": 18.7, "isWinner": true },
+        { "id": "argentina", "label": "Argentina", "odds": 16.3, "isWinner": false },
+        { "id": "england", "label": "England", "odds": 14.2, "isWinner": false },
+        { "id": "germany", "label": "Germany", "odds": 12.8, "isWinner": false },
+        { "id": "other", "label": "Other", "odds": 15.5, "isWinner": false }
+      ],
+      "volume": 156400,
+      "liquidity": 80000,
+      "traderCount": 892,
+      "createdDate": "2025-06-10T14:00:00Z",
+      "approvedDate": "2025-06-10T16:30:00Z",
+      "closingDate": "2026-07-19T23:59:59Z",
+      "resolvedDate": "2026-07-19T23:30:00Z",
+      "winningOutcomeId": "france",
+      "creatorFeePercent": 2.0,
+      "feesEarnedSats": 3128,
+      "feesClaimedSats": 3128,
+      "answerUrls": [
+        "https://www.fifa.com/worldcup"
+      ]
+    },
+    {
+      "id": "mkt-creator-004",
+      "title": "Will 'Avatar 3' gross over $2 billion worldwide?",
+      "description": "This market resolves YES if Avatar 3 grosses over $2 billion USD worldwide at the box office according to Box Office Mojo.",
+      "imageUrl": "/images/markets/avatar3-box-office.jpg",
+      "type": "yesno",
+      "categoryTags": ["entertainment"],
+      "status": "resolved",
+      "currentOdds": {
+        "yes": 100,
+        "no": 0
+      },
+      "volume": 98700,
+      "liquidity": 45000,
+      "traderCount": 234,
+      "createdDate": "2025-08-20T11:00:00Z",
+      "approvedDate": "2025-08-20T12:30:00Z",
+      "closingDate": "2026-12-31T23:59:59Z",
+      "resolvedDate": "2026-12-28T18:00:00Z",
+      "winningOutcomeId": "yes",
+      "creatorFeePercent": 1.8,
+      "feesEarnedSats": 1776,
+      "feesClaimedSats": 0,
+      "answerUrls": [
+        "https://www.boxofficemojo.com"
+      ]
+    },
+    {
+      "id": "mkt-creator-005",
+      "title": "Will Ethereum staking yield exceed 5% APR in Q2 2026?",
+      "description": "This market resolves YES if the average Ethereum staking yield (as reported by major staking providers) exceeds 5% APR during Q2 2026.",
+      "imageUrl": "/images/markets/eth-staking-yield.jpg",
+      "type": "yesno",
+      "categoryTags": ["crypto"],
+      "status": "pending",
+      "currentOdds": {
+        "yes": 50,
+        "no": 50
+      },
+      "volume": 0,
+      "liquidity": 50000,
+      "traderCount": 0,
+      "createdDate": "2026-01-20T09:45:00Z",
+      "closingDate": "2026-06-30T23:59:59Z",
+      "creatorFeePercent": 2.0,
+      "feesEarnedSats": 0,
+      "feesClaimedSats": 0,
+      "answerUrls": [
+        "https://www.stakingrewards.com/earn/ethereum-2-0"
+      ]
+    },
+    {
+      "id": "mkt-creator-006",
+      "title": "Something will happen in the future regarding blockchain technology and its adoption across various industries and governments worldwide including potential regulatory frameworks",
+      "description": "This market is intentionally vague to test rejection handling.",
+      "imageUrl": "/images/markets/vague-blockchain.jpg",
+      "type": "yesno",
+      "categoryTags": ["crypto", "technology"],
+      "status": "rejected",
+      "currentOdds": {
+        "yes": 50,
+        "no": 50
+      },
+      "volume": 0,
+      "liquidity": 0,
+      "traderCount": 0,
+      "createdDate": "2026-01-08T16:00:00Z",
+      "rejectedDate": "2026-01-08T17:30:00Z",
+      "rejectionReason": "Market question is too vague and lacks clear, objective resolution criteria. Please specify a concrete, measurable outcome with verifiable sources.",
+      "closingDate": "2026-12-31T23:59:59Z",
+      "creatorFeePercent": 2.5,
+      "feesEarnedSats": 0,
+      "feesClaimedSats": 0,
+      "answerUrls": []
+    },
+    {
+      "id": "mkt-creator-007",
+      "title": "Will the Fed cut rates in January 2026?",
+      "description": "This market resolves YES if the Federal Reserve announces a rate cut at their January 2026 FOMC meeting.",
+      "imageUrl": "/images/markets/fed-rate-cut.jpg",
+      "type": "yesno",
+      "categoryTags": ["finance"],
+      "status": "cancelled",
+      "currentOdds": {
+        "yes": 35.2,
+        "no": 64.8
+      },
+      "volume": 12300,
+      "liquidity": 25000,
+      "traderCount": 45,
+      "createdDate": "2025-12-01T10:00:00Z",
+      "approvedDate": "2025-12-01T11:15:00Z",
+      "cancelledDate": "2025-12-15T14:30:00Z",
+      "cancellationReason": "Market creator requested cancellation due to duplicate market already existing",
+      "closingDate": "2026-01-31T23:59:59Z",
+      "creatorFeePercent": 1.5,
+      "feesEarnedSats": 184,
+      "feesClaimedSats": 0,
+      "refundedSats": 12300,
+      "answerUrls": [
+        "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+      ]
+    },
+    {
+      "id": "mkt-creator-008",
+      "title": "Number of confirmed exoplanets by end of 2026",
+      "description": "This market resolves based on the number of confirmed exoplanets listed in the NASA Exoplanet Archive as of December 31, 2026.",
+      "imageUrl": "/images/markets/exoplanets-count.jpg",
+      "type": "categorical",
+      "categoryTags": ["science"],
+      "status": "approved",
+      "outcomes": [
+        { "id": "under-5500", "label": "Under 5,500", "odds": 8.2 },
+        { "id": "5500-5750", "label": "5,500 - 5,750", "odds": 24.5 },
+        { "id": "5750-6000", "label": "5,750 - 6,000", "odds": 35.8 },
+        { "id": "6000-6250", "label": "6,000 - 6,250", "odds": 22.3 },
+        { "id": "over-6250", "label": "Over 6,250", "odds": 9.2 }
+      ],
+      "volume": 45000,
+      "liquidity": 30000,
+      "traderCount": 78,
+      "createdDate": "2026-01-10T08:30:00Z",
+      "approvedDate": "2026-01-10T09:45:00Z",
+      "closingDate": "2026-12-31T23:59:59Z",
+      "creatorFeePercent": 2.0,
+      "feesEarnedSats": 900,
+      "feesClaimedSats": 0,
+      "answerUrls": [
+        "https://exoplanetarchive.ipac.caltech.edu/"
+      ]
+    }
+  ],
+  "volumeChartData": {
+    "daily": [
+      { "date": "2025-12-27", "volumeSats": 12500, "feesSats": 250 },
+      { "date": "2025-12-28", "volumeSats": 18700, "feesSats": 374 },
+      { "date": "2025-12-29", "volumeSats": 8900, "feesSats": 178 },
+      { "date": "2025-12-30", "volumeSats": 24300, "feesSats": 486 },
+      { "date": "2025-12-31", "volumeSats": 45600, "feesSats": 912 },
+      { "date": "2026-01-01", "volumeSats": 31200, "feesSats": 624 },
+      { "date": "2026-01-02", "volumeSats": 28900, "feesSats": 578 },
+      { "date": "2026-01-03", "volumeSats": 19400, "feesSats": 388 },
+      { "date": "2026-01-04", "volumeSats": 15600, "feesSats": 312 },
+      { "date": "2026-01-05", "volumeSats": 22800, "feesSats": 456 },
+      { "date": "2026-01-06", "volumeSats": 34500, "feesSats": 690 },
+      { "date": "2026-01-07", "volumeSats": 41200, "feesSats": 824 },
+      { "date": "2026-01-08", "volumeSats": 38700, "feesSats": 774 },
+      { "date": "2026-01-09", "volumeSats": 29300, "feesSats": 586 },
+      { "date": "2026-01-10", "volumeSats": 18900, "feesSats": 378 },
+      { "date": "2026-01-11", "volumeSats": 12400, "feesSats": 248 },
+      { "date": "2026-01-12", "volumeSats": 16700, "feesSats": 334 },
+      { "date": "2026-01-13", "volumeSats": 23400, "feesSats": 468 },
+      { "date": "2026-01-14", "volumeSats": 31800, "feesSats": 636 },
+      { "date": "2026-01-15", "volumeSats": 45200, "feesSats": 904 },
+      { "date": "2026-01-16", "volumeSats": 52100, "feesSats": 1042 },
+      { "date": "2026-01-17", "volumeSats": 48700, "feesSats": 974 },
+      { "date": "2026-01-18", "volumeSats": 39800, "feesSats": 796 },
+      { "date": "2026-01-19", "volumeSats": 28500, "feesSats": 570 },
+      { "date": "2026-01-20", "volumeSats": 21300, "feesSats": 426 },
+      { "date": "2026-01-21", "volumeSats": 35600, "feesSats": 712 },
+      { "date": "2026-01-22", "volumeSats": 42800, "feesSats": 856 },
+      { "date": "2026-01-23", "volumeSats": 56200, "feesSats": 1124 },
+      { "date": "2026-01-24", "volumeSats": 61500, "feesSats": 1230 },
+      { "date": "2026-01-25", "volumeSats": 47800, "feesSats": 956 }
+    ],
+    "weekly": [
+      { "weekStart": "2025-10-27", "volumeSats": 78500, "feesSats": 1570 },
+      { "weekStart": "2025-11-03", "volumeSats": 92300, "feesSats": 1846 },
+      { "weekStart": "2025-11-10", "volumeSats": 105600, "feesSats": 2112 },
+      { "weekStart": "2025-11-17", "volumeSats": 134200, "feesSats": 2684 },
+      { "weekStart": "2025-11-24", "volumeSats": 98700, "feesSats": 1974 },
+      { "weekStart": "2025-12-01", "volumeSats": 112400, "feesSats": 2248 },
+      { "weekStart": "2025-12-08", "volumeSats": 145800, "feesSats": 2916 },
+      { "weekStart": "2025-12-15", "volumeSats": 167300, "feesSats": 3346 },
+      { "weekStart": "2025-12-22", "volumeSats": 156900, "feesSats": 3138 },
+      { "weekStart": "2025-12-29", "volumeSats": 189500, "feesSats": 3790 },
+      { "weekStart": "2026-01-05", "volumeSats": 234100, "feesSats": 4682 },
+      { "weekStart": "2026-01-12", "volumeSats": 278400, "feesSats": 5568 }
+    ],
+    "monthly": [
+      { "month": "2025-08", "volumeSats": 156200, "feesSats": 3124 },
+      { "month": "2025-09", "volumeSats": 234500, "feesSats": 4690 },
+      { "month": "2025-10", "volumeSats": 312800, "feesSats": 6256 },
+      { "month": "2025-11", "volumeSats": 389400, "feesSats": 7788 },
+      { "month": "2025-12", "volumeSats": 467200, "feesSats": 9344 },
+      { "month": "2026-01", "volumeSats": 523000, "feesSats": 10460 }
+    ]
+  },
+  "volumeByMarket": [
+    {
+      "marketId": "mkt-creator-001",
+      "marketTitle": "Will Bitcoin reach $150,000 before end of 2026?",
+      "daily": [
+        { "date": "2026-01-20", "volumeSats": 12300 },
+        { "date": "2026-01-21", "volumeSats": 18500 },
+        { "date": "2026-01-22", "volumeSats": 24200 },
+        { "date": "2026-01-23", "volumeSats": 31800 },
+        { "date": "2026-01-24", "volumeSats": 28700 },
+        { "date": "2026-01-25", "volumeSats": 22400 }
+      ]
+    },
+    {
+      "marketId": "mkt-creator-002",
+      "marketTitle": "Will OpenAI release GPT-5 in 2026?",
+      "daily": [
+        { "date": "2026-01-20", "volumeSats": 5600 },
+        { "date": "2026-01-21", "volumeSats": 8900 },
+        { "date": "2026-01-22", "volumeSats": 12400 },
+        { "date": "2026-01-23", "volumeSats": 15200 },
+        { "date": "2026-01-24", "volumeSats": 18600 },
+        { "date": "2026-01-25", "volumeSats": 14800 }
+      ]
+    },
+    {
+      "marketId": "mkt-creator-008",
+      "marketTitle": "Number of confirmed exoplanets by end of 2026",
+      "daily": [
+        { "date": "2026-01-20", "volumeSats": 3400 },
+        { "date": "2026-01-21", "volumeSats": 4200 },
+        { "date": "2026-01-22", "volumeSats": 6200 },
+        { "date": "2026-01-23", "volumeSats": 9200 },
+        { "date": "2026-01-24", "volumeSats": 14200 },
+        { "date": "2026-01-25", "volumeSats": 10600 }
+      ]
+    }
+  ],
+  "wizardDraft": {
+    "currentStep": 3,
+    "lastModified": "2026-01-24T15:30:00Z",
+    "step1": {
+      "imageFile": "/tmp/draft-market-thumbnail.jpg",
+      "title": "Will SpaceX complete Starship orbital refueling demo in 2026?",
+      "categoryTags": ["technology", "science"],
+      "closingDate": "2026-12-31T23:59:59Z",
+      "answerUrls": [
+        "https://www.spacex.com/updates",
+        "https://www.nasa.gov/artemis"
+      ]
+    },
+    "step2": {
+      "outcomeType": "yesno",
+      "outcomes": null
+    },
+    "step3": {
+      "liquiditySats": 100000,
+      "buyFeePercent": 1.0,
+      "sellFeePercent": 1.0,
+      "winFeePercent": 2.0
+    },
+    "step4": null,
+    "step5": null
+  },
+  "categoryTags": [
+    { "id": "sports", "label": "Sports" },
+    { "id": "politics", "label": "Politics" },
+    { "id": "technology", "label": "Technology" },
+    { "id": "entertainment", "label": "Entertainment" },
+    { "id": "crypto", "label": "Crypto" },
+    { "id": "science", "label": "Science" },
+    { "id": "finance", "label": "Finance" }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "pageSize": 10,
+    "totalItems": 8,
+    "totalPages": 1
+  },
+  "activeTab": "overview",
+  "analyticsTimeScale": "daily",
+  "analyticsChartMode": "aggregate"
+}
