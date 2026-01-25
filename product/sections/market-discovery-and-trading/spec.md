@@ -18,6 +18,7 @@ Core marketplace where users browse prediction markets through a single-select t
 - Three filter controls: Market Type dropdown, Volume range, Closing date slider
 - Market cards showing: image, title/question, current odds, action buttons, and metrics footer
 - Volume displayed with ₿ symbol (e.g., "₿0.05")
+- Yes/No market cards: display order must be title/question → chance (odds shown inline, e.g., "Chance 67.5%") → Buy Yes/Buy No buttons
 - Categorical market cards: vertical scrollable list of choices, each with its own Yes/No buttons
 - Inline card transformation for quick trading with × cancel, predicted odds, amount picker, BUY button
 - Market Card should not show tag information (tags are only for market detail page)

@@ -254,14 +254,17 @@ export function MarketCard({
     if (market.type === 'yesno') {
       const yesNoMarket = market as YesNoMarket
       return (
-        <>
-          {/* Odds Display */}
-          <div className="absolute top-4 right-4 bg-blue-600/90 dark:bg-blue-500/90 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg">
-            {yesNoMarket.currentOdds.yes.toFixed(1)}%
+        <div className="flex-1 flex flex-col justify-end">
+          {/* Chance (Odds) - displayed between title and action buttons */}
+          <div className="flex items-center justify-center gap-2 py-2 flex-1">
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Chance</span>
+            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {yesNoMarket.currentOdds.yes.toFixed(1)}%
+            </span>
           </div>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 flex-shrink-0">
             <button
               onClick={(e) => handleYesNoClick(e, 'yes')}
               className="py-2.5 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white rounded-lg font-semibold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
@@ -275,7 +278,7 @@ export function MarketCard({
               Buy NO
             </button>
           </div>
-        </>
+        </div>
       )
     } else if (market.type === 'categorical') {
       const categoricalMarket = market as CategoricalMarket
