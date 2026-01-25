@@ -31,8 +31,8 @@ export default function ShellPreview() {
           <ul className="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2 mb-6">
             <li>Trading-graph icon with Markets navigation</li>
             <li>Integrated search box for market discovery</li>
-            <li>Primary "Create" button for quick market creation</li>
-            <li>User menu with MyPage and Logout options</li>
+            <li>Notification bell icon for alerts</li>
+            <li>User menu with CreatorPage, MyPage, and Logout options</li>
             <li>Static brand motto background image</li>
             <li>Single navigation bar across all viewports</li>
           </ul>

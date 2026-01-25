@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { User, LogOut, ChevronDown, Wallet } from 'lucide-react'
+import { User, LogOut, ChevronDown, Wallet, Sparkles } from 'lucide-react'
 
 interface UserMenuProps {
   user: { name: string; avatarUrl?: string; balance?: number }
   onLogout?: () => void
   onNavigate?: (href: string) => void
+  onCreateClick?: () => void
 }
 
-export function UserMenu({ user, onLogout, onNavigate }: UserMenuProps) {
+export function UserMenu({ user, onLogout, onNavigate, onCreateClick }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const formatBalance = (sats?: number) => {
@@ -55,6 +56,19 @@ export function UserMenu({ user, onLogout, onNavigate }: UserMenuProps) {
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 z-20 overflow-hidden">
+            {onCreateClick && (
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  onCreateClick()
+                }}
+                className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>CreatorPage</span>
+              </button>
+            )}
+            <div className="border-t border-slate-200 dark:border-slate-700" />
             <button
               onClick={() => {
                 setIsOpen(false)

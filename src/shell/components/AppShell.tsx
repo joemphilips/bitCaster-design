@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TrendingUp, Search, Plus, User } from 'lucide-react'
+import { TrendingUp, Search, User, Bell, Sparkles } from 'lucide-react'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
 
@@ -56,15 +56,12 @@ export function AppShell({
               onSearchChange={onSearchChange}
             />
 
-            {/* Create Button */}
-            {onCreateClick && (
-              <button
-                onClick={onCreateClick}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
-              >
-                Create
-              </button>
-            )}
+            {/* Notification Bell */}
+            <button
+              className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <Bell className="w-5 h-5" />
+            </button>
 
             {/* User Menu */}
             {user && (
@@ -72,6 +69,7 @@ export function AppShell({
                 user={user}
                 onLogout={onLogout}
                 onNavigate={onNavigate}
+                onCreateClick={onCreateClick}
               />
             )}
           </div>
@@ -115,13 +113,13 @@ export function AppShell({
             <span className="text-xs font-medium">Search</span>
           </button>
 
-          {/* Create */}
+          {/* Creator */}
           <button
             onClick={onCreateClick}
             className="flex flex-col items-center justify-center gap-1 text-blue-600 dark:text-blue-400 transition-colors"
           >
-            <Plus className="w-5 h-5" />
-            <span className="text-xs font-medium">Create</span>
+            <Sparkles className="w-5 h-5" />
+            <span className="text-xs font-medium">Creator</span>
           </button>
 
           {/* User */}

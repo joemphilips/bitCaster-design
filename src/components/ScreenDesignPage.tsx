@@ -282,6 +282,7 @@ export function ScreenDesignFullscreen() {
               user={defaultUser}
               onNavigate={() => {}}
               onLogout={() => {}}
+              onCreateClick={() => console.log('Create clicked')}
             >
               {children}
             </ShellComponent>

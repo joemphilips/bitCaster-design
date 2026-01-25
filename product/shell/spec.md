@@ -5,9 +5,11 @@ The bitCaster shell uses a streamlined top navigation pattern optimized for a Bi
 
 ## Navigation Structure
 - **Markets** (with trading-graph icon) → Market Discovery & Trading (default home view)
-- **Search Box** → Search markets functionality
-- **Create Button** (primary button) → Market Creation & Management
-- **User Menu** → Contains MyPage and Logout
+
+## Header Elements (Non-Navigation)
+Search Box: Inline search input for market discovery
+Notification Bell: Bell icon for user notifications (left of user menu)
+User Menu: Dropdown with user avatar, name, balance, and menu items including CreatorPage (Sparkles icon), MyPage, and Logout
 
 ## User Menu
 Located in the top right corner of the header. Contains:
@@ -15,6 +17,7 @@ Located in the top right corner of the header. Contains:
 - User name
 - Balance display (in sats)
 - Dropdown menu with:
+  - CreatorPage → Market creation tools (Sparkles icon)
   - MyPage → Personal dashboard with Bitcoin wallet
   - Logout option
 
@@ -23,7 +26,7 @@ Single top horizontal navigation bar with:
 - Logo positioned on the left
 - Markets navigation link (with trading-graph icon)
 - Search box in center area
-- Create button (primary styled) before user menu
+- Notification bell icon (left of user menu)
 - User menu in the far right corner
 - Static brand motto image as page background
 
@@ -38,7 +41,7 @@ The motto "FINANCE WANTS TO BE FREE | FAKE MUST BE EXPENSIVE" appears as a stati
 
 ### Desktop
 - Horizontal navigation bar at the top
-- All elements visible: logo, Markets link with icon, search box, Create button, user menu
+- All elements visible: logo, Markets link with icon, search box, notification bell, user menu
 - Search box at comfortable width
 - Background motto image at full scale
 
@@ -53,7 +56,7 @@ The motto "FINANCE WANTS TO BE FREE | FAKE MUST BE EXPENSIVE" appears as a stati
 - Bottom navigation bar with 4 items:
   1. **Markets** - Trading-graph icon with label
   2. **Search** - Search icon with label (opens search interface)
-  3. **Create** - Plus icon with label (primary action)
+  3. **Creator** - Sparkles icon with label (opens creator page)
   4. **User** - User avatar/icon with label (opens user menu)
 - Bottom bar fixed at bottom of viewport for easy thumb access
 - All primary navigation accessible from bottom bar
