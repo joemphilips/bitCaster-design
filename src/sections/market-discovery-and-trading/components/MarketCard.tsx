@@ -186,17 +186,53 @@ function TwoDimensionalYesNoGrid({
     { base: 'no' as const, secondary: 'no' as const, label: 'No/No', odds: market.compositeOdds.noNo },
   ]
 
+  const [hoveredCell, setHoveredCell] = useState<string | null>(null)
+
+  // Get cell styling based on outcome combination
+  const getCellStyle = (base: 'yes' | 'no', secondary: 'yes' | 'no', isHovered: boolean) => {
+    const intensity = isHovered ? 0.35 : 0.2
+
+    // Yes/Yes: solid green
+    if (base === 'yes' && secondary === 'yes') {
+      return {
+        className: 'bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/40',
+        style: {},
+      }
+    }
+    // No/No: solid red
+    if (base === 'no' && secondary === 'no') {
+      return {
+        className: 'bg-rose-500/15 hover:bg-rose-500/25 border-rose-500/40',
+        style: {},
+      }
+    }
+    // Yes/No: diagonal green/red (green top-left, red bottom-right)
+    if (base === 'yes' && secondary === 'no') {
+      return {
+        className: 'border-slate-300 dark:border-slate-600',
+        style: {
+          background: `linear-gradient(135deg, rgba(16, 185, 129, ${intensity}) 50%, rgba(244, 63, 94, ${intensity}) 50%)`,
+        },
+      }
+    }
+    // No/Yes: diagonal red/green (red top-left, green bottom-right)
+    if (base === 'no' && secondary === 'yes') {
+      return {
+        className: 'border-slate-300 dark:border-slate-600',
+        style: {
+          background: `linear-gradient(135deg, rgba(244, 63, 94, ${intensity}) 50%, rgba(16, 185, 129, ${intensity}) 50%)`,
+        },
+      }
+    }
+    return { className: '', style: {} }
+  }
+
   return (
     <div className="flex-1 flex flex-col">
       <div className="grid grid-cols-2 gap-1.5 flex-1">
         {cells.map((cell) => {
-          const isGreen = cell.base === 'yes' || cell.secondary === 'yes'
-          const isRed = cell.base === 'no' && cell.secondary === 'no'
-          const bgColor = isRed
-            ? 'bg-rose-500/10 hover:bg-rose-500/20 border-rose-500/30'
-            : isGreen
-              ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30'
-              : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-600'
+          const isHovered = hoveredCell === cell.label
+          const cellStyle = getCellStyle(cell.base, cell.secondary, isHovered)
 
           return (
             <button
@@ -205,7 +241,10 @@ function TwoDimensionalYesNoGrid({
                 e.stopPropagation()
                 onCellClick(cell.base, cell.secondary)
               }}
-              className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-all hover:scale-[1.02] active:scale-[0.98] ${bgColor}`}
+              onMouseEnter={() => setHoveredCell(cell.label)}
+              onMouseLeave={() => setHoveredCell(null)}
+              className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-all hover:scale-[1.02] active:scale-[0.98] ${cellStyle.className}`}
+              style={cellStyle.style}
             >
               <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400">
                 {cell.label}

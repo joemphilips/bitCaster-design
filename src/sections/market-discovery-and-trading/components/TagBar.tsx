@@ -1,4 +1,5 @@
-import { SlidersHorizontal } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { MetaTag, CategoryTag } from '@/../product/sections/market-discovery-and-trading/types'
 
 interface TagBarProps {
@@ -20,9 +21,65 @@ export function TagBar({
   onTagSelect,
   onToggleFilters,
 }: TagBarProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+      setCanScrollLeft(scrollLeft > 2)
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 2)
+    }
+  }
+
+  useEffect(() => {
+    checkScroll()
+    const resizeObserver = new ResizeObserver(checkScroll)
+    if (scrollRef.current) {
+      resizeObserver.observe(scrollRef.current)
+    }
+    return () => resizeObserver.disconnect()
+  }, [metaTags, categoryTags])
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 200
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      })
+    }
+  }
+
   return (
-    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md overflow-x-auto">
-      <div className="flex items-center gap-2 min-w-max px-4 sm:px-6 lg:px-8 py-3">
+    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md relative">
+      {/* Left scroll button */}
+      {canScrollLeft && (
+        <button
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700 ml-1"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      )}
+
+      {/* Right scroll button */}
+      {canScrollRight && (
+        <button
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700 mr-1"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        onScroll={checkScroll}
+        className="flex items-center gap-2 px-4 sm:px-6 lg:px-8 py-3 overflow-x-auto scrollbar-hide"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
         {/* Meta Tags */}
         {metaTags.map((tag) => {
           const isSelected = selectedTag === tag.id
