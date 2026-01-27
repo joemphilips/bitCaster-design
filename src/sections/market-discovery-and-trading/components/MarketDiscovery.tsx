@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { TagBar } from './TagBar'
 import { FilterControls } from './FilterControls'
 import { MarketCard } from './MarketCard'
-import type { MarketDiscoveryProps, MarketType, VolumeRange } from '@/../product/sections/market-discovery-and-trading/types'
+import type { MarketDiscoveryProps, MarketType, VolumeRange, Market } from '@/../product/sections/market-discovery-and-trading/types'
 
 export function MarketDiscovery({
   metaTags,
@@ -21,12 +21,39 @@ export function MarketDiscovery({
   onBuyOutcomeNo,
   onViewMarket,
   onLoadMore,
+  onBuy2DYesNoCombo,
+  onBuy2DCategoricalCombo,
+  onViewSecondaryMarket,
 }: MarketDiscoveryProps) {
   const observerTarget = useRef<HTMLDivElement>(null)
   const [filtersVisible, setFiltersVisible] = useState(false)
   const [selectedMarketTypes, setSelectedMarketTypes] = useState<MarketType[]>([])
   const [volumeRange, setVolumeRange] = useState<VolumeRange>({})
   const [closingInDays, setClosingInDays] = useState<number | undefined>(undefined)
+
+  // Create a market lookup map for resolving secondary market references
+  const marketMap = useMemo(() => {
+    const map = new Map<string, Market>()
+    markets.forEach((m) => map.set(m.id, m))
+    return map
+  }, [markets])
+
+  // Helper to get secondary market infos for a market
+  const getSecondaryMarketInfos = (market: Market) => {
+    if (!market.secondaryMarkets || market.secondaryMarkets.length === 0) {
+      return undefined
+    }
+    return market.secondaryMarkets
+      .map((id) => {
+        const secondaryMarket = marketMap.get(id)
+        if (!secondaryMarket) return null
+        return {
+          id: secondaryMarket.id,
+          title: secondaryMarket.title,
+        }
+      })
+      .filter((info): info is { id: string; title: string } => info !== null)
+  }
 
   // Calculate active filter count
   const activeFilterCount = [
@@ -108,16 +135,20 @@ export function MarketDiscovery({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
             {markets.map((market) => (
               <MarketCard
                 key={market.id}
                 market={market}
+                secondaryMarketInfos={getSecondaryMarketInfos(market)}
                 onBuyYes={onBuyYes}
                 onBuyNo={onBuyNo}
                 onBuyOutcomeYes={onBuyOutcomeYes}
                 onBuyOutcomeNo={onBuyOutcomeNo}
+                onBuy2DYesNoCombo={onBuy2DYesNoCombo}
+                onBuy2DCategoricalCombo={onBuy2DCategoricalCombo}
                 onViewMarket={onViewMarket}
+                onViewSecondaryMarket={onViewSecondaryMarket}
               />
             ))}
           </div>

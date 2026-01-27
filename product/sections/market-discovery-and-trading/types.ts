@@ -32,16 +32,17 @@ export interface Outcome {
   odds: number
 }
 
-export interface Dimension {
-  label: string
-  min: number
-  max: number
-  currentEstimate: number
+// Composite odds for Yes/No + Yes/No 2D markets
+export interface YesNoCompositeOdds {
+  yesYes: number
+  yesNo: number
+  noYes: number
+  noNo: number
 }
 
-export interface TwoDimensionalDimensions {
-  x: Dimension
-  y: Dimension
+// Composite odds for Categorical + Yes/No 2D markets
+export interface CategoricalYesNoCompositeOdds {
+  [outcomeId: string]: { yes: number; no: number }
 }
 
 // Base market properties shared by all market types
@@ -60,6 +61,8 @@ interface BaseMarket {
   creatorFeePercent: number
   likeCount: number
   isLiked: boolean
+  baseMarket: string              // Default: "sats", or market ID for 2D markets
+  secondaryMarkets?: string[]     // IDs of markets using this as base
 }
 
 // Yes/No market type
@@ -74,10 +77,24 @@ export interface CategoricalMarket extends BaseMarket {
   outcomes: Outcome[]
 }
 
-// Two-dimensional market type
+// Two-dimensional market type (composite market referencing another market)
 export interface TwoDimensionalMarket extends BaseMarket {
   type: 'twodimensional'
-  dimensions: TwoDimensionalDimensions
+  baseMarketId: string                          // ID of the market this is based on
+  baseMarketTitle: string                       // Title of the base market for display
+  baseMarketType: 'yesno' | 'categorical'       // Type of the base market
+  secondaryType: 'yesno' | 'categorical'        // Type of this secondary market's outcomes
+  secondaryQuestion: string                     // The secondary question (displayed with base)
+
+  // For Yes/No + Yes/No combinations
+  compositeOdds?: YesNoCompositeOdds
+
+  // For Categorical + Yes/No combinations
+  categoricalCompositeOdds?: CategoricalYesNoCompositeOdds
+  baseOutcomes?: Outcome[]                      // Outcomes from base market (for categorical)
+
+  // For Categorical secondary
+  secondaryOutcomes?: Outcome[]                 // Outcomes if secondary is categorical
 }
 
 // Union type for all market types
@@ -166,4 +183,23 @@ export interface MarketDiscoveryProps {
 
   /** Called when user scrolls to bottom and more markets should be loaded */
   onLoadMore?: () => void
+
+  /** Called when user buys a 2D Yes/No combo (e.g., Yes/Yes, Yes/No, etc.) */
+  onBuy2DYesNoCombo?: (
+    marketId: string,
+    baseOutcome: 'yes' | 'no',
+    secondaryOutcome: 'yes' | 'no',
+    amount: number
+  ) => void
+
+  /** Called when user buys a 2D categorical combo (categorical base + Yes/No secondary) */
+  onBuy2DCategoricalCombo?: (
+    marketId: string,
+    baseOutcomeId: string,
+    secondaryOutcome: 'yes' | 'no',
+    amount: number
+  ) => void
+
+  /** Called when user clicks on a secondary market from expanded list */
+  onViewSecondaryMarket?: (baseMarketId: string, secondaryMarketId: string) => void
 }
