@@ -629,17 +629,7 @@ export function MarketCard({
         )
       }
 
-      // Categorical + Yes/No: Grid layout
-      if (twoDMarket.baseMarketType === 'categorical' && twoDMarket.secondaryType === 'yesno') {
-        return (
-          <TwoDimensionalCategoricalGrid
-            market={twoDMarket}
-            onCellClick={handle2DCategoricalClick}
-          />
-        )
-      }
-
-      // Categorical + Categorical or Yes/No + Categorical: Just show Buy button
+      // All other 2D markets (Categorical + Yes/No, Categorical + Categorical, etc.): Show Buy button
       return (
         <div className="flex-1 flex flex-col justify-center">
           <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 text-center">
