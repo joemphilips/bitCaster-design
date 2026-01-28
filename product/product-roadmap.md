@@ -10,3 +10,6 @@ Tools for users to create new prediction markets, configure parameters, set fees
 
 ### 3. MyPage
 Personal dashboard with Bitcoin wallet, deposits/withdrawals in sats, transaction history, and balance management.
+
+### 4. Market Detail
+Detailed view of a single prediction market, showing comprehensive market information, trading interface, order book, price charts, market activity, and related markets.

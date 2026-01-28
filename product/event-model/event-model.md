@@ -47,6 +47,12 @@ Winner claims their payout from a resolved market. Contains market identifier, u
 ### CreatorFeeClaimed
 Market creator claims their fee earnings from a resolved market. Contains market identifier and fee amount in sats.
 
+### MarketLiked
+User likes a market to show interest or bookmark it. Contains market identifier and user identifier.
+
+### CommentPosted
+User posts a comment on a market. Contains market identifier, user identifier, and comment content.
+
 ## Event Flows
 
 - When **MarketCreated** occurs, it must go through **MarketApproved** or **MarketRejected** before trading begins
@@ -56,3 +62,4 @@ Market creator claims their fee earnings from a resolved market. Contains market
 - When **MarketResolved** occurs, it enables **PayoutClaimed** and **CreatorFeeClaimed** events
 - **WithdrawalRequested** leads to **WithdrawalCompleted**
 - **DepositReceived** increases user's available balance for trading and withdrawals
+- **MarketLiked** and **CommentPosted** can occur on any approved market (after **MarketApproved**)
