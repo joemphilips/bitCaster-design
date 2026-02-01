@@ -104,8 +104,6 @@ export interface Comment {
   isLiked: boolean
 }
 
-export type ActivityTab = 'trades' | 'comments'
-
 // =============================================================================
 // Related Market Types
 // =============================================================================
@@ -210,9 +208,6 @@ export interface MarketDetailProps {
   /** Current chart type (price or volume) */
   chartType: ChartType
 
-  /** Current activity tab */
-  activityTab: ActivityTab
-
   /** Currently selected trade (null if none) */
   tradeSelection: TradeSelection | null
 
@@ -227,9 +222,6 @@ export interface MarketDetailProps {
 
   /** Called when user toggles chart type */
   onChartTypeChange?: (type: ChartType) => void
-
-  /** Called when user switches activity tab */
-  onActivityTabChange?: (tab: ActivityTab) => void
 
   /** Called when user selects an outcome to trade */
   onTradeSelect?: (selection: TradeSelection) => void
@@ -269,9 +261,6 @@ export interface MarketDetailProps {
 
   /** Called when user clicks back to base market (2D markets only) */
   onBaseMarketClick?: (marketId: string) => void
-
-  /** Called when user selects outcome for order book view (categorical) */
-  onOrderBookOutcomeChange?: (outcomeId: string) => void
 
   /** Called when user selects cell for chart view (2D markets) */
   onChartCellChange?: (cellId: string) => void

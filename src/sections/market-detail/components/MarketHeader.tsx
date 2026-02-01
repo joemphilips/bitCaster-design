@@ -1,4 +1,4 @@
-import { Heart, Share2, Clock } from 'lucide-react'
+import { Heart, Share2, Clock, Droplet, Users } from 'lucide-react'
 import type { MarketDetail, MarketCreator } from '@/../product/sections/market-detail/types'
 
 interface MarketHeaderProps {
@@ -31,6 +31,26 @@ function formatTimeRemaining(closingDate: string): string {
 
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
   return `${minutes}m remaining`
+}
+
+function formatVolume(sats: number): string {
+  const btc = sats / 100_000_000
+  if (btc >= 1) {
+    return `₿${btc.toFixed(2)}`
+  }
+  if (btc >= 0.1) {
+    return `₿${btc.toFixed(3)}`
+  }
+  if (btc >= 0.01) {
+    return `₿${btc.toFixed(4)}`
+  }
+  return `₿${btc.toFixed(5)}`
+}
+
+function formatLiquidity(sats: number): string {
+  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(1)}M`
+  if (sats >= 1_000) return `${(sats / 1_000).toFixed(0)}K`
+  return sats.toString()
 }
 
 export function MarketHeader({
@@ -96,21 +116,6 @@ export function MarketHeader({
             <span className="text-sm font-medium">{timeRemaining}</span>
           </div>
 
-          {/* Like Button */}
-          <button
-            onClick={onLikeToggle}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${
-              market.isLiked
-                ? 'bg-red-500/20 text-red-400'
-                : market.imageUrl
-                  ? 'bg-white/10 text-slate-300 hover:bg-white/20'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            <Heart className={`w-4 h-4 ${market.isLiked ? 'fill-current' : ''}`} />
-            <span className="text-sm font-medium">{market.likeCount}</span>
-          </button>
-
           {/* Share Button */}
           <button
             onClick={onShare}
@@ -155,6 +160,39 @@ export function MarketHeader({
             </p>
           </div>
         </button>
+
+        {/* Metrics Footer */}
+        <div className={`flex items-center justify-between text-xs pt-4 mt-4 border-t ${
+          market.imageUrl
+            ? 'border-white/10 text-slate-300'
+            : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+        }`}>
+          <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
+            {formatVolume(market.volume)}
+          </div>
+          <div className="flex items-center gap-1" title="Liquidity">
+            <Droplet className="w-3.5 h-3.5" />
+            <span className="font-mono font-medium">{formatLiquidity(market.liquidity)}</span>
+          </div>
+          <div className="flex items-center gap-1" title="Traders">
+            <Users className="w-3.5 h-3.5" />
+            <span className="font-mono font-medium">{market.traderCount.toLocaleString()}</span>
+          </div>
+          <button
+            onClick={onLikeToggle}
+            className={`flex items-center gap-1 cursor-pointer transition-colors ${
+              market.isLiked
+                ? 'text-rose-500'
+                : market.imageUrl
+                  ? 'text-slate-300 hover:text-rose-500'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-rose-500'
+            }`}
+            title="Like"
+          >
+            <Heart className="w-3.5 h-3.5" fill={market.isLiked ? 'currentColor' : 'none'} />
+            <span className="font-mono font-medium">{market.likeCount}</span>
+          </button>
+        </div>
       </div>
     </div>
   )

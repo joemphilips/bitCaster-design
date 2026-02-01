@@ -4,7 +4,6 @@ import { MarketDetail } from './components/MarketDetail'
 import type {
   ChartTimeframe,
   ChartType,
-  ActivityTab,
   TradeSelection,
   TradePreview,
   MarketDetail as MarketDetailType,
@@ -25,7 +24,6 @@ export function MarketDetailPreview() {
   // UI State
   const [chartTimeframe, setChartTimeframe] = useState<ChartTimeframe>('7d')
   const [chartType, setChartType] = useState<ChartType>('price')
-  const [activityTab, setActivityTab] = useState<ActivityTab>('trades')
   const [tradeSelection, setTradeSelection] = useState<TradeSelection | null>(null)
   const [tradeAmount, setTradeAmount] = useState<number>(0)
 
@@ -80,7 +78,6 @@ export function MarketDetailPreview() {
         market={market}
         chartTimeframe={chartTimeframe}
         chartType={chartType}
-        activityTab={activityTab}
         tradeSelection={tradeSelection}
         tradeAmount={tradeAmount}
         tradePreview={tradePreview}
@@ -91,10 +88,6 @@ export function MarketDetailPreview() {
         onChartTypeChange={(type) => {
           console.log('Chart type changed:', type)
           setChartType(type)
-        }}
-        onActivityTabChange={(tab) => {
-          console.log('Activity tab changed:', tab)
-          setActivityTab(tab)
         }}
         onTradeSelect={(selection) => {
           console.log('Trade selected:', selection)
@@ -146,9 +139,6 @@ export function MarketDetailPreview() {
         onBaseMarketClick={(marketId) => {
           console.log('Base market clicked:', marketId)
           alert(`Navigate to base market: ${marketId}`)
-        }}
-        onOrderBookOutcomeChange={(outcomeId) => {
-          console.log('Order book outcome changed:', outcomeId)
         }}
         onChartCellChange={(cellId) => {
           console.log('Chart cell changed:', cellId)

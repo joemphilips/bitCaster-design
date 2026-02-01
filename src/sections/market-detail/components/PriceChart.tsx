@@ -13,6 +13,8 @@ interface PriceChartProps {
   cellPriceHistories?: Record<string, PriceHistory>
   selectedCellId?: string
   onCellChange?: (cellId: string) => void
+  // Current display: percentage or resolved outcome text
+  currentDisplay?: string
 }
 
 const TIMEFRAMES: ChartTimeframe[] = ['1h', '24h', '7d', '30d', 'all']
@@ -37,6 +39,7 @@ export function PriceChart({
   cellPriceHistories,
   selectedCellId,
   onCellChange,
+  currentDisplay,
 }: PriceChartProps) {
   // Determine which data to show
   const isMultiLine = outcomePriceHistories && outcomes && outcomes.length > 0
@@ -76,9 +79,16 @@ export function PriceChart({
     <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-          Price Chart
-        </h3>
+        {/* Current Display: percentage or resolved outcome */}
+        {currentDisplay ? (
+          <div className="text-3xl font-bold text-slate-900 dark:text-white">
+            {currentDisplay}
+          </div>
+        ) : (
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+            Price Chart
+          </h3>
+        )}
 
         <div className="flex items-center gap-2">
           {/* 2D Cell Selector */}

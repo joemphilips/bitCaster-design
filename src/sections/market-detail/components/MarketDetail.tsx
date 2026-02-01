@@ -1,24 +1,75 @@
 import type { MarketDetailProps } from '@/../product/sections/market-detail/types'
 import { MarketHeader } from './MarketHeader'
 import { TradingPanel } from './TradingPanel'
-import { OrderBookSection } from './OrderBookSection'
 import { PriceChart } from './PriceChart'
-import { MarketStats } from './MarketStats'
 import { ResolutionInfo } from './ResolutionInfo'
 import { ActivityFeed } from './ActivityFeed'
 import { RelatedMarkets } from './RelatedMarkets'
+import { CommentSection } from './CommentSection'
+
+function computeCurrentDisplay(market: MarketDetailProps['market']): string {
+  const isResolved = market.resolution.status === 'resolved'
+
+  if (isResolved && market.resolution.finalOutcome) {
+    return `Resolved: ${market.resolution.finalOutcome}`
+  }
+
+  if (market.type === 'yesno') {
+    return `${market.currentOdds.yes.toFixed(1)}%`
+  }
+
+  if (market.type === 'categorical') {
+    const sorted = [...market.outcomes].sort((a, b) => b.odds - a.odds)
+    const leader = sorted[0]
+    if (leader) {
+      return `${leader.label} ${leader.odds.toFixed(1)}%`
+    }
+    return ''
+  }
+
+  if (market.type === 'twodimensional') {
+    if (market.compositeOdds) {
+      const cells = [
+        { label: 'Yes/Yes', odds: market.compositeOdds.yesYes },
+        { label: 'Yes/No', odds: market.compositeOdds.yesNo },
+        { label: 'No/Yes', odds: market.compositeOdds.noYes },
+        { label: 'No/No', odds: market.compositeOdds.noNo },
+      ]
+      const leader = cells.sort((a, b) => b.odds - a.odds)[0]
+      return `${leader.label} ${leader.odds.toFixed(1)}%`
+    }
+    if (market.categoricalCompositeOdds && market.baseOutcomes) {
+      let maxOdds = 0
+      let maxLabel = ''
+      for (const outcome of market.baseOutcomes) {
+        const odds = market.categoricalCompositeOdds[outcome.id]
+        if (odds) {
+          if (odds.yes > maxOdds) {
+            maxOdds = odds.yes
+            maxLabel = `${outcome.label}/Yes`
+          }
+          if (odds.no > maxOdds) {
+            maxOdds = odds.no
+            maxLabel = `${outcome.label}/No`
+          }
+        }
+      }
+      if (maxLabel) return `${maxLabel} ${maxOdds.toFixed(1)}%`
+    }
+  }
+
+  return ''
+}
 
 export function MarketDetail({
   market,
   chartTimeframe,
   chartType,
-  activityTab,
   tradeSelection,
   tradeAmount,
   tradePreview,
   onTimeframeChange,
   onChartTypeChange,
-  onActivityTabChange,
   onTradeSelect,
   onTradeClear,
   onAmountChange,
@@ -32,7 +83,6 @@ export function MarketDetail({
   onRelatedMarketClick,
   onCreatorClick,
   onBaseMarketClick,
-  onOrderBookOutcomeChange,
   onChartCellChange,
 }: MarketDetailProps) {
   // Get outcomes for categorical markets
@@ -40,15 +90,15 @@ export function MarketDetail({
 
   // Get outcome-specific data for categorical markets
   const outcomePriceHistories = market.type === 'categorical' ? market.outcomePriceHistories : undefined
-  const outcomeOrderBooks = market.type === 'categorical' ? market.outcomeOrderBooks : undefined
 
   // Get cell-specific data for 2D markets
   const cellPriceHistories = market.type === 'twodimensional' ? market.cellPriceHistories : undefined
-  const cellOrderBooks = market.type === 'twodimensional' ? market.cellOrderBooks : undefined
 
-  // Default selected outcome/cell for charts
-  const defaultOutcomeId = outcomes?.[0]?.id
+  // Default selected cell for charts
   const defaultCellId = cellPriceHistories ? Object.keys(cellPriceHistories)[0] : undefined
+
+  // Compute current display for price chart
+  const currentDisplay = computeCurrentDisplay(market)
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -93,40 +143,30 @@ export function MarketDetail({
               cellPriceHistories={cellPriceHistories}
               selectedCellId={defaultCellId}
               onCellChange={onChartCellChange}
+              currentDisplay={currentDisplay}
             />
-
-            {/* Two Column Grid: Order Book + Stats */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <OrderBookSection
-                orderBook={market.orderBook}
-                selectedOutcomeId={defaultOutcomeId}
-                outcomeOrderBooks={outcomeOrderBooks}
-                onOutcomeChange={onOrderBookOutcomeChange}
-                outcomes={outcomes}
-              />
-
-              <MarketStats market={market} />
-            </div>
 
             {/* Resolution Info */}
             <ResolutionInfo resolution={market.resolution} />
 
-            {/* Activity Feed */}
+            {/* Activity Feed (Trades only) */}
             <ActivityFeed
               trades={market.recentTrades}
-              comments={market.comments}
-              activeTab={activityTab}
-              onTabChange={onActivityTabChange}
-              onCommentPost={onCommentPost}
-              onCommentLike={onCommentLike}
               onLoadMoreTrades={onLoadMoreTrades}
-              onLoadMoreComments={onLoadMoreComments}
             />
 
             {/* Related Markets */}
             <RelatedMarkets
               markets={market.relatedMarkets}
               onMarketClick={onRelatedMarketClick}
+            />
+
+            {/* Comments */}
+            <CommentSection
+              comments={market.comments}
+              onCommentPost={onCommentPost}
+              onCommentLike={onCommentLike}
+              onLoadMoreComments={onLoadMoreComments}
             />
           </div>
 
