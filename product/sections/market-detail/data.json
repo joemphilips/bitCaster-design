@@ -1,0 +1,286 @@
+{
+  "yesNoMarket": {
+    "id": "market-btc-100k",
+    "type": "yesno",
+    "title": "Will Bitcoin reach $100,000 by December 31, 2025?",
+    "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
+    "categoryTags": [
+      { "id": "crypto", "label": "Crypto", "marketCount": 156 },
+      { "id": "bitcoin", "label": "Bitcoin", "marketCount": 89 }
+    ],
+    "currentOdds": { "yes": 67.5, "no": 32.5 },
+    "volume": 125000,
+    "liquidity": 45000,
+    "traderCount": 342,
+    "closingDate": "2025-12-31T23:59:59Z",
+    "createdDate": "2024-06-15T10:30:00Z",
+    "approvedDate": "2024-06-15T14:22:00Z",
+    "likeCount": 89,
+    "isLiked": false,
+    "creator": {
+      "id": "creator-satoshi",
+      "name": "SatoshiFan21",
+      "avatarUrl": null,
+      "reputationScore": 4.8,
+      "totalMarketsCreated": 23,
+      "feePercent": 0.5
+    },
+    "resolution": {
+      "criteria": "Market resolves YES if Bitcoin (BTC) spot price on any major exchange (Coinbase, Binance, Kraken) reaches or exceeds $100,000 USD at any point before the closing date.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko price feed",
+      "resolutionDate": "2025-12-31T23:59:59Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": [
+        { "timestamp": "2025-01-20T00:00:00Z", "price": 62.3, "volume": 8500 },
+        { "timestamp": "2025-01-21T00:00:00Z", "price": 64.1, "volume": 12300 },
+        { "timestamp": "2025-01-22T00:00:00Z", "price": 63.8, "volume": 9200 },
+        { "timestamp": "2025-01-23T00:00:00Z", "price": 65.2, "volume": 15600 },
+        { "timestamp": "2025-01-24T00:00:00Z", "price": 66.7, "volume": 18900 },
+        { "timestamp": "2025-01-25T00:00:00Z", "price": 66.2, "volume": 11200 },
+        { "timestamp": "2025-01-26T00:00:00Z", "price": 67.5, "volume": 14500 }
+      ]
+    },
+    "orderBook": {
+      "bids": [
+        { "price": 67, "amount": 5000, "total": 5000 },
+        { "price": 66, "amount": 8000, "total": 13000 },
+        { "price": 65, "amount": 12000, "total": 25000 },
+        { "price": 64, "amount": 7500, "total": 32500 }
+      ],
+      "asks": [
+        { "price": 68, "amount": 4500, "total": 4500 },
+        { "price": 69, "amount": 6000, "total": 10500 },
+        { "price": 70, "amount": 9500, "total": 20000 },
+        { "price": 71, "amount": 5500, "total": 25500 }
+      ],
+      "spread": 1
+    },
+    "recentTrades": [
+      { "id": "trade-1", "userId": "user-1", "userDisplayName": "anon_f3x", "side": "yes", "amount": 1500, "price": 67.5, "timestamp": "2025-01-26T15:32:00Z" },
+      { "id": "trade-2", "userId": "user-2", "userDisplayName": "trader_42", "side": "no", "amount": 2200, "price": 32.5, "timestamp": "2025-01-26T14:18:00Z" },
+      { "id": "trade-3", "userId": "user-3", "userDisplayName": "btc_bull", "side": "yes", "amount": 5000, "price": 67.2, "timestamp": "2025-01-26T12:45:00Z" },
+      { "id": "trade-4", "userId": "user-4", "userDisplayName": "anon_8kp", "side": "yes", "amount": 800, "price": 66.8, "timestamp": "2025-01-26T11:22:00Z" },
+      { "id": "trade-5", "userId": "user-5", "userDisplayName": "skeptic_99", "side": "no", "amount": 3500, "price": 33.1, "timestamp": "2025-01-26T09:55:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-1", "userId": "user-6", "userDisplayName": "CryptoAnalyst", "content": "With the halving behind us and ETF inflows continuing, I think this has strong momentum. The macro environment is supportive.", "timestamp": "2025-01-26T10:30:00Z", "likeCount": 12, "isLiked": false },
+      { "id": "comment-2", "userId": "user-7", "userDisplayName": "BearishBob", "content": "Don't forget we're still in a high interest rate environment. I'm skeptical about hitting 100k this year.", "timestamp": "2025-01-25T22:15:00Z", "likeCount": 5, "isLiked": true },
+      { "id": "comment-3", "userId": "user-8", "userDisplayName": "HODLer4Life", "content": "We hit 73k in March, just a matter of time before we break through again.", "timestamp": "2025-01-25T18:42:00Z", "likeCount": 8, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "rel-1", "title": "Will Ethereum reach $10,000 by end of 2025?", "currentOdds": { "yes": 45.2, "no": 54.8 }, "volume": 78000, "closingDate": "2025-12-31T23:59:59Z" },
+      { "id": "rel-2", "title": "Bitcoin ETF daily inflows exceed $1B in Q1 2025?", "currentOdds": { "yes": 72.1, "no": 27.9 }, "volume": 56000, "closingDate": "2025-03-31T23:59:59Z" },
+      { "id": "rel-3", "title": "Will MicroStrategy buy more Bitcoin in January 2025?", "currentOdds": { "yes": 88.5, "no": 11.5 }, "volume": 34000, "closingDate": "2025-01-31T23:59:59Z" }
+    ]
+  },
+  "categoricalMarket": {
+    "id": "market-superbowl-winner",
+    "type": "categorical",
+    "title": "Who will win Super Bowl LIX?",
+    "imageUrl": "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800",
+    "categoryTags": [
+      { "id": "sports", "label": "Sports", "marketCount": 234 },
+      { "id": "nfl", "label": "NFL", "marketCount": 67 }
+    ],
+    "outcomes": [
+      { "id": "chiefs", "label": "Kansas City Chiefs", "odds": 28.5 },
+      { "id": "eagles", "label": "Philadelphia Eagles", "odds": 22.3 },
+      { "id": "lions", "label": "Detroit Lions", "odds": 18.7 },
+      { "id": "bills", "label": "Buffalo Bills", "odds": 15.2 },
+      { "id": "ravens", "label": "Baltimore Ravens", "odds": 10.1 },
+      { "id": "other", "label": "Other Team", "odds": 5.2 }
+    ],
+    "volume": 89000,
+    "liquidity": 32000,
+    "traderCount": 567,
+    "closingDate": "2025-02-09T23:30:00Z",
+    "createdDate": "2024-09-01T12:00:00Z",
+    "approvedDate": "2024-09-01T15:30:00Z",
+    "likeCount": 156,
+    "isLiked": true,
+    "creator": {
+      "id": "creator-sports",
+      "name": "SportsBetKing",
+      "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=sports",
+      "reputationScore": 4.9,
+      "totalMarketsCreated": 45,
+      "feePercent": 1.0
+    },
+    "resolution": {
+      "criteria": "Market resolves to the team that wins Super Bowl LIX on February 9, 2025. Official NFL result is final.",
+      "source": "manual",
+      "sourceDescription": "NFL official results",
+      "resolutionDate": "2025-02-10T12:00:00Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": []
+    },
+    "outcomePriceHistories": {
+      "chiefs": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 26.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 27.2 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 27.8 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 28.1 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 28.3 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 28.5 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 28.5 }
+        ]
+      },
+      "eagles": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 21.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 21.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 22.0 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 22.1 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 22.2 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 22.3 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 22.3 }
+        ]
+      }
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "outcomeOrderBooks": {
+      "chiefs": {
+        "bids": [
+          { "price": 28, "amount": 3500, "total": 3500 },
+          { "price": 27, "amount": 5000, "total": 8500 }
+        ],
+        "asks": [
+          { "price": 29, "amount": 2800, "total": 2800 },
+          { "price": 30, "amount": 4200, "total": 7000 }
+        ],
+        "spread": 1
+      }
+    },
+    "recentTrades": [
+      { "id": "trade-s1", "userId": "user-s1", "userDisplayName": "chiefs_fan", "side": "yes", "outcomeId": "chiefs", "amount": 2500, "price": 28.5, "timestamp": "2025-01-26T16:00:00Z" },
+      { "id": "trade-s2", "userId": "user-s2", "userDisplayName": "philly_4eva", "side": "yes", "outcomeId": "eagles", "amount": 1800, "price": 22.3, "timestamp": "2025-01-26T15:30:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-s1", "userId": "user-s3", "userDisplayName": "NFLAnalyst", "content": "Chiefs dynasty continues. Mahomes is unbeatable in big games.", "timestamp": "2025-01-26T14:00:00Z", "likeCount": 24, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "rel-s1", "title": "Super Bowl LIX MVP?", "volume": 45000, "closingDate": "2025-02-09T23:30:00Z" },
+      { "id": "rel-s2", "title": "Total points in Super Bowl LIX over/under 48.5?", "currentOdds": { "yes": 52.1, "no": 47.9 }, "volume": 28000, "closingDate": "2025-02-09T18:00:00Z" }
+    ]
+  },
+  "twoDimensionalMarket": {
+    "id": "market-2d-btc-eth",
+    "type": "twodimensional",
+    "title": "Bitcoin $100K AND Ethereum $10K by end of 2025?",
+    "imageUrl": "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800",
+    "categoryTags": [
+      { "id": "crypto", "label": "Crypto", "marketCount": 156 }
+    ],
+    "baseMarketId": "market-btc-100k",
+    "baseMarketTitle": "Will Bitcoin reach $100,000 by December 31, 2025?",
+    "baseMarketType": "yesno",
+    "secondaryType": "yesno",
+    "secondaryQuestion": "Will Ethereum reach $10,000?",
+    "compositeOdds": {
+      "yesYes": 32.5,
+      "yesNo": 35.0,
+      "noYes": 12.5,
+      "noNo": 20.0
+    },
+    "volume": 67000,
+    "liquidity": 28000,
+    "traderCount": 189,
+    "closingDate": "2025-12-31T23:59:59Z",
+    "createdDate": "2024-08-10T09:00:00Z",
+    "approvedDate": "2024-08-10T12:15:00Z",
+    "likeCount": 45,
+    "isLiked": false,
+    "creator": {
+      "id": "creator-defi",
+      "name": "DeFiMaxi",
+      "reputationScore": 4.6,
+      "totalMarketsCreated": 12,
+      "feePercent": 0.75
+    },
+    "resolution": {
+      "criteria": "Resolves based on the combination of Bitcoin and Ethereum price targets. Both conditions checked at market close.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko price feeds for BTC and ETH",
+      "resolutionDate": "2025-12-31T23:59:59Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": []
+    },
+    "cellPriceHistories": {
+      "yes-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 30.2 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 31.0 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 31.5 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 32.0 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 32.2 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 32.4 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 32.5 }
+        ]
+      }
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "cellOrderBooks": {
+      "yes-yes": {
+        "bids": [
+          { "price": 32, "amount": 2000, "total": 2000 },
+          { "price": 31, "amount": 3500, "total": 5500 }
+        ],
+        "asks": [
+          { "price": 33, "amount": 1800, "total": 1800 },
+          { "price": 34, "amount": 2500, "total": 4300 }
+        ],
+        "spread": 1
+      }
+    },
+    "recentTrades": [
+      { "id": "trade-2d1", "userId": "user-2d1", "userDisplayName": "bull_combo", "side": "yes", "cellId": "yes-yes", "amount": 3000, "price": 32.5, "timestamp": "2025-01-26T15:45:00Z" },
+      { "id": "trade-2d2", "userId": "user-2d2", "userDisplayName": "hedger_pro", "side": "yes", "cellId": "yes-no", "amount": 1500, "price": 35.0, "timestamp": "2025-01-26T14:30:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-2d1", "userId": "user-2d3", "userDisplayName": "CorrelationTrader", "content": "These assets are highly correlated. If BTC hits 100k, ETH likely follows to 10k. The yes-yes cell is underpriced.", "timestamp": "2025-01-26T12:00:00Z", "likeCount": 18, "isLiked": true }
+    ],
+    "relatedMarkets": [
+      { "id": "market-btc-100k", "title": "Will Bitcoin reach $100,000 by December 31, 2025?", "currentOdds": { "yes": 67.5, "no": 32.5 }, "volume": 125000, "closingDate": "2025-12-31T23:59:59Z" },
+      { "id": "rel-eth", "title": "Will Ethereum reach $10,000 by end of 2025?", "currentOdds": { "yes": 45.2, "no": 54.8 }, "volume": 78000, "closingDate": "2025-12-31T23:59:59Z" }
+    ]
+  },
+  "uiState": {
+    "chartTimeframe": "7d",
+    "chartType": "price",
+    "activityTab": "trades",
+    "tradeSelection": null,
+    "tradeAmount": 0,
+    "tradePreview": null
+  },
+  "tradePreviewExample": {
+    "amount": 1000,
+    "predictedOdds": 68.2,
+    "priceImpact": 0.7,
+    "potentialPayout": 1481,
+    "creatorFee": 5,
+    "platformFee": 0,
+    "totalCost": 1000
+  }
+}
