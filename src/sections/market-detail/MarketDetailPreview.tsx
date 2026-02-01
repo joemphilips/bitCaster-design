@@ -6,13 +6,15 @@ import type {
   ChartType,
   TradeSelection,
   TradePreview,
+  FixedDimension,
   MarketDetail as MarketDetailType,
 } from '@/../product/sections/market-detail/types'
 
-type MarketKey = 'yesNoMarket' | 'categoricalMarket' | 'twoDimensionalMarket'
+type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket' | 'twoDimensionalMarket'
 
 const marketLabels: Record<MarketKey, string> = {
   yesNoMarket: 'Yes/No Market',
+  resolvedYesNoMarket: 'Resolved Market',
   categoricalMarket: 'Categorical Market',
   twoDimensionalMarket: '2D Composite Market',
 }
@@ -26,6 +28,7 @@ export function MarketDetailPreview() {
   const [chartType, setChartType] = useState<ChartType>('price')
   const [tradeSelection, setTradeSelection] = useState<TradeSelection | null>(null)
   const [tradeAmount, setTradeAmount] = useState<number>(0)
+  const [fixedDimension, setFixedDimension] = useState<FixedDimension | null>(null)
 
   // Get the selected market data
   const market = data[selectedMarketKey] as unknown as MarketDetailType
@@ -59,6 +62,7 @@ export function MarketDetailPreview() {
                   setSelectedMarketKey(key)
                   setTradeSelection(null)
                   setTradeAmount(0)
+                  setFixedDimension(null)
                 }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   selectedMarketKey === key
@@ -142,6 +146,11 @@ export function MarketDetailPreview() {
         }}
         onChartCellChange={(cellId) => {
           console.log('Chart cell changed:', cellId)
+        }}
+        fixedDimension={fixedDimension}
+        onFixDimension={(dim) => {
+          console.log('Fixed dimension changed:', dim)
+          setFixedDimension(dim)
         }}
       />
     </div>

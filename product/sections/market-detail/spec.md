@@ -54,6 +54,10 @@ The Market Detail page provides a comprehensive view of a single prediction mark
 - Predicted odds after trade (shows price impact)
 - Potential payout calculation
 - Creator fee display (e.g., "0.5% creator fee")
+- Optional comment textarea (280 character limit) between trade preview and confirm button
+  - Placeholder: "Share your reasoning..."
+  - Character counter shown below textarea
+  - Comment is posted alongside the trade on confirm
 - Confirm Trade button (primary blue)
 - Cancel button to clear selection
 
@@ -64,10 +68,24 @@ The Market Detail page provides a comprehensive view of a single prediction mark
   - 2D markets: shows the leading cell odds
   - Resolved markets: shows final outcome text (e.g., "Resolved: Yes")
 - Line chart showing price history
-- Timeframe selector: 1h | 24h | 7d | 30d | All
+- Timeframe selector: 1H | 24H | 7D | 1 Month | ALL
 - Toggle: Price / Volume
+- **Comment speech bubbles** overlaid on price chart (price mode only):
+  - Positioned horizontally by comment timestamp relative to visible time range
+  - Size: 24–40px based on like count (more likes = larger bubble)
+  - Opacity: 0.4–1.0 based on like count (more likes = more opaque)
+  - Tooltip on hover showing username, content preview, and like count
+  - Only comments within the visible timeframe are shown
 - For categorical markets: multi-line chart with legend
 - For 2D markets: selector to view individual cell price history
+- **2D Conditional Probability Toggle** (for Yes/No + Yes/No markets with all 4 cell histories):
+  - Toggle buttons: [All] [BTC=Yes] [BTC=No] [ETH=Yes] [ETH=No]
+  - "All" shows the standard cell selector dropdown
+  - Fixing a dimension computes conditional probabilities:
+    - E.g., BTC=Yes → shows P(ETH=Yes|BTC=Yes) and P(ETH=No|BTC=Yes) as two lines
+  - Multi-line chart with legend showing the two conditional probability lines
+  - "Conditional on [label]" subtitle displayed below the current display
+  - Division-by-zero points are skipped gracefully
 
 ### Resolution Details Section
 - Resolution criteria (how the market resolves)
@@ -94,11 +112,21 @@ The Market Detail page provides a comprehensive view of a single prediction mark
 - Shows mini market cards with quick stats
 
 ### Comments Section (Bottom)
-- Standalone section at the bottom of the page
-- Comment input with send button
+- Read-only display section at the bottom of the page (no standalone comment input)
 - Comment list with user avatar, name, timestamp
 - Like button per comment
 - Infinite scroll with "Load more" button
+- Empty state: "No comments yet. Place a trade to leave a comment!"
+- Comments are posted exclusively through the Trading Panel trade flow
+
+### Resolved Market View
+- **RESOLVED badge** displayed prominently at the top of the header with a CheckCircle icon and the final outcome
+- "Resolved on [date]" replaces the countdown timer in the meta row
+- **No trading panel**: Both desktop sidebar and mobile sticky bottom bar are hidden
+- **Single-column layout**: The right sidebar grid is removed; content fills full width
+- **Resolution Info** is moved immediately after the header (above chart)
+- Comments section becomes read-only (no comment input)
+- Activity feed and related markets remain visible for historical reference
 
 ## Market Type Variations
 
@@ -117,6 +145,12 @@ The Market Detail page provides a comprehensive view of a single prediction mark
 - Grid layout in trading panel matching base market structure
 - Shows base market question and secondary question
 - Each cell clickable for trading
+- **Two-tone gradient** for mixed-outcome cells:
+  - Yes/Yes: solid emerald background
+  - Yes/No: diagonal gradient (emerald → rose, 135deg)
+  - No/Yes: diagonal gradient (rose → emerald, 135deg)
+  - No/No: solid red background
+  - Selected state increases gradient intensity and adds a prominent border
 - Price chart has selector for viewing individual cells
 - Displays link back to base market
 

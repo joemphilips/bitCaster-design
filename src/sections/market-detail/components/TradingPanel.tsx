@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { X } from 'lucide-react'
 import type {
   MarketDetail,
@@ -18,6 +19,7 @@ interface TradingPanelProps {
   onTradeClear?: () => void
   onAmountChange?: (amount: number) => void
   onTradeConfirm?: () => void
+  onCommentPost?: (content: string) => void
 }
 
 const QUICK_AMOUNTS = [100, 500, 1000, 5000]
@@ -139,11 +141,42 @@ function TwoDimensionalOutcomes({
   if (market.compositeOdds) {
     // Yes/No + Yes/No 2x2 grid
     const cells = [
-      { id: 'yes-yes', label: 'Yes / Yes', odds: market.compositeOdds.yesYes, color: 'emerald' },
-      { id: 'yes-no', label: 'Yes / No', odds: market.compositeOdds.yesNo, color: 'amber' },
-      { id: 'no-yes', label: 'No / Yes', odds: market.compositeOdds.noYes, color: 'amber' },
-      { id: 'no-no', label: 'No / No', odds: market.compositeOdds.noNo, color: 'red' },
+      { id: 'yes-yes', label: 'Yes / Yes', odds: market.compositeOdds.yesYes, style: 'emerald' as const },
+      { id: 'yes-no', label: 'Yes / No', odds: market.compositeOdds.yesNo, style: 'yes-no' as const },
+      { id: 'no-yes', label: 'No / Yes', odds: market.compositeOdds.noYes, style: 'no-yes' as const },
+      { id: 'no-no', label: 'No / No', odds: market.compositeOdds.noNo, style: 'red' as const },
     ]
+
+    function getCellStyles(cellStyle: 'emerald' | 'yes-no' | 'no-yes' | 'red', isSelected: boolean) {
+      switch (cellStyle) {
+        case 'emerald':
+          return {
+            className: isSelected
+              ? 'border-emerald-500 bg-emerald-500/20'
+              : 'border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 bg-emerald-500/5',
+          }
+        case 'red':
+          return {
+            className: isSelected
+              ? 'border-red-500 bg-red-500/20'
+              : 'border-slate-200 dark:border-slate-700 hover:border-red-500/50 bg-red-500/5',
+          }
+        case 'yes-no':
+          return {
+            className: isSelected
+              ? 'border-emerald-400'
+              : 'border-slate-200 dark:border-slate-700 hover:border-slate-400',
+            background: `linear-gradient(135deg, rgba(16, 185, 129, ${isSelected ? 0.4 : 0.2}) 50%, rgba(244, 63, 94, ${isSelected ? 0.4 : 0.2}) 50%)`,
+          }
+        case 'no-yes':
+          return {
+            className: isSelected
+              ? 'border-rose-400'
+              : 'border-slate-200 dark:border-slate-700 hover:border-slate-400',
+            background: `linear-gradient(135deg, rgba(244, 63, 94, ${isSelected ? 0.4 : 0.2}) 50%, rgba(16, 185, 129, ${isSelected ? 0.4 : 0.2}) 50%)`,
+          }
+      }
+    }
 
     return (
       <div>
@@ -155,23 +188,14 @@ function TwoDimensionalOutcomes({
         <div className="grid grid-cols-2 gap-2">
           {cells.map((cell) => {
             const isSelected = tradeSelection?.cellId === cell.id
-            const colorClasses = {
-              emerald: isSelected
-                ? 'border-emerald-500 bg-emerald-500/20'
-                : 'border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 bg-emerald-500/5',
-              amber: isSelected
-                ? 'border-amber-500 bg-amber-500/20'
-                : 'border-slate-200 dark:border-slate-700 hover:border-amber-500/50 bg-amber-500/5',
-              red: isSelected
-                ? 'border-red-500 bg-red-500/20'
-                : 'border-slate-200 dark:border-slate-700 hover:border-red-500/50 bg-red-500/5',
-            }
+            const styles = getCellStyles(cell.style, isSelected)
 
             return (
               <button
                 key={cell.id}
                 onClick={() => onTradeSelect?.({ side: 'yes', cellId: cell.id })}
-                className={`p-3 rounded-xl border-2 transition-all ${colorClasses[cell.color as keyof typeof colorClasses]}`}
+                className={`p-3 rounded-xl border-2 transition-all ${styles.className}`}
+                style={styles.background ? { background: styles.background } : undefined}
               >
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-0.5">
                   {cell.label}
@@ -203,7 +227,9 @@ export function TradingPanel({
   onTradeClear,
   onAmountChange,
   onTradeConfirm,
+  onCommentPost,
 }: TradingPanelProps) {
+  const [tradeComment, setTradeComment] = useState('')
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
       <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
@@ -309,9 +335,32 @@ export function TradingPanel({
             </div>
           )}
 
+          {/* Optional Comment with Trade */}
+          <div className="mb-4">
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 block">
+              Add a comment (optional)
+            </label>
+            <textarea
+              value={tradeComment}
+              onChange={(e) => setTradeComment(e.target.value.slice(0, 280))}
+              placeholder="Share your reasoning..."
+              rows={2}
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+            <div className="text-right text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+              {tradeComment.length}/280
+            </div>
+          </div>
+
           {/* Confirm Button */}
           <button
-            onClick={onTradeConfirm}
+            onClick={() => {
+              onTradeConfirm?.()
+              if (tradeComment.trim()) {
+                onCommentPost?.(tradeComment.trim())
+                setTradeComment('')
+              }
+            }}
             disabled={!tradeAmount || tradeAmount <= 0}
             className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold transition-colors disabled:cursor-not-allowed"
           >

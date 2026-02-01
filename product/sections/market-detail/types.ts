@@ -175,6 +175,16 @@ export interface TwoDimensionalMarketDetail extends BaseMarketDetail {
 export type MarketDetail = YesNoMarketDetail | CategoricalMarketDetail | TwoDimensionalMarketDetail
 
 // =============================================================================
+// Fixed Dimension Types (for 2D conditional probability chart)
+// =============================================================================
+
+export type FixedDimension = {
+  dimension: 'base' | 'secondary'
+  value: string
+  label: string
+}
+
+// =============================================================================
 // Trade State Types
 // =============================================================================
 
@@ -264,4 +274,10 @@ export interface MarketDetailProps {
 
   /** Called when user selects cell for chart view (2D markets) */
   onChartCellChange?: (cellId: string) => void
+
+  /** Called when user fixes a dimension for conditional probability view (2D markets) */
+  onFixDimension?: (dim: FixedDimension | null) => void
+
+  /** Currently fixed dimension for conditional probability chart */
+  fixedDimension?: FixedDimension | null
 }

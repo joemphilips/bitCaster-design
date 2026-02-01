@@ -85,6 +85,8 @@ export function MarketDetail({
   onCreatorClick,
   onBaseMarketClick,
   onChartCellChange,
+  onFixDimension,
+  fixedDimension,
 }: MarketDetailProps) {
   // Get outcomes for categorical markets
   const outcomes = market.type === 'categorical' ? market.outcomes : undefined
@@ -94,6 +96,7 @@ export function MarketDetail({
 
   // Get cell-specific data for 2D markets
   const cellPriceHistories = market.type === 'twodimensional' ? market.cellPriceHistories : undefined
+  const compositeOdds = market.type === 'twodimensional' ? market.compositeOdds : undefined
 
   // Default selected cell for charts
   const defaultCellId = cellPriceHistories ? Object.keys(cellPriceHistories)[0] : undefined
@@ -101,11 +104,15 @@ export function MarketDetail({
   // Compute current display for price chart
   const currentDisplay = computeCurrentDisplay(market)
 
+  // Determine if market is resolved and if trading is enabled
+  const isResolved = market.resolution.status === 'resolved'
+  const isTradingEnabled = market.resolution.status === 'open'
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Desktop Layout: Two Columns */}
+      {/* Desktop Layout: Two Columns (single column when resolved) */}
       <div className="max-w-7xl mx-auto">
-        <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-6 p-4 lg:p-6">
+        <div className={`${isTradingEnabled ? 'lg:grid lg:grid-cols-[1fr_380px] lg:gap-6' : ''} p-4 lg:p-6`}>
           {/* Left Column - Main Content */}
           <div className="space-y-6">
             {/* Header */}
@@ -118,19 +125,27 @@ export function MarketDetail({
               />
             </div>
 
-            {/* Mobile: Trading Panel (shown at top on mobile) */}
-            <div className="lg:hidden">
-              <TradingPanel
-                market={market}
-                tradeSelection={tradeSelection}
-                tradeAmount={tradeAmount}
-                tradePreview={tradePreview}
-                onTradeSelect={onTradeSelect}
-                onTradeClear={onTradeClear}
-                onAmountChange={onAmountChange}
-                onTradeConfirm={onTradeConfirm}
-              />
-            </div>
+            {/* Resolution Info (shown immediately after header for resolved markets) */}
+            {isResolved && (
+              <ResolutionInfo resolution={market.resolution} />
+            )}
+
+            {/* Mobile: Trading Panel (shown at top on mobile, only for open markets) */}
+            {isTradingEnabled && (
+              <div className="lg:hidden">
+                <TradingPanel
+                  market={market}
+                  tradeSelection={tradeSelection}
+                  tradeAmount={tradeAmount}
+                  tradePreview={tradePreview}
+                  onTradeSelect={onTradeSelect}
+                  onTradeClear={onTradeClear}
+                  onAmountChange={onAmountChange}
+                  onTradeConfirm={onTradeConfirm}
+                  onCommentPost={onCommentPost}
+                />
+              </div>
+            )}
 
             {/* Price Chart */}
             <PriceChart
@@ -145,10 +160,16 @@ export function MarketDetail({
               selectedCellId={defaultCellId}
               onCellChange={onChartCellChange}
               currentDisplay={currentDisplay}
+              comments={market.comments}
+              fixedDimension={fixedDimension}
+              onFixDimension={onFixDimension}
+              compositeOdds={compositeOdds}
             />
 
-            {/* Resolution Info */}
-            <ResolutionInfo resolution={market.resolution} />
+            {/* Resolution Info (in normal position for open markets) */}
+            {!isResolved && (
+              <ResolutionInfo resolution={market.resolution} />
+            )}
 
             {/* Activity Feed (Trades only) */}
             <ActivityFeed
@@ -165,71 +186,75 @@ export function MarketDetail({
             {/* Comments */}
             <CommentSection
               comments={market.comments}
-              onCommentPost={onCommentPost}
               onCommentLike={onCommentLike}
               onLoadMoreComments={onLoadMoreComments}
             />
           </div>
 
-          {/* Right Column - Trading Panel (sticky on desktop) */}
-          <div className="hidden lg:block">
-            <div className="sticky top-6">
-              <TradingPanel
-                market={market}
-                tradeSelection={tradeSelection}
-                tradeAmount={tradeAmount}
-                tradePreview={tradePreview}
-                onTradeSelect={onTradeSelect}
-                onTradeClear={onTradeClear}
-                onAmountChange={onAmountChange}
-                onTradeConfirm={onTradeConfirm}
-              />
+          {/* Right Column - Trading Panel (sticky on desktop, only for open markets) */}
+          {isTradingEnabled && (
+            <div className="hidden lg:block">
+              <div className="sticky top-6">
+                <TradingPanel
+                  market={market}
+                  tradeSelection={tradeSelection}
+                  tradeAmount={tradeAmount}
+                  tradePreview={tradePreview}
+                  onTradeSelect={onTradeSelect}
+                  onTradeClear={onTradeClear}
+                  onAmountChange={onAmountChange}
+                  onTradeConfirm={onTradeConfirm}
+                  onCommentPost={onCommentPost}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Mobile: Sticky Bottom Trade Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 safe-area-pb">
-        {tradeSelection ? (
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {tradeSelection.side.toUpperCase()}
-                {tradeSelection.outcomeId && ` - ${tradeSelection.outcomeId}`}
-                {tradeSelection.cellId && ` - ${tradeSelection.cellId.replace('-', '/')}`}
-              </p>
-              <p className="text-sm font-medium text-slate-900 dark:text-white">
-                {tradeAmount > 0 ? formatBtc(tradeAmount) : 'Enter amount'}
-              </p>
+      {/* Mobile: Sticky Bottom Trade Bar (only for open markets) */}
+      {isTradingEnabled && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 safe-area-pb">
+          {tradeSelection ? (
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {tradeSelection.side.toUpperCase()}
+                  {tradeSelection.outcomeId && ` - ${tradeSelection.outcomeId}`}
+                  {tradeSelection.cellId && ` - ${tradeSelection.cellId.replace('-', '/')}`}
+                </p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">
+                  {tradeAmount > 0 ? formatBtc(tradeAmount) : 'Enter amount'}
+                </p>
+              </div>
+              <button
+                onClick={onTradeClear}
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onTradeConfirm}
+                disabled={!tradeAmount || tradeAmount <= 0}
+                className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold transition-colors disabled:cursor-not-allowed"
+              >
+                Confirm
+              </button>
             </div>
+          ) : (
             <button
-              onClick={onTradeClear}
-              className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              onClick={() => {
+                // Scroll to trading panel or open modal
+                const panel = document.querySelector('[data-trading-panel]')
+                panel?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
             >
-              Cancel
+              Trade
             </button>
-            <button
-              onClick={onTradeConfirm}
-              disabled={!tradeAmount || tradeAmount <= 0}
-              className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold transition-colors disabled:cursor-not-allowed"
-            >
-              Confirm
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              // Scroll to trading panel or open modal
-              const panel = document.querySelector('[data-trading-panel]')
-              panel?.scrollIntoView({ behavior: 'smooth' })
-            }}
-            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
-          >
-            Trade
-          </button>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

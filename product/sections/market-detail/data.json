@@ -177,6 +177,77 @@
       { "id": "rel-s2", "title": "Total points in Super Bowl LIX over/under 48.5?", "currentOdds": { "yes": 52.1, "no": 47.9 }, "volume": 28000, "closingDate": "2025-02-09T18:00:00Z" }
     ]
   },
+  "resolvedYesNoMarket": {
+    "id": "market-btc-50k",
+    "type": "yesno",
+    "title": "Did Bitcoin reach $50,000 by January 15, 2025?",
+    "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
+    "categoryTags": [
+      { "id": "crypto", "label": "Crypto", "marketCount": 156 },
+      { "id": "bitcoin", "label": "Bitcoin", "marketCount": 89 }
+    ],
+    "currentOdds": { "yes": 100, "no": 0 },
+    "volume": 245000,
+    "liquidity": 0,
+    "traderCount": 891,
+    "closingDate": "2025-01-15T23:59:59Z",
+    "createdDate": "2024-03-01T08:00:00Z",
+    "approvedDate": "2024-03-01T10:30:00Z",
+    "likeCount": 214,
+    "isLiked": true,
+    "creator": {
+      "id": "creator-satoshi",
+      "name": "SatoshiFan21",
+      "avatarUrl": null,
+      "reputationScore": 4.8,
+      "totalMarketsCreated": 23,
+      "feePercent": 0.5
+    },
+    "resolution": {
+      "criteria": "Market resolves YES if Bitcoin (BTC) spot price on any major exchange (Coinbase, Binance, Kraken) reaches or exceeds $50,000 USD at any point before the closing date.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko price feed",
+      "resolutionDate": "2025-01-15T23:59:59Z",
+      "status": "resolved",
+      "finalOutcome": "Yes"
+    },
+    "priceHistory": {
+      "timeframe": "all",
+      "data": [
+        { "timestamp": "2024-03-01T00:00:00Z", "price": 45.0, "volume": 5200 },
+        { "timestamp": "2024-04-01T00:00:00Z", "price": 52.3, "volume": 8100 },
+        { "timestamp": "2024-05-01T00:00:00Z", "price": 58.7, "volume": 12400 },
+        { "timestamp": "2024-06-01T00:00:00Z", "price": 55.2, "volume": 9800 },
+        { "timestamp": "2024-07-01T00:00:00Z", "price": 62.1, "volume": 15600 },
+        { "timestamp": "2024-08-01T00:00:00Z", "price": 68.4, "volume": 18300 },
+        { "timestamp": "2024-09-01T00:00:00Z", "price": 71.0, "volume": 21500 },
+        { "timestamp": "2024-10-01T00:00:00Z", "price": 74.5, "volume": 24200 },
+        { "timestamp": "2024-11-01T00:00:00Z", "price": 82.3, "volume": 32100 },
+        { "timestamp": "2024-12-01T00:00:00Z", "price": 88.9, "volume": 41000 },
+        { "timestamp": "2025-01-01T00:00:00Z", "price": 94.2, "volume": 52000 },
+        { "timestamp": "2025-01-15T00:00:00Z", "price": 100.0, "volume": 68000 }
+      ]
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "recentTrades": [
+      { "id": "trade-r1", "userId": "user-r1", "userDisplayName": "early_bull", "side": "yes", "amount": 10000, "price": 94.2, "timestamp": "2025-01-14T20:15:00Z" },
+      { "id": "trade-r2", "userId": "user-r2", "userDisplayName": "late_bear", "side": "no", "amount": 3500, "price": 5.8, "timestamp": "2025-01-14T18:30:00Z" },
+      { "id": "trade-r3", "userId": "user-r3", "userDisplayName": "whale_99", "side": "yes", "amount": 25000, "price": 88.9, "timestamp": "2025-01-10T12:00:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-r1", "userId": "user-r4", "userDisplayName": "CryptoAnalyst", "content": "Called it! Bitcoin surpassed $50K easily with the ETF momentum. Great market.", "timestamp": "2025-01-15T14:00:00Z", "likeCount": 42, "isLiked": true },
+      { "id": "comment-r2", "userId": "user-r5", "userDisplayName": "BearishBob", "content": "Well played to the bulls. I was wrong on this one, but made it back on the ETH market.", "timestamp": "2025-01-15T16:30:00Z", "likeCount": 18, "isLiked": false },
+      { "id": "comment-r3", "userId": "user-r6", "userDisplayName": "HODLer4Life", "content": "Next stop: $100K! Who's creating that market?", "timestamp": "2025-01-15T20:00:00Z", "likeCount": 31, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "market-btc-100k", "title": "Will Bitcoin reach $100,000 by December 31, 2025?", "currentOdds": { "yes": 67.5, "no": 32.5 }, "volume": 125000, "closingDate": "2025-12-31T23:59:59Z" },
+      { "id": "rel-eth", "title": "Will Ethereum reach $10,000 by end of 2025?", "currentOdds": { "yes": 45.2, "no": 54.8 }, "volume": 78000, "closingDate": "2025-12-31T23:59:59Z" }
+    ]
+  },
   "twoDimensionalMarket": {
     "id": "market-2d-btc-eth",
     "type": "twodimensional",
@@ -233,6 +304,42 @@
           { "timestamp": "2025-01-24T00:00:00Z", "price": 32.2 },
           { "timestamp": "2025-01-25T00:00:00Z", "price": 32.4 },
           { "timestamp": "2025-01-26T00:00:00Z", "price": 32.5 }
+        ]
+      },
+      "yes-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 36.8 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 36.0 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 35.5 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 35.0 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 35.3 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 35.1 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 35.0 }
+        ]
+      },
+      "no-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 13.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 12.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 12.8 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 12.5 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 12.3 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 12.5 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 12.5 }
+        ]
+      },
+      "no-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 20.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 20.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 20.2 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 20.5 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 20.2 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 20.0 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 20.0 }
         ]
       }
     },

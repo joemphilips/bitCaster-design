@@ -1,4 +1,4 @@
-import { Heart, Share2, Clock, Droplet, Users } from 'lucide-react'
+import { Heart, Share2, Clock, CheckCircle2, Droplet, Users } from 'lucide-react'
 import type { MarketDetail, MarketCreator } from '@/../product/sections/market-detail/types'
 import { formatBtc } from '@/lib/format'
 
@@ -40,8 +40,17 @@ export function MarketHeader({
   onShare,
   onCreatorClick,
 }: MarketHeaderProps) {
+  const isResolved = market.resolution.status === 'resolved'
   const timeRemaining = formatTimeRemaining(market.closingDate)
-  const isClosingSoon = new Date(market.closingDate).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000
+  const isClosingSoon = !isResolved && new Date(market.closingDate).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000
+
+  const resolvedDate = isResolved
+    ? new Date(market.resolution.resolutionDate).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : null
 
   return (
     <div className="relative">
@@ -59,6 +68,21 @@ export function MarketHeader({
 
       {/* Content */}
       <div className={`relative ${market.imageUrl ? 'pt-8 pb-6 px-6' : 'py-6 px-6'}`}>
+        {/* RESOLVED Badge */}
+        {isResolved && (
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Resolved
+            </span>
+            {market.resolution.finalOutcome && (
+              <span className="text-sm font-semibold text-emerald-400">
+                {market.resolution.finalOutcome}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Category Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
           {market.categoryTags.map((tag) => (
@@ -89,12 +113,16 @@ export function MarketHeader({
 
         {/* Meta Row */}
         <div className="flex flex-wrap items-center gap-4 mb-4">
-          {/* Time Remaining */}
+          {/* Time Remaining / Resolved Date */}
           <div className={`flex items-center gap-1.5 ${
-            isClosingSoon ? 'text-amber-400' : market.imageUrl ? 'text-slate-300' : 'text-slate-600 dark:text-slate-400'
+            isResolved
+              ? 'text-slate-400'
+              : isClosingSoon ? 'text-amber-400' : market.imageUrl ? 'text-slate-300' : 'text-slate-600 dark:text-slate-400'
           }`}>
-            <Clock className="w-4 h-4" />
-            <span className="text-sm font-medium">{timeRemaining}</span>
+            {isResolved ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+            <span className="text-sm font-medium">
+              {isResolved ? `Resolved on ${resolvedDate}` : timeRemaining}
+            </span>
           </div>
 
           {/* Share Button */}
