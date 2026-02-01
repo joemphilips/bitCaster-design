@@ -1,19 +1,10 @@
 import { ChevronRight, TrendingUp } from 'lucide-react'
 import type { RelatedMarket } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 
 interface RelatedMarketsProps {
   markets: RelatedMarket[]
   onMarketClick?: (marketId: string) => void
-}
-
-function formatSats(sats: number): string {
-  if (sats >= 1000000) {
-    return `${(sats / 1000000).toFixed(1)}M`
-  }
-  if (sats >= 1000) {
-    return `${(sats / 1000).toFixed(0)}K`
-  }
-  return sats.toString()
 }
 
 function formatClosingDate(dateStr: string): string {
@@ -63,7 +54,7 @@ function RelatedMarketCard({
       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-1">
           <TrendingUp className="w-3.5 h-3.5" />
-          <span>{formatSats(market.volume)} sats</span>
+          <span>{formatBtc(market.volume)}</span>
         </div>
         <span>{formatClosingDate(market.closingDate)}</span>
       </div>

@@ -1,4 +1,5 @@
 import type { OrderBook } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 
 interface OrderBookSectionProps {
   orderBook: OrderBook
@@ -6,16 +7,6 @@ interface OrderBookSectionProps {
   outcomeOrderBooks?: Record<string, OrderBook>
   onOutcomeChange?: (outcomeId: string) => void
   outcomes?: Array<{ id: string; label: string }>
-}
-
-function formatSats(sats: number): string {
-  if (sats >= 1000000) {
-    return `${(sats / 1000000).toFixed(1)}M`
-  }
-  if (sats >= 1000) {
-    return `${(sats / 1000).toFixed(1)}K`
-  }
-  return sats.toString()
 }
 
 export function OrderBookSection({
@@ -132,7 +123,7 @@ export function OrderBookSection({
                     {bid.price}%
                   </span>
                   <span className="text-slate-500 dark:text-slate-400 font-mono">
-                    {formatSats(bid.amount)}
+                    {formatBtc(bid.amount)}
                   </span>
                 </div>
               ))
@@ -161,7 +152,7 @@ export function OrderBookSection({
                     {ask.price}%
                   </span>
                   <span className="text-slate-500 dark:text-slate-400 font-mono">
-                    {formatSats(ask.amount)}
+                    {formatBtc(ask.amount)}
                   </span>
                 </div>
               ))

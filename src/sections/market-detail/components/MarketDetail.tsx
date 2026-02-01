@@ -1,4 +1,5 @@
 import type { MarketDetailProps } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 import { MarketHeader } from './MarketHeader'
 import { TradingPanel } from './TradingPanel'
 import { PriceChart } from './PriceChart'
@@ -199,7 +200,7 @@ export function MarketDetail({
                 {tradeSelection.cellId && ` - ${tradeSelection.cellId.replace('-', '/')}`}
               </p>
               <p className="text-sm font-medium text-slate-900 dark:text-white">
-                {tradeAmount > 0 ? `${tradeAmount.toLocaleString()} sats` : 'Enter amount'}
+                {tradeAmount > 0 ? formatBtc(tradeAmount) : 'Enter amount'}
               </p>
             </div>
             <button

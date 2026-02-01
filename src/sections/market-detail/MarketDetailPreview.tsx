@@ -104,7 +104,7 @@ export function MarketDetailPreview() {
         }}
         onTradeConfirm={() => {
           console.log('Trade confirmed:', { tradeSelection, tradeAmount, tradePreview })
-          alert(`Trade confirmed!\n\nSide: ${tradeSelection?.side}\nAmount: ${tradeAmount} sats\nPotential payout: ${tradePreview?.potentialPayout} sats`)
+          alert(`Trade confirmed!\n\nSide: ${tradeSelection?.side}\nAmount: ₿${tradeAmount.toLocaleString()}\nPotential payout: ₿${tradePreview?.potentialPayout?.toLocaleString()}`)
           setTradeSelection(null)
           setTradeAmount(0)
         }}

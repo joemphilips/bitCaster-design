@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { User, LogOut, ChevronDown, Wallet, Sparkles } from 'lucide-react'
+import { formatBalance } from '@/lib/format'
 
 interface UserMenuProps {
   user: { name: string; avatarUrl?: string; balance?: number }
@@ -10,11 +11,6 @@ interface UserMenuProps {
 
 export function UserMenu({ user, onLogout, onNavigate, onCreateClick }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-
-  const formatBalance = (sats?: number) => {
-    if (sats === undefined) return '0 sats'
-    return `${sats.toLocaleString()} sats`
-  }
 
   return (
     <div className="relative">

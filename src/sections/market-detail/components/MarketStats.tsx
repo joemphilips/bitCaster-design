@@ -1,21 +1,9 @@
 import { TrendingUp, Droplets, Users, Calendar, Clock, CheckCircle } from 'lucide-react'
 import type { MarketDetail } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 
 interface MarketStatsProps {
   market: MarketDetail
-}
-
-function formatSats(sats: number): string {
-  if (sats >= 100000000) {
-    return `₿${(sats / 100000000).toFixed(2)}`
-  }
-  if (sats >= 1000000) {
-    return `${(sats / 1000000).toFixed(1)}M sats`
-  }
-  if (sats >= 1000) {
-    return `${(sats / 1000).toFixed(1)}K sats`
-  }
-  return `${sats} sats`
 }
 
 function formatDate(dateStr: string): string {
@@ -58,13 +46,13 @@ export function MarketStats({ market }: MarketStatsProps) {
     {
       icon: TrendingUp,
       label: 'Volume',
-      value: formatSats(market.volume),
+      value: formatBtc(market.volume),
       color: 'text-blue-500',
     },
     {
       icon: Droplets,
       label: 'Liquidity',
-      value: formatSats(market.liquidity),
+      value: formatBtc(market.liquidity),
       color: 'text-cyan-500',
     },
     {

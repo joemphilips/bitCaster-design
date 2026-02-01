@@ -1,18 +1,9 @@
 import type { OrderHistoryItem } from '@/../product/sections/mypage/types'
+import { formatBtc } from '@/lib/format'
 
 interface OrderHistoryRowProps {
   order: OrderHistoryItem
   onView?: () => void
-}
-
-function formatSats(sats: number): string {
-  if (sats >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (sats >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
 }
 
 function formatDate(dateStr: string): string {
@@ -90,7 +81,7 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
                 : 'text-rose-600 dark:text-rose-400'
             }`}
           >
-            {isDeposit ? '+' : '-'}{formatSats(order.amountSats)} sats
+            {isDeposit ? '+' : '-'}{formatBtc(order.amountSats)}
           </p>
         </div>
       </div>

@@ -60,7 +60,7 @@ module.exports = {
 
 // Balance display
 <span className="text-amber-600 dark:text-amber-400 font-mono">
-  12,500 sats
+  ₿12,500
 </span>
 ```
 
@@ -93,13 +93,13 @@ module.exports = {
 <button className="bg-emerald-600 hover:bg-emerald-700 text-white">
   Buy YES
 </button>
-<span className="text-emerald-600 dark:text-emerald-400">+2,500 sats</span>
+<span className="text-emerald-600 dark:text-emerald-400">+₿2,500</span>
 
 // Danger (Rose) - Buy NO, negative P/L, sell
 <button className="bg-rose-600 hover:bg-rose-700 text-white">
   Buy NO
 </button>
-<span className="text-rose-600 dark:text-rose-400">-1,200 sats</span>
+<span className="text-rose-600 dark:text-rose-400">-₿1,200</span>
 
 // Info (Blue) - Same as primary
 <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">

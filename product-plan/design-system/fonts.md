@@ -34,7 +34,7 @@ font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 
 
 ### JetBrains Mono (Monospace)
 
-Used for numeric values, sats amounts, transaction IDs, and code.
+Used for numeric values, ₿ amounts, transaction IDs, and code.
 
 ```css
 font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
@@ -110,7 +110,7 @@ module.exports = {
 
 // Inline amount
 <span className="font-mono font-semibold text-amber-600 dark:text-amber-400">
-  12,500 sats
+  ₿12,500
 </span>
 
 // Percentage

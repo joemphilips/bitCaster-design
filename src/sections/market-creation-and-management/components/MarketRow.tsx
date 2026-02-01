@@ -1,20 +1,11 @@
 import type { CreatorMarket, MarketStatus } from '@/../product/sections/market-creation-and-management/types'
+import { formatBtc } from '@/lib/format'
 
 interface MarketRowProps {
   market: CreatorMarket
   onViewDetails?: () => void
   onClaimFees?: () => void
   onCancelMarket?: () => void
-}
-
-function formatSats(sats: number): string {
-  if (sats >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (sats >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
 }
 
 function formatDate(dateStr: string): string {
@@ -146,7 +137,7 @@ export function MarketRow({ market, onViewDetails, onClaimFees, onCancelMarket }
                   Volume
                 </p>
                 <p className="font-mono text-lg font-bold text-slate-900 dark:text-white">
-                  {formatSats(market.volume)} <span className="text-sm font-normal text-slate-500">sats</span>
+                  {formatBtc(market.volume)}
                 </p>
               </div>
 
@@ -157,7 +148,7 @@ export function MarketRow({ market, onViewDetails, onClaimFees, onCancelMarket }
                     Fees Earned
                   </p>
                   <p className="font-mono text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                    +{formatSats(market.feesEarnedSats)} <span className="text-sm font-normal">({market.creatorFeePercent}%)</span>
+                    +{formatBtc(market.feesEarnedSats)} <span className="text-sm font-normal">({market.creatorFeePercent}%)</span>
                   </p>
                 </div>
               )}
@@ -168,7 +159,7 @@ export function MarketRow({ market, onViewDetails, onClaimFees, onCancelMarket }
                   Liquidity
                 </p>
                 <p className="font-mono text-lg font-bold text-slate-700 dark:text-slate-300">
-                  {formatSats(market.liquidity)} <span className="text-sm font-normal text-slate-500">sats</span>
+                  {formatBtc(market.liquidity)}
                 </p>
               </div>
             </div>
@@ -184,7 +175,7 @@ export function MarketRow({ market, onViewDetails, onClaimFees, onCancelMarket }
                   className="relative overflow-hidden rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-md transition-all hover:from-emerald-600 hover:to-emerald-700 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-[0.98]"
                 >
                   <span className="relative z-10">
-                    Claim {formatSats(unclaimedFees)} sats
+                    Claim {formatBtc(unclaimedFees)}
                   </span>
                   <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                 </button>

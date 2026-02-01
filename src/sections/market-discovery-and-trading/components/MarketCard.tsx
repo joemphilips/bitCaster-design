@@ -7,6 +7,7 @@ import type {
   TwoDimensionalMarket,
   Outcome,
 } from '@/../product/sections/market-discovery-and-trading/types'
+import { formatBtc } from '@/lib/format'
 
 interface SecondaryMarketInfo {
   id: string
@@ -37,26 +38,6 @@ interface TradeState {
   secondaryOutcome?: 'yes' | 'no'
   baseOutcomeId?: string
   baseOutcomeLabel?: string
-}
-
-function formatVolume(sats: number): string {
-  const btc = sats / 100_000_000
-  if (btc >= 1) {
-    return `₿${btc.toFixed(2)}`
-  }
-  if (btc >= 0.1) {
-    return `₿${btc.toFixed(3)}`
-  }
-  if (btc >= 0.01) {
-    return `₿${btc.toFixed(4)}`
-  }
-  return `₿${btc.toFixed(5)}`
-}
-
-function formatLiquidity(sats: number): string {
-  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(1)}M`
-  if (sats >= 1_000) return `${(sats / 1_000).toFixed(0)}K`
-  return sats.toString()
 }
 
 function CategoricalOutcomes({
@@ -705,7 +686,7 @@ export function MarketCard({
         {/* Amount Picker */}
         <div className="space-y-2 mt-4 flex-1">
           <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            Amount (sats)
+            Amount (₿)
           </label>
           <input
             type="number"
@@ -745,7 +726,7 @@ export function MarketCard({
               : 'bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600'
           }`}
         >
-          BUY {amount.toLocaleString()} SATS
+          BUY ₿{amount.toLocaleString()}
         </button>
       </div>
     )
@@ -823,11 +804,11 @@ export function MarketCard({
         {/* Metrics Footer */}
         <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-2 mt-auto border-t border-slate-200 dark:border-slate-700 flex-shrink-0">
           <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
-            {formatVolume(market.volume)}
+            {formatBtc(market.volume)}
           </div>
           <div className="flex items-center gap-1" title="Liquidity">
             <Droplet className="w-3.5 h-3.5" />
-            <span className="font-mono font-medium">{formatLiquidity(market.liquidity)}</span>
+            <span className="font-mono font-medium">{formatBtc(market.liquidity)}</span>
           </div>
           <div className="flex items-center gap-1" title="Traders">
             <Users className="w-3.5 h-3.5" />

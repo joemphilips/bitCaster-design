@@ -7,6 +7,7 @@ import type {
   CategoricalMarketDetail,
   TwoDimensionalMarketDetail,
 } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 
 interface TradingPanelProps {
   market: MarketDetail
@@ -20,13 +21,6 @@ interface TradingPanelProps {
 }
 
 const QUICK_AMOUNTS = [100, 500, 1000, 5000]
-
-function formatSats(sats: number): string {
-  if (sats >= 100000000) {
-    return `₿${(sats / 100000000).toFixed(2)}`
-  }
-  return `₿${(sats / 100000000).toFixed(8).replace(/\.?0+$/, '')}`
-}
 
 function YesNoOutcomes({
   market,
@@ -244,7 +238,7 @@ export function TradingPanel({
         <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-              Amount (sats)
+              Amount (₿)
             </span>
             <button
               onClick={onTradeClear}
@@ -303,13 +297,13 @@ export function TradingPanel({
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500 dark:text-slate-400">Creator fee ({market.creator.feePercent}%)</span>
                 <span className="font-medium text-slate-600 dark:text-slate-300">
-                  {formatSats(tradePreview.creatorFee)}
+                  {formatBtc(tradePreview.creatorFee)}
                 </span>
               </div>
               <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between">
                 <span className="text-slate-700 dark:text-slate-300 font-medium">Potential payout</span>
                 <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                  {formatSats(tradePreview.potentialPayout)}
+                  {formatBtc(tradePreview.potentialPayout)}
                 </span>
               </div>
             </div>
@@ -321,7 +315,7 @@ export function TradingPanel({
             disabled={!tradeAmount || tradeAmount <= 0}
             className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold transition-colors disabled:cursor-not-allowed"
           >
-            {tradeAmount > 0 ? `Buy ${tradeSelection.side.toUpperCase()} for ${formatSats(tradeAmount)}` : 'Enter amount'}
+            {tradeAmount > 0 ? `Buy ${tradeSelection.side.toUpperCase()} for ${formatBtc(tradeAmount)}` : 'Enter amount'}
           </button>
         </div>
       )}

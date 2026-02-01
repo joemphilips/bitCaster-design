@@ -1,5 +1,6 @@
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import type { Trade } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 
 interface ActivityFeedProps {
   trades: Trade[]
@@ -21,13 +22,6 @@ function formatTimeAgo(timestamp: string): string {
   if (days < 7) return `${days}d ago`
 
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-function formatSats(sats: number): string {
-  if (sats >= 1000) {
-    return `${(sats / 1000).toFixed(1)}K`
-  }
-  return sats.toString()
 }
 
 function TradeRow({ trade }: { trade: Trade }) {
@@ -69,7 +63,7 @@ function TradeRow({ trade }: { trade: Trade }) {
           )}
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          {formatSats(trade.amount)} sats @ {trade.price.toFixed(1)}%
+          {formatBtc(trade.amount)} @ {trade.price.toFixed(1)}%
         </p>
       </div>
 

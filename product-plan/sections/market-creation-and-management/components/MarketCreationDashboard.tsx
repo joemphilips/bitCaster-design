@@ -5,13 +5,10 @@ import { VolumeChart } from './VolumeChart'
 import { Pagination } from './Pagination'
 
 function formatSats(sats: number): string {
-  if (sats >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (sats >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
+  const abs = Math.abs(sats)
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
 }
 
 export function MarketCreationDashboard({
@@ -154,7 +151,7 @@ export function MarketCreationDashboard({
               <StatCard
                 label="Total Volume"
                 value={formatSats(dashboardStats.totalVolumeSats)}
-                subValue="sats traded"
+                subValue="traded"
                 variant="default"
                 icon={
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

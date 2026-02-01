@@ -11,8 +11,11 @@ export function UserMenu({ user, onLogout, onNavigate }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const formatBalance = (sats?: number) => {
-    if (sats === undefined) return '0 sats'
-    return `${sats.toLocaleString()} sats`
+    if (sats === undefined || sats === 0) return '₿0'
+    const abs = Math.abs(sats)
+    if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+    if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+    return `₿${sats.toLocaleString()}`
   }
 
   return (

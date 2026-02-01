@@ -8,7 +8,7 @@ export default function ShellPreview() {
   const user = {
     name: 'Alex Morgan',
     avatarUrl: undefined,
-    balance: 250000, // 250k sats
+    balance: 250000, // ₿250K
   }
 
   return (

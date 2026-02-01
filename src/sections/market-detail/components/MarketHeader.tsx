@@ -1,5 +1,6 @@
 import { Heart, Share2, Clock, Droplet, Users } from 'lucide-react'
 import type { MarketDetail, MarketCreator } from '@/../product/sections/market-detail/types'
+import { formatBtc } from '@/lib/format'
 
 interface MarketHeaderProps {
   market: MarketDetail
@@ -31,26 +32,6 @@ function formatTimeRemaining(closingDate: string): string {
 
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
   return `${minutes}m remaining`
-}
-
-function formatVolume(sats: number): string {
-  const btc = sats / 100_000_000
-  if (btc >= 1) {
-    return `₿${btc.toFixed(2)}`
-  }
-  if (btc >= 0.1) {
-    return `₿${btc.toFixed(3)}`
-  }
-  if (btc >= 0.01) {
-    return `₿${btc.toFixed(4)}`
-  }
-  return `₿${btc.toFixed(5)}`
-}
-
-function formatLiquidity(sats: number): string {
-  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(1)}M`
-  if (sats >= 1_000) return `${(sats / 1_000).toFixed(0)}K`
-  return sats.toString()
 }
 
 export function MarketHeader({
@@ -168,11 +149,11 @@ export function MarketHeader({
             : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
         }`}>
           <div className="flex items-center gap-1 font-mono font-semibold text-amber-600 dark:text-amber-400" title="Volume">
-            {formatVolume(market.volume)}
+            {formatBtc(market.volume)}
           </div>
           <div className="flex items-center gap-1" title="Liquidity">
             <Droplet className="w-3.5 h-3.5" />
-            <span className="font-mono font-medium">{formatLiquidity(market.liquidity)}</span>
+            <span className="font-mono font-medium">{formatBtc(market.liquidity)}</span>
           </div>
           <div className="flex items-center gap-1" title="Traders">
             <Users className="w-3.5 h-3.5" />

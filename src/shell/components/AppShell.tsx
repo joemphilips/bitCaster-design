@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { TrendingUp, Search, User, Bell, Sparkles } from 'lucide-react'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
+import { formatBalance } from '@/lib/format'
 
 export interface AppShellProps {
   children: React.ReactNode
@@ -193,7 +194,7 @@ export function AppShell({
                   {user.name}
                 </div>
                 <div className="text-sm text-amber-600 dark:text-amber-400 font-mono">
-                  {user.balance?.toLocaleString() || 0} sats
+                  {formatBalance(user.balance)}
                 </div>
               </div>
             </div>

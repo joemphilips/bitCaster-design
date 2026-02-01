@@ -195,7 +195,14 @@ export function AppShell({
                   {user.name}
                 </div>
                 <div className="text-sm text-amber-600 dark:text-amber-400 font-mono">
-                  {user.balance?.toLocaleString() || 0} sats
+                  {(() => {
+                    const sats = user.balance
+                    if (sats === undefined || sats === 0) return '₿0'
+                    const abs = Math.abs(sats)
+                    if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+                    if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+                    return `₿${sats.toLocaleString()}`
+                  })()}
                 </div>
               </div>
             </div>

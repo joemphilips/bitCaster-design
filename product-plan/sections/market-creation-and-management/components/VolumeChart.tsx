@@ -16,13 +16,10 @@ interface VolumeChartProps {
 }
 
 function formatSats(sats: number): string {
-  if (sats >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (sats >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
+  const abs = Math.abs(sats)
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
 }
 
 function formatDateLabel(dateStr: string, scale: TimeScale): string {
@@ -145,7 +142,7 @@ export function VolumeChart({
           <p className="mt-1 font-mono text-2xl font-bold text-blue-700 dark:text-blue-300">
             {formatSats(totalVolume)}
           </p>
-          <p className="text-sm text-blue-600/70 dark:text-blue-400/70">sats</p>
+          <p className="text-sm text-blue-600/70 dark:text-blue-400/70">volume</p>
         </div>
         <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-4 dark:from-emerald-950/50 dark:to-emerald-900/30">
           <p className="text-xs font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -154,7 +151,7 @@ export function VolumeChart({
           <p className="mt-1 font-mono text-2xl font-bold text-emerald-700 dark:text-emerald-300">
             +{formatSats(totalFees)}
           </p>
-          <p className="text-sm text-emerald-600/70 dark:text-emerald-400/70">sats earned</p>
+          <p className="text-sm text-emerald-600/70 dark:text-emerald-400/70">earned</p>
         </div>
         <div className="rounded-xl bg-gradient-to-br from-amber-50 to-amber-100/50 p-4 dark:from-amber-950/50 dark:to-amber-900/30">
           <p className="text-xs font-medium uppercase tracking-wider text-amber-600 dark:text-amber-400">
@@ -163,7 +160,7 @@ export function VolumeChart({
           <p className="mt-1 font-mono text-2xl font-bold text-amber-700 dark:text-amber-300">
             {formatSats(Math.round(totalVolume / data.length))}
           </p>
-          <p className="text-sm text-amber-600/70 dark:text-amber-400/70">sats</p>
+          <p className="text-sm text-amber-600/70 dark:text-amber-400/70">average</p>
         </div>
         <div className="rounded-xl bg-gradient-to-br from-slate-50 to-slate-100/50 p-4 dark:from-slate-800/50 dark:to-slate-700/30">
           <p className="text-xs font-medium uppercase tracking-wider text-slate-600 dark:text-slate-400">
@@ -194,7 +191,7 @@ export function VolumeChart({
                 <div key={i} className="group relative flex-1 min-w-[40px]">
                   {/* Tooltip */}
                   <div className="absolute -top-16 left-1/2 z-10 -translate-x-1/2 scale-0 rounded-lg bg-slate-900 px-3 py-2 text-sm text-white shadow-xl transition-transform group-hover:scale-100 dark:bg-slate-700">
-                    <p className="font-bold">{formatSats(d.volume)} sats</p>
+                    <p className="font-bold">{formatSats(d.volume)}</p>
                     <p className="text-slate-300">+{formatSats(d.fees)} fees</p>
                     <p className="text-xs text-slate-400">{d.label}</p>
                     <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-slate-900 dark:bg-slate-700" />

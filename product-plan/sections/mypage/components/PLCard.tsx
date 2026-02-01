@@ -8,13 +8,9 @@ interface PLCardProps {
 
 function formatSats(sats: number): string {
   const abs = Math.abs(sats)
-  if (abs >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (abs >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
 }
 
 export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
@@ -55,11 +51,6 @@ export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
                 : 'text-rose-600 dark:text-rose-400'
           }`}>
             {isPositive ? '+' : ''}{formatSats(metric.amountSats)}
-          </span>
-          <span className={`font-mono text-sm ${
-            isHighlighted ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'
-          }`}>
-            sats
           </span>
         </div>
 

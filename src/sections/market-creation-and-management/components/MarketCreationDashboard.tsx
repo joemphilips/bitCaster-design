@@ -1,18 +1,9 @@
 import type { MarketCreationProps, ActiveTab } from '@/../product/sections/market-creation-and-management/types'
+import { formatBtc } from '@/lib/format'
 import { StatCard } from './StatCard'
 import { MarketRow } from './MarketRow'
 import { VolumeChart } from './VolumeChart'
 import { Pagination } from './Pagination'
-
-function formatSats(sats: number): string {
-  if (sats >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (sats >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
-}
 
 export function MarketCreationDashboard({
   dashboardStats,
@@ -153,8 +144,8 @@ export function MarketCreationDashboard({
               />
               <StatCard
                 label="Total Volume"
-                value={formatSats(dashboardStats.totalVolumeSats)}
-                subValue="sats traded"
+                value={formatBtc(dashboardStats.totalVolumeSats)}
+                subValue="traded"
                 variant="default"
                 icon={
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -164,9 +155,9 @@ export function MarketCreationDashboard({
               />
               <StatCard
                 label="Fees Earned"
-                value={`+${formatSats(dashboardStats.totalFeesEarnedSats)}`}
+                value={`+${formatBtc(dashboardStats.totalFeesEarnedSats)}`}
                 subValue={dashboardStats.totalFeesUnclaimedSats > 0
-                  ? `${formatSats(dashboardStats.totalFeesUnclaimedSats)} unclaimed`
+                  ? `${formatBtc(dashboardStats.totalFeesUnclaimedSats)} unclaimed`
                   : 'All claimed'
                 }
                 variant="success"

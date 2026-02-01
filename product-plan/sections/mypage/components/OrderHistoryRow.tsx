@@ -6,13 +6,10 @@ interface OrderHistoryRowProps {
 }
 
 function formatSats(sats: number): string {
-  if (sats >= 1_000_000) {
-    return `${(sats / 1_000_000).toFixed(2)}M`
-  }
-  if (sats >= 1_000) {
-    return `${(sats / 1_000).toFixed(1)}k`
-  }
-  return sats.toLocaleString()
+  const abs = Math.abs(sats)
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
 }
 
 function formatDate(dateStr: string): string {
@@ -90,7 +87,7 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
                 : 'text-rose-600 dark:text-rose-400'
             }`}
           >
-            {isDeposit ? '+' : '-'}{formatSats(order.amountSats)} sats
+            {isDeposit ? '+' : '-'}{formatSats(order.amountSats)}
           </p>
         </div>
       </div>
