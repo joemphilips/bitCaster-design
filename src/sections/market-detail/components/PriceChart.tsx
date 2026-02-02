@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { MessageCircle } from 'lucide-react'
-import type { PriceHistory, ChartTimeframe, ChartType, Comment, FixedDimension, YesNoCompositeOdds } from '@/../product/sections/market-detail/types'
+import type { PriceHistory, ChartTimeframe, ChartType, Comment, FixedDimension } from '@/../product/sections/market-detail/types'
 
 interface PriceChartProps {
   priceHistory: PriceHistory
@@ -13,8 +13,6 @@ interface PriceChartProps {
   outcomes?: Array<{ id: string; label: string; odds: number }>
   // For 2D markets
   cellPriceHistories?: Record<string, PriceHistory>
-  selectedCellId?: string
-  onCellChange?: (cellId: string) => void
   // Current display: percentage or resolved outcome text
   currentDisplay?: string
   // Comments to display as bubbles on the chart
@@ -22,7 +20,12 @@ interface PriceChartProps {
   // 2D conditional probability
   fixedDimension?: FixedDimension | null
   onFixDimension?: (dim: FixedDimension | null) => void
-  compositeOdds?: YesNoCompositeOdds
+  // 2D market type info for dynamic buttons
+  baseMarketType?: 'yesno' | 'categorical'
+  secondaryType?: 'yesno' | 'categorical'
+  baseShortLabel?: string
+  secondaryShortLabel?: string
+  baseOutcomes?: Array<{ id: string; label: string }>
 }
 
 const TIMEFRAMES: ChartTimeframe[] = ['1h', '24h', '7d', '30d', 'all']
@@ -44,96 +47,182 @@ const OUTCOME_COLORS = [
   'rgb(236, 72, 153)', // pink
 ]
 
-// Labels for dimension-fixing toggle buttons
-const DIMENSION_BUTTONS: Array<{ dim: FixedDimension | null; label: string }> = [
-  { dim: null, label: 'All' },
-  { dim: { dimension: 'base', value: 'yes', label: 'BTC=Yes' }, label: 'BTC=Yes' },
-  { dim: { dimension: 'base', value: 'no', label: 'BTC=No' }, label: 'BTC=No' },
-  { dim: { dimension: 'secondary', value: 'yes', label: 'ETH=Yes' }, label: 'ETH=Yes' },
-  { dim: { dimension: 'secondary', value: 'no', label: 'ETH=No' }, label: 'ETH=No' },
-]
+/**
+ * Build dimension-fixing toggle buttons dynamically based on market types.
+ */
+function buildDimensionButtons(
+  baseMarketType: 'yesno' | 'categorical' | undefined,
+  secondaryType: 'yesno' | 'categorical' | undefined,
+  baseShortLabel: string,
+  secondaryShortLabel: string,
+  baseOutcomes?: Array<{ id: string; label: string }>,
+): Array<{ dim: FixedDimension | null; label: string }> {
+  const buttons: Array<{ dim: FixedDimension | null; label: string }> = [
+    { dim: null, label: 'All' },
+  ]
+
+  if (baseMarketType === 'yesno') {
+    buttons.push(
+      { dim: { dimension: 'base', value: 'yes', label: `${baseShortLabel}=Yes` }, label: `${baseShortLabel}=Yes` },
+      { dim: { dimension: 'base', value: 'no', label: `${baseShortLabel}=No` }, label: `${baseShortLabel}=No` },
+    )
+  } else if (baseMarketType === 'categorical' && baseOutcomes) {
+    for (const outcome of baseOutcomes) {
+      buttons.push({
+        dim: { dimension: 'base', value: outcome.id, label: outcome.label },
+        label: outcome.label,
+      })
+    }
+  }
+
+  if (secondaryType === 'yesno') {
+    buttons.push(
+      { dim: { dimension: 'secondary', value: 'yes', label: `${secondaryShortLabel}=Yes` }, label: `${secondaryShortLabel}=Yes` },
+      { dim: { dimension: 'secondary', value: 'no', label: `${secondaryShortLabel}=No` }, label: `${secondaryShortLabel}=No` },
+    )
+  }
+
+  return buttons
+}
 
 /**
  * Compute conditional probability lines when a dimension is fixed.
- * E.g., fix base=yes → show two lines:
- *   P(secondary=Yes | base=Yes) = yesyes / (yesyes + yesno)
- *   P(secondary=No  | base=Yes) = yesno  / (yesyes + yesno)
+ *
+ * yesno+yesno, fix base → 1 line: P(secondary=Yes | base=fixedValue)
+ * yesno+yesno, fix secondary → 1 line: P(base=Yes | secondary=fixedValue)
+ * categorical+yesno, fix base outcome → 1 line: P(secondary=Yes | base=fixedOutcome)
+ * categorical+yesno, fix secondary → N lines (one per base outcome): P(outcome | secondary=fixedValue)
  */
 function computeConditionalLines(
   cellPriceHistories: Record<string, PriceHistory>,
   fixedDimension: FixedDimension,
+  baseMarketType?: 'yesno' | 'categorical',
+  secondaryType?: 'yesno' | 'categorical',
+  baseShortLabel?: string,
+  secondaryShortLabel?: string,
+  baseOutcomes?: Array<{ id: string; label: string }>,
 ): Array<{ id: string; label: string; data: Array<{ timestamp: string; price: number }> }> {
+
+  // --- categorical + yesno ---
+  if (baseMarketType === 'categorical' && secondaryType === 'yesno' && baseOutcomes) {
+    if (fixedDimension.dimension === 'base') {
+      // Fix a base outcome → single line: P(sec=Yes | base=outcome)
+      const outcomeId = fixedDimension.value
+      const yesKey = `${outcomeId}-yes`
+      const noKey = `${outcomeId}-no`
+      const yesData = cellPriceHistories[yesKey]?.data || []
+      const noData = cellPriceHistories[noKey]?.data || []
+      const len = Math.min(yesData.length, noData.length)
+      if (len === 0) return []
+
+      const line: Array<{ timestamp: string; price: number }> = []
+      for (let i = 0; i < len; i++) {
+        const sum = yesData[i].price + noData[i].price
+        if (sum > 0) {
+          line.push({ timestamp: yesData[i].timestamp, price: (yesData[i].price / sum) * 100 })
+        }
+      }
+      return [
+        { id: 'sec-yes', label: `P(${secondaryShortLabel || 'Sec'}=Yes)`, data: line },
+      ]
+    }
+
+    if (fixedDimension.dimension === 'secondary') {
+      // Fix secondary → N lines (one per base outcome), they sum to 100%
+      const secValue = fixedDimension.value // 'yes' or 'no'
+
+      // Gather all relevant cell data
+      const cellKeys = baseOutcomes.map(o => `${o.id}-${secValue}`)
+      const cellDataArrays = cellKeys.map(key => cellPriceHistories[key]?.data || [])
+      const len = Math.min(...cellDataArrays.map(d => d.length))
+      if (len === 0) return []
+
+      const lines: Array<{ id: string; label: string; data: Array<{ timestamp: string; price: number }> }> = []
+
+      for (let oIdx = 0; oIdx < baseOutcomes.length; oIdx++) {
+        const lineData: Array<{ timestamp: string; price: number }> = []
+        for (let i = 0; i < len; i++) {
+          const sum = cellDataArrays.reduce((s, arr) => s + arr[i].price, 0)
+          if (sum > 0) {
+            lineData.push({
+              timestamp: cellDataArrays[oIdx][i].timestamp,
+              price: (cellDataArrays[oIdx][i].price / sum) * 100,
+            })
+          }
+        }
+        lines.push({
+          id: baseOutcomes[oIdx].id,
+          label: baseOutcomes[oIdx].label,
+          data: lineData,
+        })
+      }
+      return lines
+    }
+
+    return []
+  }
+
+  // --- yesno + yesno ---
   const yy = cellPriceHistories['yes-yes']?.data || []
   const yn = cellPriceHistories['yes-no']?.data || []
   const ny = cellPriceHistories['no-yes']?.data || []
   const nn = cellPriceHistories['no-no']?.data || []
-
-  // All histories should have same length/timestamps
   const len = Math.min(yy.length, yn.length, ny.length, nn.length)
   if (len === 0) return []
 
+  const bLabel = baseShortLabel || 'Base'
+  const sLabel = secondaryShortLabel || 'Sec'
+
   if (fixedDimension.dimension === 'base' && fixedDimension.value === 'yes') {
-    // Fix base=Yes → P(sec=Yes|base=Yes), P(sec=No|base=Yes)
-    const line1: Array<{ timestamp: string; price: number }> = []
-    const line2: Array<{ timestamp: string; price: number }> = []
+    // Fix base=Yes → single line: P(sec=Yes | base=Yes)
+    const line: Array<{ timestamp: string; price: number }> = []
     for (let i = 0; i < len; i++) {
       const sum = yy[i].price + yn[i].price
       if (sum > 0) {
-        line1.push({ timestamp: yy[i].timestamp, price: (yy[i].price / sum) * 100 })
-        line2.push({ timestamp: yn[i].timestamp, price: (yn[i].price / sum) * 100 })
+        line.push({ timestamp: yy[i].timestamp, price: (yy[i].price / sum) * 100 })
       }
     }
     return [
-      { id: 'sec-yes', label: 'ETH=Yes', data: line1 },
-      { id: 'sec-no', label: 'ETH=No', data: line2 },
+      { id: 'sec-yes', label: `P(${sLabel}=Yes)`, data: line },
     ]
   }
 
   if (fixedDimension.dimension === 'base' && fixedDimension.value === 'no') {
-    const line1: Array<{ timestamp: string; price: number }> = []
-    const line2: Array<{ timestamp: string; price: number }> = []
+    const line: Array<{ timestamp: string; price: number }> = []
     for (let i = 0; i < len; i++) {
       const sum = ny[i].price + nn[i].price
       if (sum > 0) {
-        line1.push({ timestamp: ny[i].timestamp, price: (ny[i].price / sum) * 100 })
-        line2.push({ timestamp: nn[i].timestamp, price: (nn[i].price / sum) * 100 })
+        line.push({ timestamp: ny[i].timestamp, price: (ny[i].price / sum) * 100 })
       }
     }
     return [
-      { id: 'sec-yes', label: 'ETH=Yes', data: line1 },
-      { id: 'sec-no', label: 'ETH=No', data: line2 },
+      { id: 'sec-yes', label: `P(${sLabel}=Yes)`, data: line },
     ]
   }
 
   if (fixedDimension.dimension === 'secondary' && fixedDimension.value === 'yes') {
-    const line1: Array<{ timestamp: string; price: number }> = []
-    const line2: Array<{ timestamp: string; price: number }> = []
+    const line: Array<{ timestamp: string; price: number }> = []
     for (let i = 0; i < len; i++) {
       const sum = yy[i].price + ny[i].price
       if (sum > 0) {
-        line1.push({ timestamp: yy[i].timestamp, price: (yy[i].price / sum) * 100 })
-        line2.push({ timestamp: ny[i].timestamp, price: (ny[i].price / sum) * 100 })
+        line.push({ timestamp: yy[i].timestamp, price: (yy[i].price / sum) * 100 })
       }
     }
     return [
-      { id: 'base-yes', label: 'BTC=Yes', data: line1 },
-      { id: 'base-no', label: 'BTC=No', data: line2 },
+      { id: 'base-yes', label: `P(${bLabel}=Yes)`, data: line },
     ]
   }
 
   if (fixedDimension.dimension === 'secondary' && fixedDimension.value === 'no') {
-    const line1: Array<{ timestamp: string; price: number }> = []
-    const line2: Array<{ timestamp: string; price: number }> = []
+    const line: Array<{ timestamp: string; price: number }> = []
     for (let i = 0; i < len; i++) {
       const sum = yn[i].price + nn[i].price
       if (sum > 0) {
-        line1.push({ timestamp: yn[i].timestamp, price: (yn[i].price / sum) * 100 })
-        line2.push({ timestamp: nn[i].timestamp, price: (nn[i].price / sum) * 100 })
+        line.push({ timestamp: yn[i].timestamp, price: (yn[i].price / sum) * 100 })
       }
     }
     return [
-      { id: 'base-yes', label: 'BTC=Yes', data: line1 },
-      { id: 'base-no', label: 'BTC=No', data: line2 },
+      { id: 'base-yes', label: `P(${bLabel}=Yes)`, data: line },
     ]
   }
 
@@ -149,33 +238,66 @@ export function PriceChart({
   outcomePriceHistories,
   outcomes,
   cellPriceHistories,
-  selectedCellId,
-  onCellChange,
   currentDisplay,
   comments,
   fixedDimension,
   onFixDimension,
-  compositeOdds,
+  baseMarketType,
+  secondaryType,
+  baseShortLabel,
+  secondaryShortLabel,
+  baseOutcomes,
 }: PriceChartProps) {
   const [hoveredCommentId, setHoveredCommentId] = useState<string | null>(null)
 
   // Determine which data to show
   const isMultiLine = outcomePriceHistories && outcomes && outcomes.length > 0
   const is2D = cellPriceHistories && Object.keys(cellPriceHistories).length > 0
-  const hasAllCells = is2D && cellPriceHistories['yes-yes'] && cellPriceHistories['yes-no'] && cellPriceHistories['no-yes'] && cellPriceHistories['no-no']
+  const hasAllCells = is2D && Object.keys(cellPriceHistories).length >= 4
+
+  // Build dimension buttons dynamically
+  const dimensionButtons = useMemo(() => {
+    if (!hasAllCells) return []
+    return buildDimensionButtons(
+      baseMarketType,
+      secondaryType,
+      baseShortLabel || 'Base',
+      secondaryShortLabel || 'Sec',
+      baseOutcomes,
+    )
+  }, [hasAllCells, baseMarketType, secondaryType, baseShortLabel, secondaryShortLabel, baseOutcomes])
 
   // Compute conditional probability lines if a dimension is fixed
   const conditionalLines = (hasAllCells && fixedDimension)
-    ? computeConditionalLines(cellPriceHistories, fixedDimension)
+    ? computeConditionalLines(
+        cellPriceHistories,
+        fixedDimension,
+        baseMarketType,
+        secondaryType,
+        baseShortLabel,
+        secondaryShortLabel,
+        baseOutcomes,
+      )
     : []
   const showConditional = conditionalLines.length > 0
 
+  // Build "All" overlay lines when fixedDimension is null and is2D
+  const showAllOverlay = is2D && !fixedDimension && !showConditional
+  const allCellLines = useMemo(() => {
+    if (!showAllOverlay || !cellPriceHistories) return []
+    return Object.entries(cellPriceHistories).map(([cellId, history]) => ({
+      id: cellId,
+      label: cellId.replace('-', ' / ').toUpperCase(),
+      data: history.data,
+    }))
+  }, [showAllOverlay, cellPriceHistories])
+
   // Get active price history
   let activeData = priceHistory.data
-  if (is2D && !showConditional && selectedCellId && cellPriceHistories[selectedCellId]) {
-    activeData = cellPriceHistories[selectedCellId].data
+  if (showAllOverlay && allCellLines.length > 0) {
+    // Use first line data for bounds computation
+    activeData = allCellLines[0].data
   } else if (showConditional && conditionalLines[0]?.data.length) {
-    // Use first conditional line data for bounds computation
     activeData = conditionalLines[0].data
   }
 
@@ -183,6 +305,8 @@ export function PriceChart({
   let allPrices: number[]
   if (showConditional) {
     allPrices = conditionalLines.flatMap(line => line.data.map(p => p.price))
+  } else if (showAllOverlay) {
+    allPrices = allCellLines.flatMap(line => line.data.map(p => p.price))
   } else {
     allPrices = activeData.map((p) => chartType === 'volume' && p.volume ? p.volume : p.price)
   }
@@ -238,21 +362,6 @@ export function PriceChart({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 2D Cell Selector (hidden when showing conditional lines) */}
-          {is2D && !showConditional && (
-            <select
-              value={selectedCellId || ''}
-              onChange={(e) => onCellChange?.(e.target.value)}
-              className="text-xs bg-slate-100 dark:bg-slate-700 border-0 rounded-lg px-2 py-1.5 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500"
-            >
-              {Object.keys(cellPriceHistories).map((cellId) => (
-                <option key={cellId} value={cellId}>
-                  {cellId.replace('-', ' / ').toUpperCase()}
-                </option>
-              ))}
-            </select>
-          )}
-
           {/* Chart Type Toggle */}
           <div className="flex rounded-lg bg-slate-100 dark:bg-slate-700 p-0.5">
             <button
@@ -280,9 +389,9 @@ export function PriceChart({
       </div>
 
       {/* 2D Dimension-Fixing Toggle */}
-      {hasAllCells && onFixDimension && (
+      {hasAllCells && onFixDimension && dimensionButtons.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {DIMENSION_BUTTONS.map((btn, idx) => (
+          {dimensionButtons.map((btn, idx) => (
             <button
               key={idx}
               onClick={() => onFixDimension(btn.dim)}
@@ -300,7 +409,7 @@ export function PriceChart({
 
       {/* Chart Area */}
       <div className="relative h-48 mb-4 bg-slate-50 dark:bg-slate-900 rounded-xl overflow-hidden">
-        {activeData.length === 0 && !showConditional ? (
+        {activeData.length === 0 && !showConditional && !showAllOverlay ? (
           <div className="absolute inset-0 flex items-center justify-center text-slate-400 dark:text-slate-500 text-sm">
             No data available
           </div>
@@ -318,6 +427,18 @@ export function PriceChart({
             {/* Conditional probability multi-line for 2D markets */}
             {showConditional ? (
               conditionalLines.map((line, idx) => (
+                <path
+                  key={line.id}
+                  d={generatePath(line.data)}
+                  fill="none"
+                  stroke={OUTCOME_COLORS[idx % OUTCOME_COLORS.length]}
+                  strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))
+            ) : showAllOverlay ? (
+              /* "All" mode: overlay all cell lines */
+              allCellLines.map((line, idx) => (
                 <path
                   key={line.id}
                   d={generatePath(line.data)}
@@ -450,8 +571,23 @@ export function PriceChart({
         </div>
       )}
 
+      {/* Legend for "All" Overlay */}
+      {showAllOverlay && allCellLines.length > 0 && (
+        <div className="flex flex-wrap gap-3 mb-4">
+          {allCellLines.map((line, idx) => (
+            <div key={line.id} className="flex items-center gap-1.5">
+              <div
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: OUTCOME_COLORS[idx % OUTCOME_COLORS.length] }}
+              />
+              <span className="text-xs text-slate-600 dark:text-slate-400">{line.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Legend for Categorical Markets */}
-      {!showConditional && isMultiLine && outcomes && (
+      {!showConditional && !showAllOverlay && isMultiLine && outcomes && (
         <div className="flex flex-wrap gap-3 mb-4">
           {outcomes.slice(0, 6).map((outcome, idx) => (
             <div key={outcome.id} className="flex items-center gap-1.5">

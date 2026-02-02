@@ -83,8 +83,6 @@ export function MarketDetail({
   onLoadMoreComments,
   onRelatedMarketClick,
   onCreatorClick,
-  onBaseMarketClick,
-  onChartCellChange,
   onFixDimension,
   fixedDimension,
 }: MarketDetailProps) {
@@ -96,10 +94,13 @@ export function MarketDetail({
 
   // Get cell-specific data for 2D markets
   const cellPriceHistories = market.type === 'twodimensional' ? market.cellPriceHistories : undefined
-  const compositeOdds = market.type === 'twodimensional' ? market.compositeOdds : undefined
 
-  // Default selected cell for charts
-  const defaultCellId = cellPriceHistories ? Object.keys(cellPriceHistories)[0] : undefined
+  // Get 2D market type info for dynamic chart buttons
+  const baseMarketType = market.type === 'twodimensional' ? market.baseMarketType : undefined
+  const secondaryType = market.type === 'twodimensional' ? market.secondaryType : undefined
+  const baseOutcomes = market.type === 'twodimensional' ? market.baseOutcomes : undefined
+  const baseShortLabel = market.type === 'twodimensional' ? market.baseShortLabel : undefined
+  const secondaryShortLabel = market.type === 'twodimensional' ? market.secondaryShortLabel : undefined
 
   // Compute current display for price chart
   const currentDisplay = computeCurrentDisplay(market)
@@ -157,13 +158,15 @@ export function MarketDetail({
               outcomePriceHistories={outcomePriceHistories}
               outcomes={outcomes}
               cellPriceHistories={cellPriceHistories}
-              selectedCellId={defaultCellId}
-              onCellChange={onChartCellChange}
               currentDisplay={currentDisplay}
               comments={market.comments}
               fixedDimension={fixedDimension}
               onFixDimension={onFixDimension}
-              compositeOdds={compositeOdds}
+              baseMarketType={baseMarketType}
+              secondaryType={secondaryType}
+              baseShortLabel={baseShortLabel}
+              secondaryShortLabel={secondaryShortLabel}
+              baseOutcomes={baseOutcomes}
             />
 
             {/* Resolution Info (in normal position for open markets) */}

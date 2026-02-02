@@ -10,13 +10,14 @@ import type {
   MarketDetail as MarketDetailType,
 } from '@/../product/sections/market-detail/types'
 
-type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket' | 'twoDimensionalMarket'
+type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket' | 'twoDimensionalMarket' | 'categorical2DMarket'
 
 const marketLabels: Record<MarketKey, string> = {
   yesNoMarket: 'Yes/No Market',
   resolvedYesNoMarket: 'Resolved Market',
   categoricalMarket: 'Categorical Market',
-  twoDimensionalMarket: '2D Composite Market',
+  twoDimensionalMarket: 'Yes/No 2D Market',
+  categorical2DMarket: 'Categorical 2D Market',
 }
 
 export function MarketDetailPreview() {

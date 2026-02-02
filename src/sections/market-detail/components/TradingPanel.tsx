@@ -211,10 +211,69 @@ function TwoDimensionalOutcomes({
     )
   }
 
+  return null
+}
+
+function CategoricalTwoDimensionalOutcomes({
+  market,
+  tradeSelection,
+  onTradeSelect,
+}: {
+  market: TwoDimensionalMarketDetail
+  tradeSelection: TradeSelection | null
+  onTradeSelect?: (selection: TradeSelection) => void
+}) {
+  if (!market.categoricalCompositeOdds || !market.baseOutcomes) return null
+
   return (
-    <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
-      Complex 2D market - click cells to trade
-    </p>
+    <div>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+        Base: {market.baseMarketTitle}
+        <br />
+        Secondary: {market.secondaryQuestion}
+      </p>
+      <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+        {market.baseOutcomes.map((outcome) => {
+          const odds = market.categoricalCompositeOdds![outcome.id]
+          if (!odds) return null
+          const yesSelected = tradeSelection?.cellId === `${outcome.id}-yes`
+          const noSelected = tradeSelection?.cellId === `${outcome.id}-no`
+
+          return (
+            <div
+              key={outcome.id}
+              className="p-3 rounded-xl border border-slate-200 dark:border-slate-700"
+            >
+              <div className="text-sm font-medium text-slate-900 dark:text-white mb-2">
+                {outcome.label}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => onTradeSelect?.({ side: 'yes', cellId: `${outcome.id}-yes` })}
+                  className={`py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
+                    yesSelected
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20'
+                  }`}
+                >
+                  Yes {odds.yes.toFixed(1)}%
+                </button>
+                <button
+                  onClick={() => onTradeSelect?.({ side: 'no', cellId: `${outcome.id}-no` })}
+                  className={`py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
+                    noSelected
+                      ? 'bg-red-500 text-white'
+                      : 'bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20'
+                  }`}
+                >
+                  No {odds.no.toFixed(1)}%
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -251,7 +310,14 @@ export function TradingPanel({
           onTradeSelect={onTradeSelect}
         />
       )}
-      {market.type === 'twodimensional' && (
+      {market.type === 'twodimensional' && market.categoricalCompositeOdds && (
+        <CategoricalTwoDimensionalOutcomes
+          market={market}
+          tradeSelection={tradeSelection}
+          onTradeSelect={onTradeSelect}
+        />
+      )}
+      {market.type === 'twodimensional' && !market.categoricalCompositeOdds && (
         <TwoDimensionalOutcomes
           market={market}
           tradeSelection={tradeSelection}

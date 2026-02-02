@@ -163,6 +163,8 @@ export interface TwoDimensionalMarketDetail extends BaseMarketDetail {
   baseMarketType: 'yesno' | 'categorical'
   secondaryType: 'yesno' | 'categorical'
   secondaryQuestion: string
+  baseShortLabel?: string    // e.g. "BTC 100K"
+  secondaryShortLabel?: string  // e.g. "China-Taiwan"
   compositeOdds?: YesNoCompositeOdds
   categoricalCompositeOdds?: CategoricalYesNoCompositeOdds
   baseOutcomes?: Outcome[]
