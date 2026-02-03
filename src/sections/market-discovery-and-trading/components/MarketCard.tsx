@@ -241,114 +241,6 @@ function TwoDimensionalYesNoGrid({
   )
 }
 
-// Grid for Categorical + Yes/No 2D markets
-function TwoDimensionalCategoricalGrid({
-  market,
-  onCellClick,
-}: {
-  market: TwoDimensionalMarket
-  onCellClick: (baseOutcomeId: string, baseOutcomeLabel: string, secondaryOutcome: 'yes' | 'no') => void
-}) {
-  if (!market.categoricalCompositeOdds || !market.baseOutcomes) return null
-
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [canScrollUp, setCanScrollUp] = useState(false)
-  const [canScrollDown, setCanScrollDown] = useState(false)
-
-  const checkScroll = () => {
-    if (scrollRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current
-      setCanScrollUp(scrollTop > 2)
-      setCanScrollDown(scrollTop < scrollHeight - clientHeight - 2)
-    }
-  }
-
-  useEffect(() => {
-    checkScroll()
-    const resizeObserver = new ResizeObserver(checkScroll)
-    if (scrollRef.current) {
-      resizeObserver.observe(scrollRef.current)
-    }
-    return () => resizeObserver.disconnect()
-  }, [market.baseOutcomes])
-
-  const scroll = (direction: 'up' | 'down', e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (scrollRef.current) {
-      const scrollAmount = 60
-      scrollRef.current.scrollBy({
-        top: direction === 'up' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      })
-    }
-  }
-
-  return (
-    <div className="relative group/outcomes flex-1 flex flex-col min-h-0">
-      {canScrollUp && (
-        <button
-          onClick={(e) => scroll('up', e)}
-          className="absolute left-1/2 -translate-x-1/2 -top-2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
-        >
-          <ChevronUp className="w-4 h-4" />
-        </button>
-      )}
-
-      <div
-        ref={scrollRef}
-        onScroll={checkScroll}
-        className="flex flex-col gap-1 overflow-y-auto flex-1 scrollbar-hide -mx-1 px-1 py-1"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {market.baseOutcomes.map((outcome) => {
-          const odds = market.categoricalCompositeOdds?.[outcome.id]
-          if (!odds) return null
-
-          return (
-            <div
-              key={outcome.id}
-              className="flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 rounded-lg p-2 border border-slate-200 dark:border-slate-700"
-            >
-              <div className="flex items-center gap-2">
-                <div className="text-[10px] font-medium text-slate-600 dark:text-slate-400 truncate flex-1 min-w-0">
-                  {outcome.label}
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onCellClick(outcome.id, outcome.label, 'yes')
-                  }}
-                  className="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 rounded text-emerald-600 dark:text-emerald-400 font-bold text-[10px] transition-all"
-                >
-                  Y {odds.yes.toFixed(1)}%
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onCellClick(outcome.id, outcome.label, 'no')
-                  }}
-                  className="px-2 py-1 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 rounded text-rose-600 dark:text-rose-400 font-bold text-[10px] transition-all"
-                >
-                  N {odds.no.toFixed(1)}%
-                </button>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {canScrollDown && (
-        <button
-          onClick={(e) => scroll('down', e)}
-          className="absolute left-1/2 -translate-x-1/2 -bottom-2 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/outcomes:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
-        >
-          <ChevronDown className="w-4 h-4" />
-        </button>
-      )}
-    </div>
-  )
-}
-
 // Secondary markets expander component
 function SecondaryMarketsExpander({
   secondaryMarketInfos,
@@ -440,18 +332,6 @@ export function MarketCard({
       side: baseOutcome,
       is2DCombo: true,
       baseOutcome,
-      secondaryOutcome,
-    })
-    setIsTrading(true)
-  }
-
-  // Handle 2D Categorical + Yes/No combo click
-  const handle2DCategoricalClick = (baseOutcomeId: string, baseOutcomeLabel: string, secondaryOutcome: 'yes' | 'no') => {
-    setTradeState({
-      side: secondaryOutcome,
-      is2DCombo: true,
-      baseOutcomeId,
-      baseOutcomeLabel,
       secondaryOutcome,
     })
     setIsTrading(true)

@@ -1,4 +1,4 @@
-import { Info, ExternalLink, CheckCircle2, AlertCircle, Clock, AlertTriangle } from 'lucide-react'
+import { Info, CheckCircle2, AlertCircle, Clock, AlertTriangle } from 'lucide-react'
 import type { ResolutionDetails, ResolutionSource, ResolutionStatus } from '@/../product/sections/market-detail/types'
 
 interface ResolutionInfoProps {

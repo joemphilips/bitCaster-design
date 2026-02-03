@@ -1,5 +1,5 @@
 import { Heart, Share2, Clock, CheckCircle2, Droplet, Users } from 'lucide-react'
-import type { MarketDetail, MarketCreator } from '@/../product/sections/market-detail/types'
+import type { MarketDetail } from '@/../product/sections/market-detail/types'
 import { formatBtc } from '@/lib/format'
 
 interface MarketHeaderProps {
