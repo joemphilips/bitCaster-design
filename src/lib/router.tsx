@@ -8,7 +8,8 @@ import { ScreenDesignPage, ScreenDesignFullscreen } from '@/components/ScreenDes
 import { ShellDesignPage, ShellDesignFullscreen } from '@/components/ShellDesignPage'
 import { ExportPage } from '@/components/ExportPage'
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
   {
     path: '/',
     element: <ProductPage />,
@@ -49,4 +50,8 @@ export const router = createBrowserRouter([
     path: '/export',
     element: <ExportPage />,
   },
-])
+  ],
+  {
+    basename: import.meta.env.BASE_URL,
+  }
+)
