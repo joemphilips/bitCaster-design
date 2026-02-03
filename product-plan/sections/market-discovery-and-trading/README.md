@@ -2,94 +2,65 @@
 
 ## Overview
 
-The core marketplace where users discover and trade on prediction markets. This is the main landing page of bitCaster, designed for quick market browsing and frictionless trading.
+Core marketplace where users browse active prediction markets, view odds, and place trades in real-time. This is the default home view of bitCaster.
 
-## User Flows
+## Design Intent
 
-### Browse Markets by Tag
+- **Discoverability**: Tag-based navigation lets users quickly find markets by interest
+- **Low friction**: Inline trading means users can trade without leaving the browse view
+- **Unified cards**: All market types (Yes/No, Categorical, 2D) use consistent 280px card height
+- **Information density**: Metrics footer provides key stats at a glance
 
-1. User lands on page, sees Trending markets by default
-2. Horizontal tag bar shows meta tags (Trending, Popular, New) and category tags (Sports, Politics, etc.)
-3. User taps a tag to filter — single-select behavior (previous tag deselects)
-4. Markets update to show filtered results
+## Key Features
 
-### Quick Trade (Yes/No Market)
+### Tag Navigation
+- Single-select horizontal tag bar
+- Meta tags (Trending, Popular, New) + category tags
+- Trending is default selection
 
-1. User sees market card with current odds displayed (e.g., "65.2%")
-2. User clicks "Buy YES" or "Buy NO" button
-3. Card transforms to inline trading interface:
-   - Shows predicted odds after purchase
-   - Amount picker with preset buttons (500, 1K, 5K, 10K)
-   - "BUY [amount] SATS" confirmation button
-4. User confirms, trade executes, card returns to normal
+### Filter Controls
+- Hidden by default to keep interface clean
+- Toggle with filter icon
+- Market Type, Volume range, Closing date filters
 
-### Quick Trade (Categorical Market)
-
-1. User sees market with multiple outcomes listed vertically
-2. Each outcome shows label, current odds, Yes/No buttons
-3. User clicks Yes or No on specific outcome
-4. Same trading interface appears
-5. Trade executes for that specific outcome
-
-### Apply Filters
-
-1. User uses filter controls below tag bar
-2. Available filters:
-   - Market type (Yes/No, Categorical, Two-Dimensional)
-   - Minimum volume (10K+, 100K+, 500K+, 1M+, 5M+)
-   - Closing date (7 days, 30 days, 90 days, 6 months, 1 year)
-3. Active filter count shown, "Clear all" to reset
-
-### Navigate to Market Detail
-
-1. User clicks anywhere on market card (except buttons/inputs)
-2. Navigates to market detail page
-
-## Design Decisions
-
-### Single-Select Tag Navigation
-
-Tags use single-select behavior (not multi-select) for simplicity. The amber-colored meta tags (Trending, Popular, New) provide quick access to curated lists, while category tags filter by topic.
+### Market Cards
+- Fixed 280px height for visual consistency
+- Yes/No: Chance percentage with Buy Yes/No buttons
+- Categorical: Scrollable outcome list with individual Yes/No
+- 2D: Grid layout showing composite odds
 
 ### Inline Trading
+- Card transforms to trading overlay on Buy click
+- Amount input with quick buttons (100, 500, 1000, 5000)
+- Predicted odds and cancel option
+- Card size does NOT change during transformation
 
-Trading happens directly on the card without modal dialogs, reducing friction. The card "transforms" to show the trade interface when a buy button is clicked.
+### Secondary Markets (2D)
+- "and..." link expands to show secondary markets
+- Each secondary market navigates to its detail page
+- Expanded height: 280px + 40px per secondary
 
-### Market Card Layout
+## Components
 
-- Hero image with gradient overlay
-- Title prominently displayed
-- For Yes/No: Single percentage badge + Buy YES/NO buttons
-- For Categorical: Scrollable outcome list with individual Yes/No buttons
-- Footer: Volume (BTC), Liquidity, Trader count, Like button
+| Component | Description |
+|-----------|-------------|
+| `MarketDiscovery` | Main page container with tag bar, filters, and grid |
+| `TagBar` | Horizontal tag navigation with single-select |
+| `FilterControls` | Collapsible filter row |
+| `MarketCard` | Unified card handling all market types |
+| `TradingOverlay` | Inline trading transformation |
+| `MetricsFooter` | Volume, liquidity, traders, likes |
 
-### Sticky Navigation
+## Files
 
-Search bar and tag bar are sticky, always accessible while scrolling through markets.
+- `types.ts` — TypeScript interfaces for markets, tags, and filters
+- `sample-data.json` — Sample markets for development
+- `tests.md` — Test requirements
+- `components/` — Reference React implementations
 
-## Components Provided
+## Currency Display
 
-- `MarketDiscovery` — Main page with all elements
-- `TagBar` — Horizontal scrollable tag navigation
-- `FilterControls` — Filter controls panel
-- `MarketCard` — Individual market card with trading interface
-
-## Callback Props
-
-| Callback | Description |
-|----------|-------------|
-| `onSearch` | Search query changed |
-| `onTagSelect` | Tag clicked (single-select) |
-| `onMarketTypeChange` | Market type filter changed |
-| `onVolumeRangeChange` | Volume filter changed |
-| `onClosingDateChange` | Closing date filter changed |
-| `onBuyYes` | Buy YES on yes/no market |
-| `onBuyNo` | Buy NO on yes/no market |
-| `onBuyOutcomeYes` | Buy YES on categorical outcome |
-| `onBuyOutcomeNo` | Buy NO on categorical outcome |
-| `onViewMarket` | Card clicked (navigate to detail) |
-| `onLoadMore` | Infinite scroll triggered |
-
-## Visual Reference
-
-See `screenshot.png` for the target UI design.
+All values use ₿ prefix (not "sats" suffix):
+- `₿12,500` for exact amounts
+- `₿12.5K` for thousands
+- `₿1.2M` for millions

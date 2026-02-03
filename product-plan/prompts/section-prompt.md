@@ -1,62 +1,67 @@
 # Section Implementation Prompt
 
-## Define Section Variables
-
-Replace the placeholders below with actual values:
-
-- **SECTION_NAME** = [Human-readable name, e.g., "Market Discovery & Trading"]
-- **SECTION_ID** = [Folder name in sections/, e.g., "market-discovery-and-trading"]
-- **NN** = [Milestone number, e.g., "02" — sections start at 02 since 01 is Foundation]
+Use this template to implement one section at a time. Fill in the variables below before pasting into your coding agent.
 
 ---
 
-I need you to implement the **SECTION_NAME** section of my application.
+## Variables (Fill These In)
 
-## Instructions
+```
+SECTION_NAME: [e.g., "Market Discovery & Trading"]
+SECTION_ID: [e.g., "market-discovery-and-trading"]
+NN: [e.g., "02" for the milestone number]
+```
 
-Please carefully read and analyze the following files:
+---
 
-1. **@product-plan/product-overview.md** — Product summary for overall context
-2. **@product-plan/instructions/incremental/NN-SECTION_ID.md** — Specific instructions for this section
+## Prompt Template
 
-Also review the section assets:
-- **@product-plan/sections/SECTION_ID/README.md** — Feature overview and design intent
-- **@product-plan/sections/SECTION_ID/tests.md** — Test-writing instructions (use TDD approach)
-- **@product-plan/sections/SECTION_ID/components/** — React components to integrate
-- **@product-plan/sections/SECTION_ID/types.ts** — TypeScript interfaces
-- **@product-plan/sections/SECTION_ID/sample-data.json** — Test data
+I need to implement the **[SECTION_NAME]** section for bitCaster, a Bitcoin-native prediction market platform.
 
-## Before You Begin
+### Context Files
 
-Please ask me clarifying questions about:
+Please read these files to understand the implementation requirements:
 
-1. **Authentication & Authorization** (if not yet established)
-   - How should users authenticate?
-   - What permissions are needed for this section?
+1. `product-plan/product-overview.md` — Overall product context
+2. `product-plan/instructions/incremental/[NN]-[SECTION_ID].md` — Detailed implementation requirements for this section
+3. `product-plan/sections/[SECTION_ID]/README.md` — Section overview and design intent
+4. `product-plan/sections/[SECTION_ID]/types.ts` — TypeScript interfaces
+5. `product-plan/sections/[SECTION_ID]/sample-data.json` — Sample data for development
+6. `product-plan/sections/[SECTION_ID]/components/` — Reference component implementations
 
-2. **Data Relationships**
-   - How does this section's data relate to other entities?
-   - Are there any cross-section dependencies?
+### Prerequisites
 
-3. **Integration Points**
-   - How should this section connect to existing features?
-   - Any API endpoints already built that this should use?
+Ensure the following are already in place:
+- Design tokens from `design-system/tokens.css`
+- Application shell from `shell/components/`
+- Routing configured for this section
 
-4. **Backend Business Logic**
-   - Any server-side logic, validations or processes needed beyond what's shown in the UI?
-   - Background processes, notifications, or other processes to trigger?
+### Implementation Approach
 
-5. **Any Other Clarifications**
-   - Questions about specific user flows in this section
-   - Edge cases that need clarification
+1. Review the reference components in `sections/[SECTION_ID]/components/`
+2. Implement each component following the types and patterns
+3. Wire up state management and callbacks
+4. Apply styling using design tokens
+5. Test with sample data
 
-## Implementation Approach
+### Test-Driven Development
 
-Use test-driven development:
-1. Read the `tests.md` file and write failing tests first
+Before implementing, read `product-plan/sections/[SECTION_ID]/tests.md` for test requirements:
+1. Write failing tests based on the test instructions
 2. Implement the feature to make tests pass
 3. Refactor while keeping tests green
 
-Lastly, be sure to ask me if I have any other notes to add for this implementation.
+### Questions for Clarification
 
-Once I answer your questions, proceed with implementation.
+Before you begin:
+1. Is there an existing component library I should extend?
+2. Are there specific state management patterns already in use?
+3. Should I create new API endpoints or use mocked data?
+
+### Additional Notes
+
+[Add any project-specific context here]
+
+---
+
+*After reviewing the files, please propose an implementation plan for this section.*

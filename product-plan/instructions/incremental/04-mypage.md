@@ -1,238 +1,158 @@
 # Milestone 4: MyPage
 
-> **Provide alongside:** `product-overview.md`
-> **Prerequisites:** Milestones 1-3 complete
+## Objective
+Build the personal dashboard with positions, orders, and created markets.
+
+## Prerequisites
+- Milestone 1 (Foundation) complete
+- Milestone 2 (Market Discovery) recommended for context
+
+## Reference Files
+- `sections/mypage/README.md` — Overview and design intent
+- `sections/mypage/types.ts` — TypeScript interfaces
+- `sections/mypage/sample-data.json` — Sample data
+- `sections/mypage/tests.md` — Test requirements
+- `sections/mypage/components/` — Reference implementations
 
 ---
 
-## About These Instructions
+## Tasks
 
-**What you're receiving:**
-- Finished UI designs (React components with full styling)
-- Data model definitions (TypeScript types and sample data)
-- UI/UX specifications (user flows, requirements, screenshots)
-- Design system tokens (colors, typography, spacing)
-- Test-writing instructions for each section (for TDD approach)
+### 4.1 Profile Header
 
-**What you need to build:**
-- Backend API endpoints and database schema
-- Authentication and authorization
-- Data fetching and state management
-- Business logic and validation
-- Integration of the provided UI components with real data
+Top section with user info and P/L summary.
 
-**Important guidelines:**
-- **DO NOT** redesign or restyle the provided components — use them as-is
-- **DO** wire up the callback props to your routing and API calls
-- **DO** replace sample data with real data from your backend
-- **DO** implement proper error handling and loading states
-- **DO** implement empty states when no records exist (first-time users, after deletions)
-- **DO** use test-driven development — write tests first using `tests.md` instructions
-- The components are props-based and ready to integrate — focus on the backend and data layer
+#### Avatar
+- Displays user avatar image
+- Clickable to upload new image (PNG)
+- Shows upload progress/success feedback
+- Default avatar if none set
 
----
+#### P/L Summary Cards
+Row of cards showing profit/loss at different time scales:
 
-## Goal
+| Time Scale | P/L Amount |
+|------------|------------|
+| 24h | +₿1,250 |
+| 7d | +₿8,500 |
+| 30d | -₿2,100 |
+| All-time | +₿45,000 |
 
-Implement the MyPage feature — a personal dashboard where users view their trading positions, transaction history, and created markets.
+- Green for positive P/L
+- Red for negative P/L
+- Cards are selectable to toggle the active view (optional)
 
-## Overview
+### 4.2 Positions Section
 
-MyPage is the user's personal hub showing their trading activity and account information. It features a profile header with avatar and profit/loss summary, plus expandable sections for positions, order history, and created markets.
+Expandable section showing trading positions.
 
-**Key Functionality:**
-- View profile with avatar and P/L metrics across time scales (24h, 7d, 30d, All-time)
-- Upload/change avatar image
-- Browse trading positions with Active/Closed tabs
-- Sell active positions or claim payouts from winning closed positions
-- View order history showing deposits and withdrawals
-- Browse markets the user has created
-- Claim creator fees from resolved markets
+#### Section Header
+- "Positions" title
+- Expand/collapse chevron
+- Count badge (e.g., "12")
 
-## Recommended Approach: Test-Driven Development
+#### Sub-tabs
+- **Active**: Positions in open markets
+- **Closed**: Positions in resolved markets
 
-Before implementing this section, **write tests first** based on the test specifications provided.
-
-See `product-plan/sections/mypage/tests.md` for detailed test-writing instructions including:
-- Key user flows to test (success and failure paths)
-- Specific UI elements, button labels, and interactions to verify
-- Expected behaviors and assertions
-
-**TDD Workflow:**
-1. Read `tests.md` and write failing tests for the key user flows
-2. Implement the feature to make tests pass
-3. Refactor while keeping tests green
-
-## What to Implement
-
-### Components
-
-Copy the section components from `product-plan/sections/mypage/components/`:
-
-- `MyPage.tsx` — Main page with profile header and expandable sections
-- `ProfileHeader.tsx` — Avatar and P/L summary cards
-- `PLCard.tsx` — Individual P/L metric card
-- `ExpandableSection.tsx` — Collapsible section wrapper
-- `PositionsSection.tsx` — Positions with Active/Closed tabs
-- `PositionRow.tsx` — Individual position row with Sell/Claim actions
-- `OrderHistorySection.tsx` — Deposit/withdrawal history
-- `OrderHistoryRow.tsx` — Individual order row
-- `CreatedMarketsSection.tsx` — Markets created by user
-- `CreatedMarketRow.tsx` — Individual created market row
-
-### Data Layer
-
-The components expect these data shapes:
-
-```typescript
-interface UserProfile {
-  userId: string
-  displayName: string
-  avatarUrl: string | null
-  registeredDate: string
-}
-
-interface PLSummary {
-  last24h: { amountSats: number; percentChange: number }
-  last7d: { amountSats: number; percentChange: number }
-  last30d: { amountSats: number; percentChange: number }
-  allTime: { amountSats: number; percentChange: number }
-}
-
-interface Position {
-  id: string
-  marketId: string
-  marketTitle: string
-  marketImageUrl: string
-  side: 'yes' | 'no'
-  outcomeId?: string
-  outcomeLabel?: string
-  shares: number
-  avgBuyPrice: number
-  currentPrice: number
-  currentValueSats: number
-  profitLossSats: number
-  profitLossPercent: number
-  status: 'active' | 'closed'
-  closedDate?: string
-  acquiredDate: string
-}
-
-interface OrderHistoryItem {
-  id: string
-  type: 'deposit' | 'withdrawal'
-  amountSats: number
-  date: string
-  status: 'pending' | 'completed' | 'failed'
-  txId: string | null
-  lightningInvoice: string | null
-  failureReason?: string
-}
-
-interface CreatedMarket {
-  id: string
-  title: string
-  imageUrl: string
-  status: 'pending' | 'approved' | 'rejected' | 'resolved' | 'cancelled'
-  createdDate: string
-  volume: number
-  creatorFeesEarned: number
-  creatorFeePercent: number
-}
+#### Position Item
+```
+┌─────────────────────────────────────────────────┐
+│ [Market Image] Title: Will Bitcoin reach $100K? │
+│ Shares: 150 Yes                                 │
+│ Value: ₿12,500   P/L: +₿2,300 (+18%)           │
+│                                        [Sell]   │
+└─────────────────────────────────────────────────┘
 ```
 
-### Callbacks
+- Market title (links to detail)
+- Shares owned and side (Yes/No)
+- Current value in sats
+- P/L amount and percentage
+- **Sell button** (Active tab only)
 
-Wire up these user actions:
+### 4.3 Order History Section
 
-| Callback | Description | Event Triggered |
-|----------|-------------|-----------------|
-| `onAvatarUpload` | User uploads new avatar | `UserProfileUpdated` event |
-| `onSellPosition` | User sells an active position | `Sold` event |
-| `onViewPosition` | User clicks position row | Navigate to market |
-| `onClaimPayout` | User claims from winning position | `PayoutClaimed` event |
-| `onPositionsTabChange` | User switches Active/Closed | UI state change |
-| `onViewMarket` | User clicks created market | Navigate to market |
-| `onClaimCreatorFees` | User claims creator fees | `CreatorFeeClaimed` event |
-| `onViewOrder` | User clicks order row | Show order details |
+Expandable section showing deposits and withdrawals.
 
-### Empty States
+#### Section Header
+- "Order History" title
+- Expand/collapse chevron
 
-Implement empty state UI for when no records exist:
+#### Order Item
+```
+┌─────────────────────────────────────────────────────────┐
+│ Dec 15, 2024  Deposit   ₿50,000   Completed             │
+│ TX: abc123...def789                                     │
+│ Lightning: lnbc500u1p3...                               │
+└─────────────────────────────────────────────────────────┘
+```
 
-- **No positions:** Show message "No active positions" or "No closed positions" with icon
-- **No order history:** Show message "No transactions yet"
-- **No created markets:** Show message "You haven't created any markets yet"
+- Date and time
+- Type: Deposit or Withdrawal
+- Amount (₿ format)
+- Status: Pending, Completed, Failed
+- Transaction ID (truncated with copy button)
+- Lightning invoice (if applicable, truncated with copy button)
 
-The provided components include empty state designs.
+### 4.4 My Markets Section
 
-## Files to Reference
+Expandable section listing markets created by the user.
 
-- `product-plan/sections/mypage/README.md` — Feature overview
-- `product-plan/sections/mypage/tests.md` — Test-writing instructions
-- `product-plan/sections/mypage/components/` — React components
-- `product-plan/sections/mypage/types.ts` — TypeScript interfaces
-- `product-plan/sections/mypage/sample-data.json` — Test data
-- `product-plan/sections/mypage/screenshot.png` — Visual reference
+#### Section Header
+- "My Markets" title
+- Expand/collapse chevron
+- Count badge
 
-## Expected User Flows
+#### Market Item
+```
+┌─────────────────────────────────────────────────┐
+│ [Thumbnail] Super Bowl Winner 2025              │
+│ Status: Active   Volume: ₿12.5K   Fees: ₿650   │
+│                              [View] [Manage]    │
+└─────────────────────────────────────────────────┘
+```
 
-### Flow 1: View P/L Summary
+- Thumbnail and title
+- Status badge (Active, Pending, Resolved)
+- Volume (₿ format)
+- Fees earned (₿ format)
+- View → navigates to market detail
+- Manage → navigates to creator dashboard
 
-1. User navigates to MyPage
-2. User sees profile header with avatar and name
-3. User sees P/L cards: 24h, 7 days, 30 days, All Time
-4. **Outcome:** User understands their trading performance at a glance
+---
 
-### Flow 2: Upload Avatar
+## Component Checklist
 
-1. User clicks on their avatar image
-2. File picker opens
-3. User selects a PNG/JPEG image
-4. **Outcome:** Avatar updates, profile shows new image
+- [ ] `MyPage` — Main container
+- [ ] `ProfileHeader` — Avatar and name
+- [ ] `PLCard` — Single P/L time scale card
+- [ ] `PLSummary` — Row of P/L cards
+- [ ] `ExpandableSection` — Collapsible container
+- [ ] `PositionsSection` — Positions with tabs
+- [ ] `PositionItem` — Single position row
+- [ ] `OrderHistorySection` — Orders list
+- [ ] `OrderItem` — Single order row
+- [ ] `MyMarketsSection` — Created markets list
+- [ ] `MyMarketItem` — Single market row
 
-### Flow 3: Sell an Active Position
+---
 
-1. User expands Positions section
-2. User sees Active tab with their open positions
-3. User clicks "Sell" button on a position
-4. **Outcome:** Position sold, balance updates, position moves to Closed tab
+## Test Points
 
-### Flow 4: Claim Payout from Winning Position
+See `tests.md` for detailed requirements. Key scenarios:
+- Avatar upload changes image
+- P/L cards display correct values with colors
+- Sections expand and collapse
+- Active/Closed tabs filter positions
+- Sell button only on Active positions
+- Order details display correctly
+- Copy buttons work for TX ID and invoice
+- My Markets links navigate correctly
 
-1. User clicks Closed tab in Positions section
-2. User sees a closed position with positive value
-3. User clicks "Claim" button
-4. **Outcome:** Payout claimed, balance updates
+---
 
-### Flow 5: Review Order History
+## Next Steps
 
-1. User expands Order History section (collapsed by default)
-2. User sees list of deposits and withdrawals
-3. User sees status badges (completed, pending, failed)
-4. User sees Lightning invoice for relevant transactions
-5. **Outcome:** User can audit their transaction history
-
-### Flow 6: Manage Created Markets
-
-1. User expands My Markets section (collapsed by default)
-2. User sees their created markets with status badges
-3. For resolved markets with fees, user clicks "Claim Fees"
-4. **Outcome:** Creator fees claimed, balance updates
-
-## Done When
-
-- [ ] Tests written for key user flows
-- [ ] All tests pass
-- [ ] Profile header displays with correct P/L metrics
-- [ ] Avatar upload works
-- [ ] Positions section shows Active/Closed tabs
-- [ ] Selling positions works
-- [ ] Claiming payouts works
-- [ ] Order history displays with status and details
-- [ ] Created markets section displays
-- [ ] Claiming creator fees works
-- [ ] Empty states display when no data
-- [ ] Expandable sections collapse/expand properly
-- [ ] Matches the visual design (see screenshot)
-- [ ] Responsive on mobile
+After completing MyPage, proceed to:
+→ `05-market-detail.md`

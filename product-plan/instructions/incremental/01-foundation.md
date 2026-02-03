@@ -1,136 +1,167 @@
 # Milestone 1: Foundation
 
-> **Provide alongside:** `product-overview.md`
-> **Prerequisites:** None
+## Objective
+Set up the project foundation including design tokens, routing, data model, and application shell.
+
+## Prerequisites
+- React project initialized
+- Tailwind CSS installed
+- TypeScript configured
+
+## Reference Files
+- `product-plan/design-system/tokens.css` — CSS custom properties
+- `product-plan/design-system/tailwind-colors.md` — Tailwind color configuration
+- `product-plan/design-system/fonts.md` — Font setup instructions
+- `product-plan/event-model/events.ts` — Domain event interfaces
+- `product-plan/shell/components/` — Shell component implementations
 
 ---
 
-## About These Instructions
+## Tasks
 
-**What you're receiving:**
-- Finished UI designs (React components with full styling)
-- Data model definitions (TypeScript types and sample data)
-- UI/UX specifications (user flows, requirements, screenshots)
-- Design system tokens (colors, typography, spacing)
-- Test-writing instructions for each section (for TDD approach)
+### 1.1 Design System Setup
 
-**What you need to build:**
-- Backend API endpoints and database schema
-- Authentication and authorization
-- Data fetching and state management
-- Business logic and validation
-- Integration of the provided UI components with real data
+#### CSS Custom Properties
+Copy the design tokens from `design-system/tokens.css` into your global CSS file. These define:
+- Color palette (blue, amber, slate) for light and dark modes
+- Typography scale
+- Spacing and layout variables
 
-**Important guidelines:**
-- **DO NOT** redesign or restyle the provided components — use them as-is
-- **DO** wire up the callback props to your routing and API calls
-- **DO** replace sample data with real data from your backend
-- **DO** implement proper error handling and loading states
-- **DO** implement empty states when no records exist (first-time users, after deletions)
-- **DO** use test-driven development — write tests first using `tests.md` instructions
-- The components are props-based and ready to integrate — focus on the backend and data layer
+#### Tailwind Configuration
+Follow `design-system/tailwind-colors.md` to extend your `tailwind.config.js`:
+```js
+colors: {
+  primary: { /* blue shades */ },
+  secondary: { /* amber shades */ },
+  neutral: { /* slate shades */ }
+}
+```
+
+#### Fonts
+Follow `design-system/fonts.md` to:
+1. Add Google Fonts import for Inter and JetBrains Mono
+2. Configure `fontFamily` in Tailwind config
+3. Use Inter for headings and body, JetBrains Mono for numbers/balances
+
+#### Dark Mode
+- Configure Tailwind dark mode (class-based recommended)
+- Implement toggle in UI (can be in UserMenu)
+- Tokens already include dark mode variants
+
+### 1.2 Data Model
+
+Review `event-model/events.ts` for domain concepts. Define TypeScript interfaces:
+
+```typescript
+// Core entities
+interface User {
+  id: string
+  name: string
+  avatarUrl?: string
+  balance: number // in sats
+}
+
+interface Market {
+  id: string
+  title: string
+  type: 'yesno' | 'categorical' | 'twodimensional'
+  imageUrl?: string
+  currentOdds: number | Record<string, number>
+  volume: number
+  liquidity: number
+  traderCount: number
+  closingDate: string
+  status: 'open' | 'pending_resolution' | 'resolved'
+  // ... additional fields per market type
+}
+
+interface Position {
+  marketId: string
+  marketTitle: string
+  side: 'yes' | 'no'
+  shares: number
+  avgPrice: number
+  currentValue: number
+  pnl: number
+}
+
+interface Order {
+  id: string
+  type: 'deposit' | 'withdrawal'
+  amount: number
+  timestamp: string
+  status: 'pending' | 'completed' | 'failed'
+  txId?: string
+  lightningInvoice?: string
+}
+```
+
+#### Data Layer Options
+Choose based on your needs:
+- **Mock data**: Use sample JSON files from each section
+- **LocalStorage**: Persist state between sessions
+- **API client**: Connect to a backend service
+
+### 1.3 Routing
+
+Configure your router with these routes:
+
+| Path | Component | Description |
+|------|-----------|-------------|
+| `/` | MarketDiscovery | Home page, market browsing |
+| `/create` | MarketCreation | Creator dashboard |
+| `/mypage` | MyPage | Personal dashboard |
+| `/market/:id` | MarketDetail | Single market view |
+
+### 1.4 Application Shell
+
+Implement the shell components from `shell/components/`:
+
+#### AppShell.tsx
+- Wraps all pages
+- Renders MainNav at top
+- Handles mobile bottom navigation
+- Includes brand motto background image
+
+#### MainNav.tsx
+- Logo on left
+- "Markets" link with TrendingUp icon
+- Search input (center)
+- User menu (right)
+- Responsive: collapses on mobile
+
+#### UserMenu.tsx
+- User avatar thumbnail
+- Balance display (₿ format)
+- Dropdown with: CreatorPage (Sparkles), MyPage, Logout
+
+#### Mobile Bottom Navigation
+On viewports < 768px:
+1. Markets (TrendingUp icon)
+2. Search (Search icon)
+3. Creator (Sparkles icon)
+4. User (User icon)
 
 ---
 
-## Goal
+## Deliverables Checklist
 
-Set up the foundational elements: design tokens, data model types, routing structure, and application shell.
+- [ ] Design tokens applied globally
+- [ ] Tailwind extended with blue/amber/slate colors
+- [ ] Inter and JetBrains Mono fonts loading
+- [ ] Dark mode toggle functional
+- [ ] TypeScript interfaces for User, Market, Position, Order
+- [ ] Data layer initialized (mock or API)
+- [ ] Routes configured and navigable
+- [ ] AppShell renders on all pages
+- [ ] MainNav visible on desktop/tablet
+- [ ] Mobile bottom navigation visible on small screens
+- [ ] UserMenu dropdown working
+- [ ] Brand motto background visible
 
-## What to Implement
+---
 
-### 1. Design Tokens
+## Next Steps
 
-Configure your styling system with these tokens:
-
-- See `product-plan/design-system/tokens.css` for CSS custom properties
-- See `product-plan/design-system/tailwind-colors.md` for Tailwind configuration
-- See `product-plan/design-system/fonts.md` for Google Fonts setup
-
-### 2. Data Model Types
-
-Create TypeScript interfaces for your core entities based on the event model:
-
-**Domain Events:**
-- `UserRegistered` — New user joins the platform
-- `UserProfileUpdated` — User updates profile information
-- `DepositReceived` — Bitcoin deposited into user's wallet
-- `WithdrawalRequested` — User initiates withdrawal
-- `WithdrawalCompleted` — Withdrawal finalized
-- `MarketCreated` — User creates a new prediction market
-- `MarketApproved` — Market passes quality controls
-- `MarketRejected` — Market fails quality controls
-- `MarketResolved` — Outcome determined and market closed
-- `MarketCancelled` — Market cancelled before resolution
-- `Bought` — User buys shares in a market outcome
-- `Sold` — User sells shares in a market outcome
-- `LiquidityDeposited` — Liquidity provider adds funds to a market
-- `PayoutClaimed` — Winner claims payout from resolved market
-- `CreatorFeeClaimed` — Market creator claims fee earnings
-
-See `product-plan/event-model/` for detailed event definitions.
-
-### 3. Routing Structure
-
-Create routes for each section:
-
-| Route | Description |
-|-------|-------------|
-| `/` or `/markets` | Market Discovery & Trading (default home) |
-| `/markets/:id` | Individual market detail page |
-| `/create` | Market Creation & Management dashboard |
-| `/mypage` | Personal dashboard |
-
-### 4. Application Shell
-
-Copy the shell components from `product-plan/shell/components/` to your project:
-
-- `AppShell.tsx` — Main layout wrapper with top navigation (desktop) and bottom navigation (mobile)
-- `MainNav.tsx` — Navigation with markets link and search box
-- `UserMenu.tsx` — User menu with avatar, balance, and dropdown
-
-**Wire Up Navigation:**
-
-Connect navigation to your routing:
-
-| Nav Item | Route | Icon |
-|----------|-------|------|
-| Markets | `/markets` | TrendingUp (lucide-react) |
-| Create | `/create` | Primary button |
-| MyPage | `/mypage` | In user menu dropdown |
-
-**User Menu:**
-
-The user menu expects:
-- User display name
-- Avatar URL (optional)
-- Balance in sats
-- Logout callback
-
-**Responsive Behavior:**
-
-Desktop/Tablet:
-- Horizontal top navigation bar
-- Logo on left, Markets link, search box in center, Create button, user menu on right
-
-Mobile (< 768px):
-- Simple top header with logo only
-- Fixed bottom navigation bar with 4 items: Markets, Search, Create, User
-
-## Files to Reference
-
-- `product-plan/design-system/` — Design tokens
-- `product-plan/event-model/` — Event definitions
-- `product-plan/shell/README.md` — Shell design intent
-- `product-plan/shell/components/` — Shell React components
-
-## Done When
-
-- [ ] Design tokens are configured (colors, typography)
-- [ ] Data model types are defined for all entities
-- [ ] Routes exist for all sections (can be placeholder pages)
-- [ ] Shell renders with top navigation (desktop) and bottom navigation (mobile)
-- [ ] Navigation links to correct routes
-- [ ] User menu shows user info and balance
-- [ ] Create button navigates to market creation
-- [ ] Search box is functional
-- [ ] Responsive on mobile
+After completing Foundation, proceed to:
+→ `02-market-discovery-and-trading.md`

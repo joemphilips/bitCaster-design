@@ -1,15 +1,15 @@
 import type { OrderHistoryItem } from '../types'
 
-interface OrderHistoryRowProps {
-  order: OrderHistoryItem
-  onView?: () => void
-}
-
-function formatSats(sats: number): string {
+function formatBtc(sats: number): string {
   const abs = Math.abs(sats)
   if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
   if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
   return `₿${sats.toLocaleString()}`
+}
+
+interface OrderHistoryRowProps {
+  order: OrderHistoryItem
+  onView?: () => void
 }
 
 function formatDate(dateStr: string): string {
@@ -87,7 +87,7 @@ export function OrderHistoryRow({ order, onView }: OrderHistoryRowProps) {
                 : 'text-rose-600 dark:text-rose-400'
             }`}
           >
-            {isDeposit ? '+' : '-'}{formatSats(order.amountSats)}
+            {isDeposit ? '+' : '-'}{formatBtc(order.amountSats)}
           </p>
         </div>
       </div>

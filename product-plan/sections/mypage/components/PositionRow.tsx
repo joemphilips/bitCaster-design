@@ -1,17 +1,17 @@
 import type { Position } from '../types'
 
+function formatBtc(sats: number): string {
+  const abs = Math.abs(sats)
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
+}
+
 interface PositionRowProps {
   position: Position
   onView?: () => void
   onSell?: () => void
   onClaimPayout?: () => void
-}
-
-function formatSats(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
 }
 
 export function PositionRow({ position, onView, onSell, onClaimPayout }: PositionRowProps) {
@@ -78,7 +78,7 @@ export function PositionRow({ position, onView, onSell, onClaimPayout }: Positio
           <div className="mt-3 flex items-end justify-between">
             <div>
               <p className="font-mono text-lg font-bold text-slate-900 dark:text-white sm:text-xl">
-                {formatSats(position.currentValueSats)}
+                {formatBtc(position.currentValueSats)}
               </p>
               <p
                 className={`font-mono text-sm font-semibold ${
@@ -87,7 +87,7 @@ export function PositionRow({ position, onView, onSell, onClaimPayout }: Positio
                     : 'text-rose-600 dark:text-rose-400'
                 }`}
               >
-                {isPositive ? '+' : ''}{formatSats(position.profitLossSats)} ({isPositive ? '+' : ''}{position.profitLossPercent.toFixed(1)}%)
+                {isPositive ? '+' : ''}{formatBtc(position.profitLossSats)} ({isPositive ? '+' : ''}{position.profitLossPercent.toFixed(1)}%)
               </p>
             </div>
 

@@ -1,0 +1,561 @@
+{
+  "yesNoMarket": {
+    "id": "market-btc-100k",
+    "type": "yesno",
+    "title": "Will Bitcoin reach $100,000 by December 31, 2025?",
+    "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
+    "categoryTags": [
+      { "id": "crypto", "label": "Crypto", "marketCount": 156 },
+      { "id": "bitcoin", "label": "Bitcoin", "marketCount": 89 }
+    ],
+    "currentOdds": { "yes": 67.5, "no": 32.5 },
+    "volume": 125000,
+    "liquidity": 45000,
+    "traderCount": 342,
+    "closingDate": "2025-12-31T23:59:59Z",
+    "createdDate": "2024-06-15T10:30:00Z",
+    "approvedDate": "2024-06-15T14:22:00Z",
+    "likeCount": 89,
+    "isLiked": false,
+    "creator": {
+      "id": "creator-satoshi",
+      "name": "SatoshiFan21",
+      "avatarUrl": null,
+      "reputationScore": 4.8,
+      "totalMarketsCreated": 23,
+      "feePercent": 0.5
+    },
+    "resolution": {
+      "criteria": "Market resolves YES if Bitcoin (BTC) spot price on any major exchange (Coinbase, Binance, Kraken) reaches or exceeds $100,000 USD at any point before the closing date.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko price feed",
+      "resolutionDate": "2025-12-31T23:59:59Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": [
+        { "timestamp": "2025-01-20T00:00:00Z", "price": 62.3, "volume": 8500 },
+        { "timestamp": "2025-01-21T00:00:00Z", "price": 64.1, "volume": 12300 },
+        { "timestamp": "2025-01-22T00:00:00Z", "price": 63.8, "volume": 9200 },
+        { "timestamp": "2025-01-23T00:00:00Z", "price": 65.2, "volume": 15600 },
+        { "timestamp": "2025-01-24T00:00:00Z", "price": 66.7, "volume": 18900 },
+        { "timestamp": "2025-01-25T00:00:00Z", "price": 66.2, "volume": 11200 },
+        { "timestamp": "2025-01-26T00:00:00Z", "price": 67.5, "volume": 14500 }
+      ]
+    },
+    "orderBook": {
+      "bids": [
+        { "price": 67, "amount": 5000, "total": 5000 },
+        { "price": 66, "amount": 8000, "total": 13000 },
+        { "price": 65, "amount": 12000, "total": 25000 },
+        { "price": 64, "amount": 7500, "total": 32500 }
+      ],
+      "asks": [
+        { "price": 68, "amount": 4500, "total": 4500 },
+        { "price": 69, "amount": 6000, "total": 10500 },
+        { "price": 70, "amount": 9500, "total": 20000 },
+        { "price": 71, "amount": 5500, "total": 25500 }
+      ],
+      "spread": 1
+    },
+    "recentTrades": [
+      { "id": "trade-1", "userId": "user-1", "userDisplayName": "anon_f3x", "side": "yes", "amount": 1500, "price": 67.5, "timestamp": "2025-01-26T15:32:00Z" },
+      { "id": "trade-2", "userId": "user-2", "userDisplayName": "trader_42", "side": "no", "amount": 2200, "price": 32.5, "timestamp": "2025-01-26T14:18:00Z" },
+      { "id": "trade-3", "userId": "user-3", "userDisplayName": "btc_bull", "side": "yes", "amount": 5000, "price": 67.2, "timestamp": "2025-01-26T12:45:00Z" },
+      { "id": "trade-4", "userId": "user-4", "userDisplayName": "anon_8kp", "side": "yes", "amount": 800, "price": 66.8, "timestamp": "2025-01-26T11:22:00Z" },
+      { "id": "trade-5", "userId": "user-5", "userDisplayName": "skeptic_99", "side": "no", "amount": 3500, "price": 33.1, "timestamp": "2025-01-26T09:55:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-1", "userId": "user-6", "userDisplayName": "CryptoAnalyst", "content": "With the halving behind us and ETF inflows continuing, I think this has strong momentum. The macro environment is supportive.", "timestamp": "2025-01-26T10:30:00Z", "likeCount": 12, "isLiked": false },
+      { "id": "comment-2", "userId": "user-7", "userDisplayName": "BearishBob", "content": "Don't forget we're still in a high interest rate environment. I'm skeptical about hitting 100k this year.", "timestamp": "2025-01-25T22:15:00Z", "likeCount": 5, "isLiked": true },
+      { "id": "comment-3", "userId": "user-8", "userDisplayName": "HODLer4Life", "content": "We hit 73k in March, just a matter of time before we break through again.", "timestamp": "2025-01-25T18:42:00Z", "likeCount": 8, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "rel-1", "title": "Will Ethereum reach $10,000 by end of 2025?", "currentOdds": { "yes": 45.2, "no": 54.8 }, "volume": 78000, "closingDate": "2025-12-31T23:59:59Z" },
+      { "id": "rel-2", "title": "Bitcoin ETF daily inflows exceed $1B in Q1 2025?", "currentOdds": { "yes": 72.1, "no": 27.9 }, "volume": 56000, "closingDate": "2025-03-31T23:59:59Z" },
+      { "id": "rel-3", "title": "Will MicroStrategy buy more Bitcoin in January 2025?", "currentOdds": { "yes": 88.5, "no": 11.5 }, "volume": 34000, "closingDate": "2025-01-31T23:59:59Z" }
+    ]
+  },
+  "categoricalMarket": {
+    "id": "market-superbowl-winner",
+    "type": "categorical",
+    "title": "Who will win Super Bowl LIX?",
+    "imageUrl": "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800",
+    "categoryTags": [
+      { "id": "sports", "label": "Sports", "marketCount": 234 },
+      { "id": "nfl", "label": "NFL", "marketCount": 67 }
+    ],
+    "outcomes": [
+      { "id": "chiefs", "label": "Kansas City Chiefs", "odds": 28.5 },
+      { "id": "eagles", "label": "Philadelphia Eagles", "odds": 22.3 },
+      { "id": "lions", "label": "Detroit Lions", "odds": 18.7 },
+      { "id": "bills", "label": "Buffalo Bills", "odds": 15.2 },
+      { "id": "ravens", "label": "Baltimore Ravens", "odds": 10.1 },
+      { "id": "other", "label": "Other Team", "odds": 5.2 }
+    ],
+    "volume": 89000,
+    "liquidity": 32000,
+    "traderCount": 567,
+    "closingDate": "2025-02-09T23:30:00Z",
+    "createdDate": "2024-09-01T12:00:00Z",
+    "approvedDate": "2024-09-01T15:30:00Z",
+    "likeCount": 156,
+    "isLiked": true,
+    "creator": {
+      "id": "creator-sports",
+      "name": "SportsBetKing",
+      "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=sports",
+      "reputationScore": 4.9,
+      "totalMarketsCreated": 45,
+      "feePercent": 1.0
+    },
+    "resolution": {
+      "criteria": "Market resolves to the team that wins Super Bowl LIX on February 9, 2025. Official NFL result is final.",
+      "source": "manual",
+      "sourceDescription": "NFL official results",
+      "resolutionDate": "2025-02-10T12:00:00Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": []
+    },
+    "outcomePriceHistories": {
+      "chiefs": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 26.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 27.2 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 27.8 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 28.1 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 28.3 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 28.5 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 28.5 }
+        ]
+      },
+      "eagles": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 21.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 21.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 22.0 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 22.1 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 22.2 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 22.3 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 22.3 }
+        ]
+      }
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "outcomeOrderBooks": {
+      "chiefs": {
+        "bids": [
+          { "price": 28, "amount": 3500, "total": 3500 },
+          { "price": 27, "amount": 5000, "total": 8500 }
+        ],
+        "asks": [
+          { "price": 29, "amount": 2800, "total": 2800 },
+          { "price": 30, "amount": 4200, "total": 7000 }
+        ],
+        "spread": 1
+      }
+    },
+    "recentTrades": [
+      { "id": "trade-s1", "userId": "user-s1", "userDisplayName": "chiefs_fan", "side": "yes", "outcomeId": "chiefs", "amount": 2500, "price": 28.5, "timestamp": "2025-01-26T16:00:00Z" },
+      { "id": "trade-s2", "userId": "user-s2", "userDisplayName": "philly_4eva", "side": "yes", "outcomeId": "eagles", "amount": 1800, "price": 22.3, "timestamp": "2025-01-26T15:30:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-s1", "userId": "user-s3", "userDisplayName": "NFLAnalyst", "content": "Chiefs dynasty continues. Mahomes is unbeatable in big games.", "timestamp": "2025-01-26T14:00:00Z", "likeCount": 24, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "rel-s1", "title": "Super Bowl LIX MVP?", "volume": 45000, "closingDate": "2025-02-09T23:30:00Z" },
+      { "id": "rel-s2", "title": "Total points in Super Bowl LIX over/under 48.5?", "currentOdds": { "yes": 52.1, "no": 47.9 }, "volume": 28000, "closingDate": "2025-02-09T18:00:00Z" }
+    ]
+  },
+  "resolvedYesNoMarket": {
+    "id": "market-btc-50k",
+    "type": "yesno",
+    "title": "Did Bitcoin reach $50,000 by January 15, 2025?",
+    "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
+    "categoryTags": [
+      { "id": "crypto", "label": "Crypto", "marketCount": 156 },
+      { "id": "bitcoin", "label": "Bitcoin", "marketCount": 89 }
+    ],
+    "currentOdds": { "yes": 100, "no": 0 },
+    "volume": 245000,
+    "liquidity": 0,
+    "traderCount": 891,
+    "closingDate": "2025-01-15T23:59:59Z",
+    "createdDate": "2024-03-01T08:00:00Z",
+    "approvedDate": "2024-03-01T10:30:00Z",
+    "likeCount": 214,
+    "isLiked": true,
+    "creator": {
+      "id": "creator-satoshi",
+      "name": "SatoshiFan21",
+      "avatarUrl": null,
+      "reputationScore": 4.8,
+      "totalMarketsCreated": 23,
+      "feePercent": 0.5
+    },
+    "resolution": {
+      "criteria": "Market resolves YES if Bitcoin (BTC) spot price on any major exchange (Coinbase, Binance, Kraken) reaches or exceeds $50,000 USD at any point before the closing date.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko price feed",
+      "resolutionDate": "2025-01-15T23:59:59Z",
+      "status": "resolved",
+      "finalOutcome": "Yes"
+    },
+    "priceHistory": {
+      "timeframe": "all",
+      "data": [
+        { "timestamp": "2024-03-01T00:00:00Z", "price": 45.0, "volume": 5200 },
+        { "timestamp": "2024-04-01T00:00:00Z", "price": 52.3, "volume": 8100 },
+        { "timestamp": "2024-05-01T00:00:00Z", "price": 58.7, "volume": 12400 },
+        { "timestamp": "2024-06-01T00:00:00Z", "price": 55.2, "volume": 9800 },
+        { "timestamp": "2024-07-01T00:00:00Z", "price": 62.1, "volume": 15600 },
+        { "timestamp": "2024-08-01T00:00:00Z", "price": 68.4, "volume": 18300 },
+        { "timestamp": "2024-09-01T00:00:00Z", "price": 71.0, "volume": 21500 },
+        { "timestamp": "2024-10-01T00:00:00Z", "price": 74.5, "volume": 24200 },
+        { "timestamp": "2024-11-01T00:00:00Z", "price": 82.3, "volume": 32100 },
+        { "timestamp": "2024-12-01T00:00:00Z", "price": 88.9, "volume": 41000 },
+        { "timestamp": "2025-01-01T00:00:00Z", "price": 94.2, "volume": 52000 },
+        { "timestamp": "2025-01-15T00:00:00Z", "price": 100.0, "volume": 68000 }
+      ]
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "recentTrades": [
+      { "id": "trade-r1", "userId": "user-r1", "userDisplayName": "early_bull", "side": "yes", "amount": 10000, "price": 94.2, "timestamp": "2025-01-14T20:15:00Z" },
+      { "id": "trade-r2", "userId": "user-r2", "userDisplayName": "late_bear", "side": "no", "amount": 3500, "price": 5.8, "timestamp": "2025-01-14T18:30:00Z" },
+      { "id": "trade-r3", "userId": "user-r3", "userDisplayName": "whale_99", "side": "yes", "amount": 25000, "price": 88.9, "timestamp": "2025-01-10T12:00:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-r1", "userId": "user-r4", "userDisplayName": "CryptoAnalyst", "content": "Called it! Bitcoin surpassed $50K easily with the ETF momentum. Great market.", "timestamp": "2025-01-15T14:00:00Z", "likeCount": 42, "isLiked": true },
+      { "id": "comment-r2", "userId": "user-r5", "userDisplayName": "BearishBob", "content": "Well played to the bulls. I was wrong on this one, but made it back on the ETH market.", "timestamp": "2025-01-15T16:30:00Z", "likeCount": 18, "isLiked": false },
+      { "id": "comment-r3", "userId": "user-r6", "userDisplayName": "HODLer4Life", "content": "Next stop: $100K! Who's creating that market?", "timestamp": "2025-01-15T20:00:00Z", "likeCount": 31, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "market-btc-100k", "title": "Will Bitcoin reach $100,000 by December 31, 2025?", "currentOdds": { "yes": 67.5, "no": 32.5 }, "volume": 125000, "closingDate": "2025-12-31T23:59:59Z" },
+      { "id": "rel-eth", "title": "Will Ethereum reach $10,000 by end of 2025?", "currentOdds": { "yes": 45.2, "no": 54.8 }, "volume": 78000, "closingDate": "2025-12-31T23:59:59Z" }
+    ]
+  },
+  "twoDimensionalMarket": {
+    "id": "market-2d-btc-taiwan",
+    "type": "twodimensional",
+    "title": "Bitcoin 100K in 2027 and China Invades Taiwan in 2027?",
+    "imageUrl": "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800",
+    "categoryTags": [
+      { "id": "crypto", "label": "Crypto", "marketCount": 156 },
+      { "id": "geopolitics", "label": "Geopolitics", "marketCount": 78 }
+    ],
+    "baseMarketId": "market-btc-100k-2027",
+    "baseMarketTitle": "Will Bitcoin reach $100,000 by December 31, 2027?",
+    "baseMarketType": "yesno",
+    "secondaryType": "yesno",
+    "secondaryQuestion": "Will China invade Taiwan in 2027?",
+    "baseShortLabel": "BTC 100K",
+    "secondaryShortLabel": "China-Taiwan",
+    "compositeOdds": {
+      "yesYes": 12.0,
+      "yesNo": 53.0,
+      "noYes": 5.0,
+      "noNo": 30.0
+    },
+    "volume": 92000,
+    "liquidity": 38000,
+    "traderCount": 267,
+    "closingDate": "2027-12-31T23:59:59Z",
+    "createdDate": "2025-06-10T09:00:00Z",
+    "approvedDate": "2025-06-10T12:15:00Z",
+    "likeCount": 73,
+    "isLiked": false,
+    "creator": {
+      "id": "creator-geopolitics",
+      "name": "GeoPoliticsTrader",
+      "reputationScore": 4.7,
+      "totalMarketsCreated": 18,
+      "feePercent": 0.75
+    },
+    "resolution": {
+      "criteria": "BTC condition resolves YES if Bitcoin spot price reaches $100,000 on any major exchange before Dec 31, 2027. Taiwan condition resolves YES if China initiates a military invasion of Taiwan in 2027 as recognized by two or more of: UN, NATO, or US State Department.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko price feed (BTC), Reuters/AP confirmation (Taiwan)",
+      "resolutionDate": "2027-12-31T23:59:59Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": []
+    },
+    "cellPriceHistories": {
+      "yes-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 10.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 11.0 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 11.2 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 11.8 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 12.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 11.9 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 12.0 }
+        ]
+      },
+      "yes-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 51.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 52.0 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 52.5 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 53.2 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 53.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 52.8 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 53.0 }
+        ]
+      },
+      "no-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 5.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 5.2 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 5.0 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 4.8 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 5.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 5.1 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 5.0 }
+        ]
+      },
+      "no-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 32.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 31.8 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 31.3 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 30.2 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 30.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 30.2 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 30.0 }
+        ]
+      }
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "cellOrderBooks": {
+      "yes-yes": {
+        "bids": [
+          { "price": 11, "amount": 2000, "total": 2000 },
+          { "price": 10, "amount": 3500, "total": 5500 }
+        ],
+        "asks": [
+          { "price": 13, "amount": 1800, "total": 1800 },
+          { "price": 14, "amount": 2500, "total": 4300 }
+        ],
+        "spread": 2
+      }
+    },
+    "recentTrades": [
+      { "id": "trade-2d1", "userId": "user-2d1", "userDisplayName": "macro_bear", "side": "yes", "cellId": "yes-no", "amount": 5000, "price": 53.0, "timestamp": "2025-01-26T15:45:00Z" },
+      { "id": "trade-2d2", "userId": "user-2d2", "userDisplayName": "risk_hedger", "side": "yes", "cellId": "yes-yes", "amount": 2000, "price": 12.0, "timestamp": "2025-01-26T14:30:00Z" },
+      { "id": "trade-2d3", "userId": "user-2d3", "userDisplayName": "btc_maxi_22", "side": "yes", "cellId": "no-no", "amount": 3500, "price": 30.0, "timestamp": "2025-01-26T12:00:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-2d1", "userId": "user-2d4", "userDisplayName": "GeopoliticsNerd", "content": "Invasion probability is very low but if it happens, BTC could spike as a safe haven. The yes-yes cell has hidden upside.", "timestamp": "2025-01-26T12:00:00Z", "likeCount": 22, "isLiked": true },
+      { "id": "comment-2d2", "userId": "user-2d5", "userDisplayName": "BTCOptimist", "content": "BTC hitting 100K by 2027 seems almost certain after the halving cycle. The yes-no cell is the safe play here.", "timestamp": "2025-01-25T18:30:00Z", "likeCount": 15, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "market-btc-100k-2027", "title": "Will Bitcoin reach $100,000 by December 31, 2027?", "currentOdds": { "yes": 65.0, "no": 35.0 }, "volume": 185000, "closingDate": "2027-12-31T23:59:59Z" },
+      { "id": "rel-taiwan", "title": "Will China invade Taiwan by 2030?", "currentOdds": { "yes": 22.0, "no": 78.0 }, "volume": 54000, "closingDate": "2030-12-31T23:59:59Z" },
+      { "id": "rel-btc-200k", "title": "Will Bitcoin reach $200,000 by 2030?", "currentOdds": { "yes": 38.5, "no": 61.5 }, "volume": 98000, "closingDate": "2030-12-31T23:59:59Z" }
+    ]
+  },
+  "categorical2DMarket": {
+    "id": "market-2d-election-ai",
+    "type": "twodimensional",
+    "title": "2028 US Election Winner AND AI Regulation in 2028?",
+    "imageUrl": "https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800",
+    "categoryTags": [
+      { "id": "politics", "label": "Politics", "marketCount": 210 },
+      { "id": "ai", "label": "AI", "marketCount": 145 },
+      { "id": "regulation", "label": "Regulation", "marketCount": 52 }
+    ],
+    "baseMarketId": "market-election-2028",
+    "baseMarketTitle": "Who wins the 2028 US Presidential Election?",
+    "baseMarketType": "categorical",
+    "secondaryType": "yesno",
+    "secondaryQuestion": "Will comprehensive AI regulation pass in 2028?",
+    "baseShortLabel": "Election",
+    "secondaryShortLabel": "AI Reg",
+    "baseOutcomes": [
+      { "id": "republican", "label": "Republican", "odds": 45.0 },
+      { "id": "democrat", "label": "Democrat", "odds": 42.0 },
+      { "id": "other", "label": "Other", "odds": 13.0 }
+    ],
+    "categoricalCompositeOdds": {
+      "republican": { "yes": 8.0, "no": 37.0 },
+      "democrat": { "yes": 22.0, "no": 20.0 },
+      "other": { "yes": 5.0, "no": 8.0 }
+    },
+    "volume": 145000,
+    "liquidity": 52000,
+    "traderCount": 412,
+    "closingDate": "2028-12-31T23:59:59Z",
+    "createdDate": "2025-09-01T10:00:00Z",
+    "approvedDate": "2025-09-01T14:00:00Z",
+    "likeCount": 118,
+    "isLiked": false,
+    "creator": {
+      "id": "creator-policy",
+      "name": "PolicyWonk",
+      "reputationScore": 4.5,
+      "totalMarketsCreated": 31,
+      "feePercent": 1.0
+    },
+    "resolution": {
+      "criteria": "Election condition resolves to the party of the winner of the 2028 US Presidential Election (Republican, Democrat, or Other). AI regulation condition resolves YES if comprehensive federal AI regulation (comparable in scope to the EU AI Act) is signed into law in 2028.",
+      "source": "manual",
+      "sourceDescription": "Official election results (FEC) and Congressional Record",
+      "resolutionDate": "2028-12-31T23:59:59Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": []
+    },
+    "cellPriceHistories": {
+      "republican-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 7.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 7.2 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 7.5 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 7.8 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 8.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 7.9 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 8.0 }
+        ]
+      },
+      "republican-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 38.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 37.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 37.2 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 37.0 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 37.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 37.1 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 37.0 }
+        ]
+      },
+      "democrat-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 20.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 20.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 21.0 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 21.5 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 22.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 21.8 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 22.0 }
+        ]
+      },
+      "democrat-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 22.0 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 21.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 21.0 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 20.5 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 20.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 20.2 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 20.0 }
+        ]
+      },
+      "other-yes": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 4.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 4.8 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 5.0 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 5.0 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 5.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 5.0 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 5.0 }
+        ]
+      },
+      "other-no": {
+        "timeframe": "7d",
+        "data": [
+          { "timestamp": "2025-01-20T00:00:00Z", "price": 8.5 },
+          { "timestamp": "2025-01-21T00:00:00Z", "price": 8.5 },
+          { "timestamp": "2025-01-22T00:00:00Z", "price": 8.3 },
+          { "timestamp": "2025-01-23T00:00:00Z", "price": 8.2 },
+          { "timestamp": "2025-01-24T00:00:00Z", "price": 8.0 },
+          { "timestamp": "2025-01-25T00:00:00Z", "price": 8.0 },
+          { "timestamp": "2025-01-26T00:00:00Z", "price": 8.0 }
+        ]
+      }
+    },
+    "orderBook": {
+      "bids": [],
+      "asks": [],
+      "spread": 0
+    },
+    "cellOrderBooks": {
+      "democrat-yes": {
+        "bids": [
+          { "price": 21, "amount": 3000, "total": 3000 },
+          { "price": 20, "amount": 4500, "total": 7500 }
+        ],
+        "asks": [
+          { "price": 23, "amount": 2500, "total": 2500 },
+          { "price": 24, "amount": 3800, "total": 6300 }
+        ],
+        "spread": 2
+      }
+    },
+    "recentTrades": [
+      { "id": "trade-c2d1", "userId": "user-c2d1", "userDisplayName": "dem_ai_bull", "side": "yes", "cellId": "democrat-yes", "amount": 4000, "price": 22.0, "timestamp": "2025-01-26T16:00:00Z" },
+      { "id": "trade-c2d2", "userId": "user-c2d2", "userDisplayName": "gop_trader", "side": "yes", "cellId": "republican-no", "amount": 6000, "price": 37.0, "timestamp": "2025-01-26T15:00:00Z" },
+      { "id": "trade-c2d3", "userId": "user-c2d3", "userDisplayName": "contrarian_99", "side": "yes", "cellId": "other-yes", "amount": 1500, "price": 5.0, "timestamp": "2025-01-26T13:00:00Z" },
+      { "id": "trade-c2d4", "userId": "user-c2d4", "userDisplayName": "policy_nerd", "side": "yes", "cellId": "democrat-no", "amount": 2800, "price": 20.0, "timestamp": "2025-01-26T11:30:00Z" }
+    ],
+    "comments": [
+      { "id": "comment-c2d1", "userId": "user-c2d5", "userDisplayName": "AIRegWatch", "content": "Democrats are much more likely to push AI regulation through. The democrat-yes cell is the best value here.", "timestamp": "2025-01-26T14:00:00Z", "likeCount": 28, "isLiked": true },
+      { "id": "comment-c2d2", "userId": "user-c2d6", "userDisplayName": "ElectionGuru", "content": "Republican field is strong but the AI reg correlation makes this interesting. GOP unlikely to sign strict AI rules.", "timestamp": "2025-01-25T20:00:00Z", "likeCount": 19, "isLiked": false },
+      { "id": "comment-c2d3", "userId": "user-c2d7", "userDisplayName": "ThirdPartyHope", "content": "Don't sleep on the 'Other' category. An independent AI-focused candidate could shake things up.", "timestamp": "2025-01-25T15:00:00Z", "likeCount": 7, "isLiked": false }
+    ],
+    "relatedMarkets": [
+      { "id": "market-election-2028", "title": "Who wins the 2028 US Presidential Election?", "volume": 320000, "closingDate": "2028-11-05T23:59:59Z" },
+      { "id": "rel-ai-reg", "title": "Will comprehensive AI regulation pass in the US by 2030?", "currentOdds": { "yes": 55.0, "no": 45.0 }, "volume": 87000, "closingDate": "2030-12-31T23:59:59Z" },
+      { "id": "rel-ai-agi", "title": "Will AGI be achieved by 2030?", "currentOdds": { "yes": 28.0, "no": 72.0 }, "volume": 112000, "closingDate": "2030-12-31T23:59:59Z" }
+    ]
+  },
+  "uiState": {
+    "chartTimeframe": "7d",
+    "chartType": "price",
+    "activityTab": "trades",
+    "tradeSelection": null,
+    "tradeAmount": 0,
+    "tradePreview": null
+  },
+  "tradePreviewExample": {
+    "amount": 1000,
+    "predictedOdds": 68.2,
+    "priceImpact": 0.7,
+    "potentialPayout": 1481,
+    "creatorFee": 5,
+    "platformFee": 0,
+    "totalCost": 1000
+  }
+}

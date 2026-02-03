@@ -1,16 +1,16 @@
 import type { CreatedMarket } from '../types'
 
-interface CreatedMarketRowProps {
-  market: CreatedMarket
-  onView?: () => void
-  onClaimFees?: () => void
-}
-
-function formatSats(sats: number): string {
+function formatBtc(sats: number): string {
   const abs = Math.abs(sats)
   if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
   if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
   return `₿${sats.toLocaleString()}`
+}
+
+interface CreatedMarketRowProps {
+  market: CreatedMarket
+  onView?: () => void
+  onClaimFees?: () => void
 }
 
 function formatDate(dateStr: string): string {
@@ -97,7 +97,7 @@ export function CreatedMarketRow({ market, onView, onClaimFees }: CreatedMarketR
               {market.volume > 0 && (
                 <p className="font-mono text-sm text-slate-500 dark:text-slate-400">
                   <span className="font-bold text-slate-900 dark:text-white">
-                    {formatSats(market.volume)}
+                    {formatBtc(market.volume)}
                   </span>
                   {' '}volume
                 </p>
@@ -105,7 +105,7 @@ export function CreatedMarketRow({ market, onView, onClaimFees }: CreatedMarketR
               {market.creatorFeesEarned > 0 && (
                 <p className="font-mono text-sm">
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    +{formatSats(market.creatorFeesEarned)}
+                    +{formatBtc(market.creatorFeesEarned)}
                   </span>
                   <span className="text-slate-500 dark:text-slate-400">
                     {' '}earned ({market.creatorFeePercent}%)

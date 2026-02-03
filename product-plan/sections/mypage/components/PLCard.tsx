@@ -1,16 +1,16 @@
 import type { PLMetric } from '../types'
 
-interface PLCardProps {
-  label: string
-  metric: PLMetric
-  isHighlighted?: boolean
-}
-
-function formatSats(sats: number): string {
+function formatBtc(sats: number): string {
   const abs = Math.abs(sats)
   if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
   if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
   return `₿${sats.toLocaleString()}`
+}
+
+interface PLCardProps {
+  label: string
+  metric: PLMetric
+  isHighlighted?: boolean
 }
 
 export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
@@ -50,7 +50,7 @@ export function PLCard({ label, metric, isHighlighted = false }: PLCardProps) {
                 ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-rose-600 dark:text-rose-400'
           }`}>
-            {isPositive ? '+' : ''}{formatSats(metric.amountSats)}
+            {isPositive ? '+' : ''}{formatBtc(metric.amountSats)}
           </span>
         </div>
 

@@ -11,13 +11,13 @@ This folder contains everything needed to implement bitCaster, a Bitcoin-native 
 **Instructions:**
 - `product-overview.md` — Product summary (provide with every implementation)
 - `instructions/one-shot-instructions.md` — All milestones combined for full implementation
-- `instructions/incremental/` — 4 milestone instructions (foundation, then 3 sections)
+- `instructions/incremental/` — 5 milestone instructions (foundation, then 4 sections)
 
 **Design Assets:**
 - `design-system/` — Colors, fonts, design tokens
 - `event-model/` — Domain events and entity relationships
 - `shell/` — Application shell components (navigation, layout)
-- `sections/` — 3 section component packages with test instructions
+- `sections/` — 4 section component packages with test instructions
 
 ## How to Use This
 
@@ -39,6 +39,7 @@ Build your app milestone by milestone for better control:
 2. `02-market-discovery-and-trading.md` — Core marketplace
 3. `03-market-creation-and-management.md` — Creator dashboard
 4. `04-mypage.md` — Personal dashboard
+5. `05-market-detail.md` — Market detail with trading, charts, and activity
 
 ### Option B: One-Shot
 
@@ -69,6 +70,7 @@ The test instructions are **framework-agnostic** — they describe WHAT to test,
 | **Market Discovery & Trading** | Core marketplace with tag navigation, filters, inline trading | MarketDiscovery, TagBar, FilterControls, MarketCard |
 | **Market Creation & Management** | Creator dashboard with stats, analytics, market list | MarketCreationDashboard, StatCard, MarketRow, VolumeChart, Pagination |
 | **MyPage** | Personal dashboard with positions, orders, created markets | MyPage, ProfileHeader, PLCard, ExpandableSection, PositionsSection, etc. |
+| **Market Detail** | Full market view with trading panel, price charts, activity | MarketDetail, MarketHeader, TradingPanel, PriceChart, CommentSection, etc. |
 
 ## Technology Notes
 

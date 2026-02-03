@@ -1,299 +1,334 @@
-# bitCaster — Complete Implementation Instructions
+# bitCaster — One-Shot Implementation Instructions
+
+This document contains all 5 milestones for implementing bitCaster. Complete them in order.
 
 ---
 
-## About These Instructions
+## Milestone 1: Foundation
 
-**What you're receiving:**
-- Finished UI designs (React components with full styling)
-- Data model definitions (TypeScript types and sample data)
-- UI/UX specifications (user flows, requirements, screenshots)
-- Design system tokens (colors, typography, spacing)
-- Test-writing instructions for each section (for TDD approach)
+### Objective
+Set up the project foundation including design tokens, routing, data model, and application shell.
 
-**What you need to build:**
-- Backend API endpoints and database schema
-- Authentication and authorization
-- Data fetching and state management
-- Business logic and validation
-- Integration of the provided UI components with real data
+### Tasks
 
-**Important guidelines:**
-- **DO NOT** redesign or restyle the provided components — use them as-is
-- **DO** wire up the callback props to your routing and API calls
-- **DO** replace sample data with real data from your backend
-- **DO** implement proper error handling and loading states
-- **DO** implement empty states when no records exist (first-time users, after deletions)
-- **DO** use test-driven development — write tests first using `tests.md` instructions
-- The components are props-based and ready to integrate — focus on the backend and data layer
+#### 1.1 Design System Setup
+- Create CSS custom properties from `design-system/tokens.css`
+- Configure Tailwind with blue/amber/slate color palette (see `design-system/tailwind-colors.md`)
+- Set up Google Fonts for Inter and JetBrains Mono (see `design-system/fonts.md`)
+- Implement light/dark mode toggle support
 
----
+#### 1.2 Data Model
+- Review domain events in `event-model/events.ts`
+- Define TypeScript interfaces for core entities:
+  - User (id, name, avatar, balance)
+  - Market (id, title, type, outcomes, odds, status, volume, etc.)
+  - Position (market, shares, avgPrice, currentValue, pnl)
+  - Order (type, amount, timestamp, status)
+- Set up mock data store or API client
 
-## Test-Driven Development
+#### 1.3 Routing
+- Configure routes:
+  - `/` → Market Discovery & Trading (home)
+  - `/create` → Market Creation & Management
+  - `/mypage` → MyPage (personal dashboard)
+  - `/market/:id` → Market Detail
 
-Each section includes a `tests.md` file with detailed test-writing instructions. These are **framework-agnostic** — adapt them to your testing setup (Jest, Vitest, Playwright, Cypress, RSpec, Minitest, PHPUnit, etc.).
+#### 1.4 Application Shell
+- Implement shell components from `shell/components/`:
+  - `AppShell.tsx` — Main layout wrapper
+  - `MainNav.tsx` — Top navigation bar
+  - `UserMenu.tsx` — User dropdown menu
+- Desktop: Horizontal top nav with logo, Markets link, search, user menu
+- Mobile: Simplified top header + bottom navigation bar (4 items)
+- Include brand motto background image
 
-**For each section:**
-1. Read `product-plan/sections/[section-id]/tests.md`
-2. Write failing tests for key user flows (success and failure paths)
-3. Implement the feature to make tests pass
-4. Refactor while keeping tests green
-
-The test instructions include:
-- Specific UI elements, button labels, and interactions to verify
-- Expected success and failure behaviors
-- Empty state handling (when no records exist yet)
-- Data assertions and state validations
-
----
-
-## Product Overview
-
-bitCaster is a Bitcoin-native prediction market platform where anyone can create, trade, and monetize markets. All markets are denominated in sats, providing global accessibility without the barriers of traditional prediction market platforms.
-
-### Key Features
-
-- Bitcoin-only deposits with sat denomination
-- Open market creation for any user
-- Fee collection system for market creators
-- Automated market resolution and payout distribution
-- Real-time trading with live price discovery
-- Hybrid moderation (permissionless with quality controls)
-
-### Sections
-
-1. **Market Discovery & Trading** — Core marketplace for browsing and trading
-2. **Market Creation & Management** — Creator dashboard and market wizard
-3. **MyPage** — Personal dashboard with positions and history
-
-### Design System
-
-- **Primary:** blue (buttons, links, accents)
-- **Secondary:** amber (tags, highlights)
-- **Neutral:** slate (backgrounds, text, borders)
-- **Fonts:** Inter (heading/body), JetBrains Mono (monospace)
+#### Deliverables
+- [ ] Design tokens applied globally
+- [ ] Tailwind configured with custom colors
+- [ ] Font imports working
+- [ ] Routes defined and navigable
+- [ ] Shell renders on all pages
+- [ ] Responsive behavior (desktop/tablet/mobile)
 
 ---
 
-# Milestone 1: Foundation
+## Milestone 2: Market Discovery & Trading
 
-## Goal
+### Objective
+Build the core marketplace where users browse and trade prediction markets.
 
-Set up the foundational elements: design tokens, data model types, routing structure, and application shell.
+### Reference Files
+- `sections/market-discovery-and-trading/README.md`
+- `sections/market-discovery-and-trading/types.ts`
+- `sections/market-discovery-and-trading/sample-data.json`
+- `sections/market-discovery-and-trading/components/`
 
-## What to Implement
+### Tasks
 
-### 1. Design Tokens
+#### 2.1 Tag Navigation
+- Horizontal scrollable tag bar
+- Meta tags: Trending (default), Popular, New
+- Category tags: Sports, Politics, Crypto, Entertainment, Science, etc.
+- Single-select behavior (only one tag active)
 
-Configure your styling system with tokens from `product-plan/design-system/`:
+#### 2.2 Filter Controls
+- Hidden by default, toggle with filter icon
+- Market Type dropdown (Yes/No, Categorical, 2D)
+- Volume range filter
+- Closing date filter
 
-- CSS custom properties for colors
-- Tailwind color configuration
-- Google Fonts setup (Inter, JetBrains Mono)
+#### 2.3 Market Cards
+- Fixed card height (280px) for all market types
+- Components: image, title, odds display, action buttons, metrics footer
+- Metrics footer: volume (₿ prefix), liquidity, traders, like button
+- Yes/No cards: Display chance percentage, Buy Yes/Buy No buttons
+- Categorical cards: Vertical scrollable outcome list, each with Yes/No
+- 2D cards: Grid layout showing composite odds
 
-### 2. Data Model Types
+#### 2.4 Inline Trading
+- Card transforms to trading overlay on Buy click
+- Shows: predicted odds, amount input, quick amount buttons
+- Cancel (×) returns to normal view
+- Card size must NOT change during transformation
 
-Create TypeScript interfaces based on the event model in `product-plan/event-model/`:
+#### 2.5 Secondary Markets (2D)
+- "and..." link on markets with secondary markets
+- Expands to show secondary market list
+- Each secondary market clickable → navigates to detail
 
-**Domain Events:**
-- `UserRegistered`, `UserProfileUpdated`
-- `DepositReceived`, `WithdrawalRequested`, `WithdrawalCompleted`
-- `MarketCreated`, `MarketApproved`, `MarketRejected`, `MarketResolved`, `MarketCancelled`
-- `Bought`, `Sold`, `LiquidityDeposited`
-- `PayoutClaimed`, `CreatorFeeClaimed`
+#### 2.6 Infinite Scroll
+- Load more markets on scroll
+- Loading indicator
 
-### 3. Routing Structure
-
-| Route | Description |
-|-------|-------------|
-| `/` or `/markets` | Market Discovery & Trading (default home) |
-| `/markets/:id` | Individual market detail page |
-| `/create` | Market Creation & Management dashboard |
-| `/mypage` | Personal dashboard |
-
-### 4. Application Shell
-
-Copy shell components from `product-plan/shell/components/`:
-
-- `AppShell.tsx` — Main layout with top nav (desktop) and bottom nav (mobile)
-- `MainNav.tsx` — Navigation with markets link and search
-- `UserMenu.tsx` — User menu with avatar, balance, dropdown
-
-**Navigation Structure:**
-- Markets link → `/markets` (TrendingUp icon)
-- Create button → `/create` (primary CTA)
-- User menu → MyPage, Logout
-
-**Responsive Behavior:**
-- Desktop: Horizontal top navigation bar
-- Mobile: Simple header + fixed bottom nav bar
-
-## Done When
-
-- [ ] Design tokens configured
-- [ ] Data model types defined
-- [ ] Routes exist for all sections
-- [ ] Shell renders with navigation
-- [ ] User menu works
-- [ ] Responsive on mobile
+#### Deliverables
+- [ ] Tag bar with single-select behavior
+- [ ] Collapsible filter row
+- [ ] Market cards for all three types
+- [ ] Inline trading transformation
+- [ ] 2D market grid display
+- [ ] Secondary markets expansion
+- [ ] Infinite scroll pagination
 
 ---
 
-# Milestone 2: Market Discovery & Trading
+## Milestone 3: Market Creation & Management
 
-## Goal
+### Objective
+Build the creator dashboard with analytics and market creation wizard.
 
-Implement the core marketplace where users browse markets, filter by tags, and execute quick trades.
+### Reference Files
+- `sections/market-creation-and-management/README.md`
+- `sections/market-creation-and-management/types.ts`
+- `sections/market-creation-and-management/sample-data.json`
+- `sections/market-creation-and-management/components/`
 
-## Overview
+### Tasks
 
-The main landing page with:
-- Responsive market card grid
-- Single-select tag navigation (Trending/Popular/New + categories)
-- Filter controls (market type, volume, closing date)
-- Inline trading interface on market cards
-- Infinite scroll
+#### 3.1 Three-Tab Layout
+- Overview tab (default): Stats and market list
+- Analytics tab: Volume charts
+- Add Market: Styled as CTA button, opens wizard
 
-## Components
+#### 3.2 Overview Dashboard
+- Stat cards: Active markets, Resolved markets, Total volume, Creator fees
+- Paginated market list with: thumbnail, title, status, volume, end date, fees, "View Details"
 
-From `product-plan/sections/market-discovery-and-trading/components/`:
-- `MarketDiscovery.tsx` — Main page
-- `TagBar.tsx` — Tag navigation
-- `FilterControls.tsx` — Filter controls
-- `MarketCard.tsx` — Market card with trading
+#### 3.3 Analytics
+- Volume chart (line or bar)
+- Toggle: Aggregate vs Per-market
+- Time scale selector: Daily, Weekly, Monthly, Yearly
 
-## Key Callbacks
+#### 3.4 Market Creation Wizard (5 Steps)
+1. **Basic Info**: Thumbnail upload, title, category tags, end date, answer URLs
+2. **Market Outcomes**: Type selection (Yes/No, Numeric, Categorical), outcome configuration
+3. **Market Parameters**: Liquidity deposit, fee configuration (sell/buy/win)
+4. **Review**: Summary with "Initial Cost / Worst Case Loss" calculation
+5. **Final Review**: Rich text description editor with "Generate with AI" button
 
-- `onTagSelect` — Single-select tag filtering
-- `onBuyYes/onBuyNo` — Trade execution for Yes/No markets
-- `onBuyOutcomeYes/onBuyOutcomeNo` — Trade execution for categorical
-- `onViewMarket` — Navigate to market detail
-- `onLoadMore` — Infinite scroll
+#### 3.5 Wizard Behavior
+- Step indicator showing progress
+- Back/Forward navigation
+- State preservation across steps
+- Validation with error summary banner
+- On success: Navigate to new market detail page
 
-## User Flows
-
-1. Browse by tag (single-select navigation)
-2. Quick trade on Yes/No market
-3. Quick trade on categorical market
-4. Apply filters
-
-## Done When
-
-- [ ] Tag navigation works (single-select)
-- [ ] Filters work
-- [ ] Quick trading works
-- [ ] Infinite scroll works
-- [ ] Empty states display
-- [ ] Responsive on mobile
-
----
-
-# Milestone 3: Market Creation & Management
-
-## Goal
-
-Implement the creator dashboard for managing markets and creating new ones.
-
-## Overview
-
-Dashboard with:
-- Overview tab: Stats cards + paginated market list
-- Analytics tab: Volume charts with time scale options
-- Create Market CTA → 5-step wizard
-- Draft persistence
-- Fee claiming
-
-## Components
-
-From `product-plan/sections/market-creation-and-management/components/`:
-- `MarketCreationDashboard.tsx` — Main dashboard
-- `StatCard.tsx` — Stat card
-- `MarketRow.tsx` — Market list item
-- `VolumeChart.tsx` — Analytics chart
-- `Pagination.tsx` — Pagination controls
-
-## Key Callbacks
-
-- `onCreateMarket` — Submit market wizard
-- `onClaimFees` — Claim creator fees
-- `onCancelMarket` — Cancel market
-- `onTabChange` — Switch tabs
-- `onTimeScaleChange` — Chart time scale
-
-## User Flows
-
-1. View dashboard statistics
-2. Claim creator fees from resolved market
-3. Analyze volume performance
-4. Create new market (5-step wizard)
-5. Cancel a market
-
-## Done When
-
-- [ ] Dashboard stats display
-- [ ] Market list with pagination
-- [ ] Analytics charts work
-- [ ] Create wizard works with draft persistence
-- [ ] Fee claiming works
-- [ ] Market cancellation works
-- [ ] Empty states display
-- [ ] Responsive on mobile
+#### Deliverables
+- [ ] Three-tab layout with CTA-style Add Market button
+- [ ] Overview stats and paginated market list
+- [ ] Analytics chart with toggles
+- [ ] 5-step wizard with all fields
+- [ ] Validation and error handling
+- [ ] Success navigation
 
 ---
 
-# Milestone 4: MyPage
+## Milestone 4: MyPage
 
-## Goal
+### Objective
+Build the personal dashboard with positions, orders, and created markets.
 
-Implement the personal dashboard for viewing positions, orders, and created markets.
+### Reference Files
+- `sections/mypage/README.md`
+- `sections/mypage/types.ts`
+- `sections/mypage/sample-data.json`
+- `sections/mypage/components/`
 
-## Overview
+### Tasks
 
-Personal hub with:
-- Profile header: Avatar + P/L summary (24h, 7d, 30d, All-time)
-- Positions section: Active/Closed tabs with Sell/Claim actions
-- Order History section: Deposits/withdrawals with status
-- Created Markets section: User's markets with fee claiming
+#### 4.1 Profile Header
+- User avatar (clickable to upload new image)
+- Display name
+- P/L summary cards with time scale toggle (24h, 7d, 30d, All-time)
 
-## Components
+#### 4.2 Positions Section
+- Expandable section
+- Sub-tabs: Active, Closed
+- Each position shows: market title, shares, current value, P/L, Sell button (active only)
 
-From `product-plan/sections/mypage/components/`:
-- `MyPage.tsx` — Main page
-- `ProfileHeader.tsx` — Avatar and P/L cards
-- `PLCard.tsx` — P/L metric card
-- `ExpandableSection.tsx` — Collapsible section
-- `PositionsSection.tsx` — Positions with tabs
-- `PositionRow.tsx` — Position row
-- `OrderHistorySection.tsx` — Order history
-- `OrderHistoryRow.tsx` — Order row
-- `CreatedMarketsSection.tsx` — Created markets
-- `CreatedMarketRow.tsx` — Created market row
+#### 4.3 Order History Section
+- Expandable section
+- Shows deposits/withdrawals
+- Each row: date, type, amount, TX ID, status, Lightning invoice (if applicable)
 
-## Key Callbacks
+#### 4.4 My Markets Section
+- Expandable section
+- List of markets the user created
+- Links to market detail or creator dashboard
 
-- `onAvatarUpload` — Upload avatar
-- `onSellPosition` — Sell active position
-- `onClaimPayout` — Claim winning payout
-- `onClaimCreatorFees` — Claim creator fees
-- `onPositionsTabChange` — Switch Active/Closed
-
-## User Flows
-
-1. View P/L summary
-2. Upload avatar
-3. Sell active position
-4. Claim payout from winning position
-5. Review order history
-6. Manage created markets
-
-## Done When
-
-- [ ] Profile header with P/L metrics
-- [ ] Avatar upload works
+#### Deliverables
+- [ ] Profile header with P/L cards
+- [ ] Avatar upload functionality
 - [ ] Positions with Active/Closed tabs
-- [ ] Selling and claiming work
-- [ ] Order history displays
-- [ ] Created markets section works
-- [ ] Empty states display
-- [ ] Expandable sections work
-- [ ] Responsive on mobile
+- [ ] Sell button on active positions
+- [ ] Order history with full details
+- [ ] My Markets list
+
+---
+
+## Milestone 5: Market Detail
+
+### Objective
+Build the comprehensive market detail page with trading, charts, and activity.
+
+### Reference Files
+- `sections/market-detail/README.md`
+- `sections/market-detail/types.ts`
+- `sections/market-detail/sample-data.json`
+- `sections/market-detail/components/`
+
+### Tasks
+
+#### 5.1 Market Header
+- Large title/question
+- Market image as header background (if available)
+- Category tags below title
+- Close date with countdown (if closing soon)
+- Share button
+- Creator info (avatar, name, reputation, markets created)
+- Metrics footer: Volume, Liquidity, Traders, Like button with count
+
+#### 5.2 Trading Panel (Right Sidebar on Desktop)
+- **Yes/No markets**: Two large buttons showing percentages
+- **Categorical markets**: Vertical outcome list with odds
+- **2D markets**: Grid layout with two-tone gradient cells
+  - Yes/Yes: solid emerald
+  - Yes/No: diagonal gradient emerald → rose
+  - No/Yes: diagonal gradient rose → emerald
+  - No/No: solid red
+- Amount input with quick buttons (100, 500, 1000, 5000 sats)
+- Trade preview: predicted odds, price impact, potential payout, fees
+- Optional comment textarea (280 char limit, placeholder "Share your reasoning...")
+- Confirm Trade button
+- Cancel button
+
+#### 5.3 Price Chart
+- Current percentage as section header (not "Price Chart" text)
+  - Yes/No: shows yes odds (e.g., "67.5%")
+  - Categorical: shows leading outcome (e.g., "Chiefs 28.5%")
+  - 2D: shows leading cell odds
+  - Resolved: shows "Resolved: [outcome]"
+- Line chart with price history
+- Timeframe selector: 1H | 24H | 7D | 30D | ALL
+- Toggle: Price / Volume
+- **Comment speech bubbles** on chart (price mode):
+  - Positioned by timestamp
+  - Size 24-40px based on like count
+  - Opacity 0.4-1.0 based on like count
+  - Tooltip on hover
+- Categorical: Multi-line chart with legend
+- 2D: Cell selector dropdown
+- **2D Conditional Probability Toggle** (Yes/No + Yes/No markets):
+  - Buttons: [All] [Dim1=Yes] [Dim1=No] [Dim2=Yes] [Dim2=No]
+  - Fixing dimension shows conditional probability lines
+  - "Conditional on [label]" subtitle
+
+#### 5.4 Resolution Info
+- Resolution criteria
+- Source (oracle, manual, community, smart_contract)
+- Resolution date
+- Status (Open, Pending Resolution, Resolved, Disputed)
+- For resolved: Final outcome prominently displayed
+
+#### 5.5 Recent Trades
+- Trade list (no tabs)
+- Each trade: user (anonymized), side, amount, price, timestamp
+- Infinite scroll with "Load more"
+
+#### 5.6 Related Markets
+- Horizontal scrollable list
+- Mini market cards with quick stats
+- Based on same category tags
+
+#### 5.7 Comments Section (Bottom)
+- Read-only display (comments posted via trade flow only)
+- User avatar, name, timestamp, content
+- Like button per comment
+- Infinite scroll
+- Empty state: "No comments yet. Place a trade to leave a comment!"
+
+#### 5.8 Resolved Market View
+- RESOLVED badge with CheckCircle icon at top of header
+- "Resolved on [date]" replaces countdown
+- **No trading panel** (desktop sidebar and mobile sticky bar hidden)
+- **Single-column layout** (no sidebar grid)
+- Resolution Info moved above chart
+- Comments section read-only
+
+#### 5.9 Responsive Behavior
+- Desktop (≥1024px): Two-column (content + sticky trading sidebar)
+- Tablet (768-1023px): Single column, trading panel at top (collapsible)
+- Mobile (<768px): Single column, sticky bottom "Trade" button → opens modal
+
+#### Deliverables
+- [ ] Market header with all elements
+- [ ] Trading panel for all market types
+- [ ] 2D grid with two-tone gradients
+- [ ] Price chart with timeframe/type toggles
+- [ ] Comment bubbles on chart
+- [ ] 2D conditional probability toggle
+- [ ] Resolution info section
+- [ ] Recent trades with infinite scroll
+- [ ] Related markets carousel
+- [ ] Comments section
+- [ ] Resolved market view (no trading)
+- [ ] Responsive layout (desktop/tablet/mobile)
+
+---
+
+## Verification Checklist
+
+After completing all milestones:
+
+- [ ] All routes navigable
+- [ ] Shell responsive on all viewports
+- [ ] Market Discovery shows all market types
+- [ ] Inline trading works on cards
+- [ ] Market Creation wizard completes successfully
+- [ ] MyPage shows positions and orders
+- [ ] Market Detail displays all sections
+- [ ] Trading panel functional for all market types
+- [ ] Charts render with data
+- [ ] Comment bubbles visible on price chart
+- [ ] Resolved markets hide trading panel
+- [ ] Light/dark mode working
+- [ ] ₿ symbol used consistently (not "sats")

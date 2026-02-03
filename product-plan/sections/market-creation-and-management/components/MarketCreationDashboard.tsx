@@ -4,7 +4,7 @@ import { MarketRow } from './MarketRow'
 import { VolumeChart } from './VolumeChart'
 import { Pagination } from './Pagination'
 
-function formatSats(sats: number): string {
+function formatBtc(sats: number): string {
   const abs = Math.abs(sats)
   if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
   if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
@@ -27,7 +27,7 @@ export function MarketCreationDashboard({
   onCreateMarket,
   onCancelMarket,
   onClaimFees,
-  onSaveDraft,
+  onSaveDraft: _onSaveDraft,
   onDiscardDraft,
   onTimeScaleChange,
   onChartModeChange,
@@ -150,7 +150,7 @@ export function MarketCreationDashboard({
               />
               <StatCard
                 label="Total Volume"
-                value={formatSats(dashboardStats.totalVolumeSats)}
+                value={formatBtc(dashboardStats.totalVolumeSats)}
                 subValue="traded"
                 variant="default"
                 icon={
@@ -161,9 +161,9 @@ export function MarketCreationDashboard({
               />
               <StatCard
                 label="Fees Earned"
-                value={`+${formatSats(dashboardStats.totalFeesEarnedSats)}`}
+                value={`+${formatBtc(dashboardStats.totalFeesEarnedSats)}`}
                 subValue={dashboardStats.totalFeesUnclaimedSats > 0
-                  ? `${formatSats(dashboardStats.totalFeesUnclaimedSats)} unclaimed`
+                  ? `${formatBtc(dashboardStats.totalFeesUnclaimedSats)} unclaimed`
                   : 'All claimed'
                 }
                 variant="success"

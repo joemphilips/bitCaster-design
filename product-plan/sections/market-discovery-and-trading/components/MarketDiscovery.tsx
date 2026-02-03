@@ -1,17 +1,16 @@
-import { useEffect, useRef } from 'react'
-import { Search } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { TagBar } from './TagBar'
 import { FilterControls } from './FilterControls'
 import { MarketCard } from './MarketCard'
-import type { MarketDiscoveryProps } from '../types'
+import type { MarketDiscoveryProps, MarketType, VolumeRange, Market } from '../types'
 
 export function MarketDiscovery({
   metaTags,
   categoryTags,
   markets,
   selectedTag,
-  searchQuery = '',
-  onSearch,
+  searchQuery: _searchQuery = '',
+  onSearch: _onSearch,
   onTagSelect,
   onMarketTypeChange,
   onVolumeRangeChange,
@@ -22,8 +21,46 @@ export function MarketDiscovery({
   onBuyOutcomeNo,
   onViewMarket,
   onLoadMore,
+  onBuy2DYesNoCombo,
+  onBuy2DCategoricalCombo,
+  onViewSecondaryMarket,
 }: MarketDiscoveryProps) {
   const observerTarget = useRef<HTMLDivElement>(null)
+  const [filtersVisible, setFiltersVisible] = useState(false)
+  const [selectedMarketTypes, setSelectedMarketTypes] = useState<MarketType[]>([])
+  const [volumeRange, setVolumeRange] = useState<VolumeRange>({})
+  const [closingInDays, setClosingInDays] = useState<number | undefined>(undefined)
+
+  // Create a market lookup map for resolving secondary market references
+  const marketMap = useMemo(() => {
+    const map = new Map<string, Market>()
+    markets.forEach((m) => map.set(m.id, m))
+    return map
+  }, [markets])
+
+  // Helper to get secondary market infos for a market
+  const getSecondaryMarketInfos = (market: Market) => {
+    if (!market.secondaryMarkets || market.secondaryMarkets.length === 0) {
+      return undefined
+    }
+    return market.secondaryMarkets
+      .map((id) => {
+        const secondaryMarket = marketMap.get(id)
+        if (!secondaryMarket) return null
+        return {
+          id: secondaryMarket.id,
+          title: secondaryMarket.title,
+        }
+      })
+      .filter((info): info is { id: string; title: string } => info !== null)
+  }
+
+  // Calculate active filter count
+  const activeFilterCount = [
+    selectedMarketTypes.length > 0 ? 1 : 0,
+    volumeRange.min !== undefined ? 1 : 0,
+    closingInDays !== undefined ? 1 : 0,
+  ].reduce((a, b) => a + b, 0)
 
   // Infinite scroll
   useEffect(() => {
@@ -50,45 +87,39 @@ export function MarketDiscovery({
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Sticky Header: Search + Tags (no gap) */}
+      {/* Sticky Header: Tags */}
       <div className="sticky top-14 md:top-16 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        {/* Search Bar */}
-        <div className="px-4 sm:px-6 lg:px-8 pt-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => onSearch?.(e.target.value)}
-                placeholder="Search markets by keyword..."
-                className="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Tag Bar - directly below search with no gap */}
         <div className="max-w-7xl mx-auto">
           <TagBar
             metaTags={metaTags}
             categoryTags={categoryTags}
             selectedTag={selectedTag}
+            filtersVisible={filtersVisible}
+            activeFilterCount={activeFilterCount}
             onTagSelect={onTagSelect}
+            onToggleFilters={() => setFiltersVisible(!filtersVisible)}
           />
         </div>
       </div>
 
       {/* Filter Controls */}
       <FilterControls
-        searchQuery={searchQuery}
-        selectedMarketTypes={[]}
-        volumeRange={{}}
-        closingInDays={undefined}
-        onSearch={onSearch}
-        onMarketTypeChange={onMarketTypeChange}
-        onVolumeRangeChange={onVolumeRangeChange}
-        onClosingDateChange={onClosingDateChange}
+        isVisible={filtersVisible}
+        selectedMarketTypes={selectedMarketTypes}
+        volumeRange={volumeRange}
+        closingInDays={closingInDays}
+        onMarketTypeChange={(types) => {
+          setSelectedMarketTypes(types)
+          onMarketTypeChange?.(types)
+        }}
+        onVolumeRangeChange={(range) => {
+          setVolumeRange(range)
+          onVolumeRangeChange?.(range)
+        }}
+        onClosingDateChange={(days) => {
+          setClosingInDays(days)
+          onClosingDateChange?.(days)
+        }}
       />
 
       {/* Market Grid */}
@@ -104,16 +135,20 @@ export function MarketDiscovery({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
             {markets.map((market) => (
               <MarketCard
                 key={market.id}
                 market={market}
+                secondaryMarketInfos={getSecondaryMarketInfos(market)}
                 onBuyYes={onBuyYes}
                 onBuyNo={onBuyNo}
                 onBuyOutcomeYes={onBuyOutcomeYes}
                 onBuyOutcomeNo={onBuyOutcomeNo}
+                onBuy2DYesNoCombo={onBuy2DYesNoCombo}
+                onBuy2DCategoricalCombo={onBuy2DCategoricalCombo}
                 onViewMarket={onViewMarket}
+                onViewSecondaryMarket={onViewSecondaryMarket}
               />
             ))}
           </div>

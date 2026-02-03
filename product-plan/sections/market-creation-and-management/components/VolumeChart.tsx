@@ -5,6 +5,13 @@ import type {
   ChartMode
 } from '../types'
 
+function formatBtc(sats: number): string {
+  const abs = Math.abs(sats)
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
+}
+
 interface VolumeChartProps {
   volumeChartData: VolumeChartData
   volumeByMarket: MarketVolumeData[]
@@ -13,13 +20,6 @@ interface VolumeChartProps {
   onTimeScaleChange?: (scale: TimeScale) => void
   onChartModeChange?: (mode: ChartMode) => void
   onSelectMarketForChart?: (marketId: string) => void
-}
-
-function formatSats(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
 }
 
 function formatDateLabel(dateStr: string, scale: TimeScale): string {
@@ -140,16 +140,15 @@ export function VolumeChart({
             Total Volume
           </p>
           <p className="mt-1 font-mono text-2xl font-bold text-blue-700 dark:text-blue-300">
-            {formatSats(totalVolume)}
+            {formatBtc(totalVolume)}
           </p>
-          <p className="text-sm text-blue-600/70 dark:text-blue-400/70">volume</p>
         </div>
         <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-4 dark:from-emerald-950/50 dark:to-emerald-900/30">
           <p className="text-xs font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
             Total Fees
           </p>
           <p className="mt-1 font-mono text-2xl font-bold text-emerald-700 dark:text-emerald-300">
-            +{formatSats(totalFees)}
+            +{formatBtc(totalFees)}
           </p>
           <p className="text-sm text-emerald-600/70 dark:text-emerald-400/70">earned</p>
         </div>
@@ -158,9 +157,8 @@ export function VolumeChart({
             Avg Per {timeScale === 'daily' ? 'Day' : timeScale === 'weekly' ? 'Week' : 'Month'}
           </p>
           <p className="mt-1 font-mono text-2xl font-bold text-amber-700 dark:text-amber-300">
-            {formatSats(Math.round(totalVolume / data.length))}
+            {formatBtc(Math.round(totalVolume / data.length))}
           </p>
-          <p className="text-sm text-amber-600/70 dark:text-amber-400/70">average</p>
         </div>
         <div className="rounded-xl bg-gradient-to-br from-slate-50 to-slate-100/50 p-4 dark:from-slate-800/50 dark:to-slate-700/30">
           <p className="text-xs font-medium uppercase tracking-wider text-slate-600 dark:text-slate-400">
@@ -177,8 +175,8 @@ export function VolumeChart({
       <div className="relative">
         {/* Y-axis labels */}
         <div className="absolute -left-2 top-0 bottom-8 flex flex-col justify-between text-xs text-slate-400">
-          <span>{formatSats(maxVolume)}</span>
-          <span>{formatSats(maxVolume / 2)}</span>
+          <span>{formatBtc(maxVolume)}</span>
+          <span>{formatBtc(maxVolume / 2)}</span>
           <span>0</span>
         </div>
 
@@ -191,8 +189,8 @@ export function VolumeChart({
                 <div key={i} className="group relative flex-1 min-w-[40px]">
                   {/* Tooltip */}
                   <div className="absolute -top-16 left-1/2 z-10 -translate-x-1/2 scale-0 rounded-lg bg-slate-900 px-3 py-2 text-sm text-white shadow-xl transition-transform group-hover:scale-100 dark:bg-slate-700">
-                    <p className="font-bold">{formatSats(d.volume)}</p>
-                    <p className="text-slate-300">+{formatSats(d.fees)} fees</p>
+                    <p className="font-bold">{formatBtc(d.volume)}</p>
+                    <p className="text-slate-300">+{formatBtc(d.fees)} fees</p>
                     <p className="text-xs text-slate-400">{d.label}</p>
                     <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-slate-900 dark:bg-slate-700" />
                   </div>
@@ -252,7 +250,7 @@ export function VolumeChart({
                       {market.marketTitle}
                     </span>
                     <span className="ml-2 flex-shrink-0 font-mono text-sm font-bold text-slate-900 dark:text-white">
-                      {formatSats(marketTotal)}
+                      {formatBtc(marketTotal)}
                     </span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
