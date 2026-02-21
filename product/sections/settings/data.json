@@ -1,34 +1,84 @@
 {
   "_meta": {
     "events": {
+      "SettingsCategoryToggled": "User expands or collapses a settings category group",
       "BaseCurrencyChanged": "User changes preferred display currency",
+      "LanguageChanged": "User changes display language",
       "ThemeChanged": "User changes theme preference",
       "MintAdded": "User adds a new mint URL to their connected mints",
       "MintRemoved": "User removes a non-default mint from their list",
-      "SeedPhraseViewed": "User views their wallet seed phrase after confirmation"
+      "SeedPhraseViewed": "User views their wallet seed phrase after confirmation",
+      "NostrSignerModeChanged": "User changes Nostr signer mode (none/nip07/nsec)",
+      "NostrExtensionConnected": "User successfully connects via NIP-07 browser extension",
+      "NostrNsecConnected": "User successfully connects via nsec private key",
+      "NostrProfileFetched": "Nostr profile fetched and displayed after key provided",
+      "RelayAdded": "User adds a new Nostr relay URL",
+      "RelayRemoved": "User removes a Nostr relay from their list"
     },
     "currentState": {
-      "baseCurrency": "Current display currency preference",
-      "theme": "Current theme setting",
-      "mints": "List of configured mints with connection status",
-      "appVersion": "Application version string"
+      "activeCategory": "Which settings category group is expanded",
+      "settings.general": "General preferences (currency, language, theme, version)",
+      "settings.cashu": "Cashu mint configuration and seed backup",
+      "settings.nostr": "Nostr identity, profile, and relay configuration",
+      "settings.oracle": "Oracle placeholder (coming soon)"
     }
   },
-  "baseCurrency": "BTC",
-  "theme": "dark",
-  "mints": [
-    {
-      "url": "http://localhost:3338",
-      "isDefault": true,
-      "connectionStatus": "connected",
-      "addedDate": "2025-08-15T09:30:00Z"
+  "activeCategory": "general",
+  "settings": {
+    "general": {
+      "baseCurrency": "BTC",
+      "language": "en",
+      "theme": "dark",
+      "appVersion": "0.1.0"
     },
-    {
-      "url": "https://mint.minibits.cash",
-      "isDefault": false,
-      "connectionStatus": "connected",
-      "addedDate": "2025-12-01T14:00:00Z"
+    "cashu": {
+      "mints": [
+        {
+          "url": "http://localhost:3338",
+          "isDefault": true,
+          "connectionStatus": "connected",
+          "addedDate": "2025-08-15T09:30:00Z"
+        },
+        {
+          "url": "https://mint.minibits.cash",
+          "isDefault": false,
+          "connectionStatus": "connected",
+          "addedDate": "2025-12-01T14:00:00Z"
+        }
+      ]
+    },
+    "nostr": {
+      "signerMode": "nip07",
+      "profile": {
+        "pubkey": "npub1exampleabcdef1234567890abcdef1234567890abcdef1234567890abcd",
+        "displayName": "satoshi",
+        "avatar": "https://robohash.org/satoshi.png?set=set4",
+        "nip05": "satoshi@bitcaster.app",
+        "nip05verified": true,
+        "bio": "Building the future of prediction markets on Cashu and Nostr."
+      },
+      "profileFetchStatus": "found",
+      "relays": [
+        {
+          "url": "wss://relay.damus.io",
+          "connectionStatus": "connected"
+        },
+        {
+          "url": "wss://relay.nostr.band",
+          "connectionStatus": "connected"
+        },
+        {
+          "url": "wss://nos.lol",
+          "connectionStatus": "connected"
+        },
+        {
+          "url": "wss://relay.snort.social",
+          "connectionStatus": "disconnected"
+        }
+      ]
+    },
+    "oracle": {
+      "comingSoon": true
     }
-  ],
-  "appVersion": "0.1.0"
+  }
 }

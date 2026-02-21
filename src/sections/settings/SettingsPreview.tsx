@@ -2,52 +2,121 @@ import { useState } from 'react'
 import data from '@/../product/sections/settings/data.json'
 import { Settings } from './components/Settings'
 import type {
+  SettingsCategory,
+  SettingsState,
   BaseCurrency,
   ThemeOption,
+  LanguageCode,
+  NostrSignerMode,
   MintConfig,
+  RelayConfig,
   SettingsProps,
 } from '@/../product/sections/settings/types'
 
 export function SettingsPreview() {
-  const [baseCurrency, setBaseCurrency] = useState<BaseCurrency>(
-    data.baseCurrency as BaseCurrency
+  const [activeCategory, setActiveCategory] = useState<SettingsCategory>(
+    data.activeCategory as SettingsCategory
   )
-  const [theme, setTheme] = useState<ThemeOption>(data.theme as ThemeOption)
-  const [mints, setMints] = useState<MintConfig[]>(
-    data.mints as MintConfig[]
+  const [settings, setSettings] = useState<SettingsState>(
+    data.settings as unknown as SettingsState
   )
 
   const props: SettingsProps = {
-    baseCurrency,
-    theme,
-    mints,
-    appVersion: data.appVersion,
+    activeCategory,
+    settings,
+    onCategoryToggle: (category) => {
+      console.log('Category toggled:', category)
+      setActiveCategory(category)
+    },
     onBaseCurrencyChange: (currency) => {
       console.log('Base currency changed:', currency)
-      setBaseCurrency(currency)
+      setSettings((prev) => ({
+        ...prev,
+        general: { ...prev.general, baseCurrency: currency },
+      }))
     },
-    onThemeChange: (t) => {
-      console.log('Theme changed:', t)
-      setTheme(t)
+    onLanguageChange: (language) => {
+      console.log('Language changed:', language)
+      setSettings((prev) => ({
+        ...prev,
+        general: { ...prev.general, language },
+      }))
+    },
+    onThemeChange: (theme) => {
+      console.log('Theme changed:', theme)
+      setSettings((prev) => ({
+        ...prev,
+        general: { ...prev.general, theme },
+      }))
     },
     onAddMint: (url) => {
       console.log('Add mint:', url)
-      setMints((prev) => [
+      setSettings((prev) => ({
         ...prev,
-        {
-          url,
-          isDefault: false,
-          connectionStatus: 'connected',
-          addedDate: new Date().toISOString(),
+        cashu: {
+          ...prev.cashu,
+          mints: [
+            ...prev.cashu.mints,
+            {
+              url,
+              isDefault: false,
+              connectionStatus: 'connected' as const,
+              addedDate: new Date().toISOString(),
+            },
+          ],
         },
-      ])
+      }))
     },
     onRemoveMint: (url) => {
       console.log('Remove mint:', url)
-      setMints((prev) => prev.filter((m) => m.url !== url))
+      setSettings((prev) => ({
+        ...prev,
+        cashu: {
+          ...prev.cashu,
+          mints: prev.cashu.mints.filter((m) => m.url !== url),
+        },
+      }))
     },
     onViewSeedPhrase: () => {
       console.log('Seed phrase viewed')
+    },
+    onSignerModeChange: (mode) => {
+      console.log('Signer mode changed:', mode)
+      setSettings((prev) => ({
+        ...prev,
+        nostr: {
+          ...prev.nostr,
+          signerMode: mode,
+          profile: mode === 'none' ? null : prev.nostr.profile,
+          profileFetchStatus: mode === 'none' ? 'idle' : prev.nostr.profileFetchStatus,
+        },
+      }))
+    },
+    onNsecSubmit: (nsec) => {
+      console.log('nsec submitted:', nsec.slice(0, 10) + '...')
+    },
+    onAddRelay: (url) => {
+      console.log('Add relay:', url)
+      setSettings((prev) => ({
+        ...prev,
+        nostr: {
+          ...prev.nostr,
+          relays: [
+            ...prev.nostr.relays,
+            { url, connectionStatus: 'connected' as const },
+          ],
+        },
+      }))
+    },
+    onRemoveRelay: (url) => {
+      console.log('Remove relay:', url)
+      setSettings((prev) => ({
+        ...prev,
+        nostr: {
+          ...prev.nostr,
+          relays: prev.nostr.relays.filter((r) => r.url !== url),
+        },
+      }))
     },
   }
 
