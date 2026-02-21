@@ -1,359 +1,186 @@
 # Milestone 5: Market Detail
 
-## Objective
-Build the comprehensive market detail page with trading panel, price charts, activity feed, and support for all market types including resolved markets and 2D conditional probability visualization.
-
-## Prerequisites
-- Milestone 1 (Foundation) complete
-- Milestone 2 (Market Discovery) recommended
-- Understanding of AMM trading model
-
-## Reference Files
-- `sections/market-detail/README.md` — Overview and design intent
-- `sections/market-detail/types.ts` — TypeScript interfaces
-- `sections/market-detail/sample-data.json` — Sample data for all market types
-- `sections/market-detail/tests.md` — Test requirements
-- `sections/market-detail/components/` — Reference implementations
+> **Provide alongside:** `product-overview.md`
+> **Prerequisites:** Milestone 1 (Foundation) complete
 
 ---
 
-## Tasks
+## About These Instructions
 
-### 5.1 Market Header
+**What you're receiving:**
+- Finished UI designs (React components with full styling)
+- Data model definitions (TypeScript types and sample data)
+- UI/UX specifications (user flows, requirements, screenshots)
+- Design system tokens (colors, typography, spacing)
+- Test-writing instructions for each section (for TDD approach)
 
-Top section with market info and key metrics.
+**What you need to build:**
+- Backend API endpoints and database schema
+- Authentication and authorization
+- Data fetching and state management
+- Business logic and validation
+- Integration of the provided UI components with real data
 
-#### Elements
-- **Title/Question**: Large, prominent text
-- **Image**: Header background with gradient overlay (if imageUrl exists)
-- **Category tags**: Below title, styled pills
-- **Close date**: With countdown timer if closing within 7 days
-- **Share button**: Copy link or open share dialog
-- **Creator info**: Avatar, name, reputation score, markets created
-
-#### Metrics Footer (matching MarketCard style)
-Horizontal bar at bottom of header:
-- Volume: ₿ format with amber color
-- Liquidity: droplet icon
-- Traders: users icon
-- Like button: heart icon with count, clickable
-
-### 5.2 Trading Panel
-
-**Desktop**: Right sidebar (sticky)
-**Tablet**: Top of content (collapsible)
-**Mobile**: Sticky bottom bar with "Trade" button → opens full-screen modal
-
-#### Yes/No Markets
-Two large buttons side by side:
-```
-┌─────────────┐ ┌─────────────┐
-│    YES      │ │     NO      │
-│   67.5%     │ │   32.5%     │
-└─────────────┘ └─────────────┘
-```
-Selected button highlighted with border/background.
-
-#### Categorical Markets
-Vertical list of outcomes:
-```
-┌─────────────────────────────────┐
-│ Chiefs         28.5%   [Yes][No]│
-│ 49ers          24.2%   [Yes][No]│
-│ Ravens         22.1%   [Yes][No]│
-│ Bills          15.3%   [Yes][No]│
-│ Other           9.9%   [Yes][No]│
-└─────────────────────────────────┘
-```
-
-#### 2D Markets
-Grid layout with two-tone gradient cells:
-
-```
-         │   Yes    │    No    │
-─────────┼──────────┼──────────┤
-   Yes   │   35%    │   15%    │
-         │ (green)  │ (g→r)    │
-─────────┼──────────┼──────────┤
-   No    │   20%    │   30%    │
-         │ (r→g)    │  (red)   │
-─────────┴──────────┴──────────┘
-```
-
-**Cell colors:**
-- Yes/Yes: solid emerald (`bg-emerald-500`)
-- Yes/No: diagonal gradient emerald → rose (135deg)
-- No/Yes: diagonal gradient rose → emerald (135deg)
-- No/No: solid red (`bg-red-500`)
-- Selected state: increased intensity + border
-
-#### Trade Form
-After selecting an outcome:
-- **Amount input**: Number field for sats
-- **Quick buttons**: 100, 500, 1000, 5000
-- **Trade preview**:
-  - Predicted odds after trade
-  - Price impact percentage
-  - Potential payout
-  - Creator fee
-  - Platform fee
-  - Total cost
-- **Comment textarea**: Optional, 280 char limit, placeholder "Share your reasoning..."
-- **Confirm Trade**: Primary button
-- **Cancel**: Secondary/text button
-
-### 5.3 Price Chart
-
-#### Header
-Display current odds as the section header (NOT "Price Chart"):
-- Yes/No: `67.5%`
-- Categorical: `Chiefs 28.5%` (leading outcome)
-- 2D: Leading cell percentage
-- Resolved: `Resolved: Yes` (or winning outcome)
-
-#### Chart
-- Line chart with price history data
-- Y-axis: 0-100%
-- X-axis: Time based on selected timeframe
-
-#### Timeframe Selector
-Horizontal button group: `1H` | `24H` | `7D` | `30D` | `ALL`
-
-#### Chart Type Toggle
-Toggle button: `Price` / `Volume`
-
-#### Comment Bubbles (Price mode only)
-Speech bubble icons overlaid on chart:
-- **Position**: X = timestamp relative to visible range
-- **Size**: 24-40px based on like count (more likes = larger)
-- **Opacity**: 0.4-1.0 based on like count
-- **Tooltip on hover**: Username, content preview, like count
-- Only show comments within visible timeframe
-
-#### Categorical Multi-line
-For categorical markets:
-- Multiple lines, one per outcome
-- Color-coded legend
-- Toggleable legend items
-
-#### 2D Cell Selector
-For 2D markets:
-- Dropdown to select which cell's history to display
-- Options: "Yes-Yes", "Yes-No", "No-Yes", "No-No"
-
-#### 2D Conditional Probability Toggle
-For Yes/No × Yes/No markets only:
-
-Toggle buttons: `[All]` `[Dim1=Yes]` `[Dim1=No]` `[Dim2=Yes]` `[Dim2=No]`
-
-- **All**: Standard cell selector dropdown
-- **Fixing a dimension**: Shows conditional probability chart
-  - E.g., fixing "BTC=Yes" shows P(ETH=Yes|BTC=Yes) and P(ETH=No|BTC=Yes)
-  - Two lines on chart with legend
-- **Subtitle**: "Conditional on [label]" displayed below current percentage
-- **Handle division by zero**: Skip points where denominator is zero
-
-### 5.4 Resolution Info
-
-Section showing resolution details.
-
-```
-┌─────────────────────────────────────────────┐
-│ Resolution Details                          │
-├─────────────────────────────────────────────┤
-│ Criteria: BTC price on Coinbase at 12:00 UTC│
-│ Source: Oracle (Chainlink)                  │
-│ Resolution Date: January 31, 2025           │
-│ Status: Open                                │
-└─────────────────────────────────────────────┘
-```
-
-For resolved markets, also show:
-- **Final Outcome**: Prominently displayed
-- Status shows "Resolved"
-
-### 5.5 Recent Trades
-
-Activity section showing trade history.
-
-#### Trade Item
-```
-User123  bought Yes  ₿500  @67%  2 min ago
-```
-
-- Anonymized username
-- Side (Yes/No or outcome name)
-- Amount in sats
-- Price at execution
-- Relative timestamp
-
-#### Infinite Scroll
-- Load more on scroll or "Load more" button
-- Loading indicator
-
-### 5.6 Related Markets
-
-Horizontal scrollable carousel of related markets.
-
-- Based on shared category tags
-- Mini cards with: title, current odds, volume
-- Clicking navigates to that market
-
-### 5.7 Comments Section
-
-**Bottom of page**, read-only display.
-
-Comments are posted ONLY through the Trading Panel (with a trade).
-
-#### Comment Item
-```
-┌─────────────────────────────────────────────┐
-│ [Avatar] Username            Dec 15, 2:30pm │
-│ This is my analysis of why I think...       │
-│                                    ♡ 12     │
-└─────────────────────────────────────────────┘
-```
-
-- User avatar and name
-- Timestamp
-- Content
-- Like button with count
-
-#### Empty State
-"No comments yet. Place a trade to leave a comment!"
-
-#### Infinite Scroll
-- Load more on scroll
-- Loading indicator
-
-### 5.8 Resolved Market View
-
-When `market.resolution.status === 'resolved'`:
-
-#### Visual Changes
-- **RESOLVED badge**: Top of header with CheckCircle icon
-- **Final outcome text**: E.g., "Resolved: Yes" prominently displayed
-- **Date display**: "Resolved on [date]" replaces countdown timer
-
-#### Layout Changes
-- **No Trading Panel**: Hide both desktop sidebar and mobile sticky bar
-- **Single-column layout**: Remove sidebar grid, content fills width
-- **Resolution Info**: Move to immediately after header (above chart)
-
-#### Behavior Changes
-- Comments section read-only (no comment textarea anywhere)
-- Activity feed and related markets remain visible
-
-### 5.9 Responsive Layout
-
-#### Desktop (≥ 1024px)
-```
-┌─────────────────────────────────────────────────┐
-│                    Header                       │
-├────────────────────────────┬────────────────────┤
-│        Chart               │   Trading Panel    │
-│        Resolution          │   (sticky)         │
-│        Trades              │                    │
-│        Related             │                    │
-│        Comments            │                    │
-└────────────────────────────┴────────────────────┘
-```
-
-#### Tablet (768-1023px)
-```
-┌─────────────────────────────────────────────────┐
-│                    Header                       │
-├─────────────────────────────────────────────────┤
-│          Trading Panel (collapsible)            │
-├─────────────────────────────────────────────────┤
-│                    Chart                        │
-│                    Resolution                   │
-│                    Trades                       │
-│                    Related                      │
-│                    Comments                     │
-└─────────────────────────────────────────────────┘
-```
-
-#### Mobile (< 768px)
-```
-┌─────────────────────────────────────────────────┐
-│                    Header                       │
-├─────────────────────────────────────────────────┤
-│                    Chart                        │
-│                    Resolution                   │
-│                    Trades                       │
-│                    Related                      │
-│                    Comments                     │
-├─────────────────────────────────────────────────┤
-│               [Trade Button]                    │  ← Sticky bottom
-└─────────────────────────────────────────────────┘
-
-Tapping "Trade" opens full-screen modal with Trading Panel
-```
+**Important guidelines:**
+- **DO NOT** redesign or restyle the provided components — use them as-is
+- **DO** wire up the callback props to your routing and API calls
+- **DO** replace sample data with real data from your backend
+- **DO** implement proper error handling and loading states
+- **DO** implement empty states when no records exist (first-time users, after deletions)
+- **DO** use test-driven development — write tests first using `tests.md` instructions
+- The components are props-based and ready to integrate — focus on the backend and data layer
 
 ---
 
-## Component Checklist
+## Goal
 
-- [ ] `MarketDetail` — Main page container
-- [ ] `MarketHeader` — Title, image, tags, metrics
-- [ ] `TradingPanel` — Outcome selection and trade form
-- [ ] `TradingModal` — Mobile full-screen trading
-- [ ] `PriceChart` — Line chart with timeframe/type toggles
-- [ ] `CommentBubbles` — Chart overlay component
-- [ ] `ConditionalProbabilityToggle` — 2D dimension fixing
-- [ ] `ResolutionInfo` — Resolution details section
-- [ ] `ActivityFeed` — Recent trades list
-- [ ] `RelatedMarkets` — Horizontal carousel
-- [ ] `CommentSection` — Comments display
-- [ ] `CommentItem` — Single comment
+Implement the Market Detail feature — a comprehensive single-market view with trading panel, price charts, order book, activity feed, comments, and support for all market types including resolved markets and 2D conditional probability visualization.
 
----
+## Overview
 
-## Test Points
+The market detail page is a two-column layout (desktop) where the left column contains the market header, price chart, resolution info, order book, activity feed, related markets, and comments, while the right column is a sticky trading panel. On mobile the trading panel is replaced by a sticky "Trade" button that opens a full-screen modal. Resolved markets collapse to a single-column layout and hide the trading panel entirely. The trading panel supports both Buy and Sell sides, and both Market and Limit order types.
 
-See `tests.md` for detailed requirements. Key scenarios:
+**Key Functionality:**
+- Market header with image, tags, creator info, metrics, like, and share
+- Trading panel with Buy/Sell toggle, Market/Limit order tabs, and outcome selection
+- Price chart with 1H/24H/7D/30D/ALL timeframes, price/volume toggle, and comment bubble overlay
+- 2D conditional probability chart with dimension-fixing toggle
+- Order book (bid/ask visualization)
+- Activity feed (recent trades with infinite scroll)
+- Comment section (read-only; comments posted via trading panel only)
+- Related markets horizontal scroll
+- Resolved market state: single-column, no trading panel, outcome displayed prominently
 
-**Trading:**
-- Yes/No button selection works
-- Categorical outcome selection works
-- 2D cell selection works with gradients
-- Amount input validates correctly
-- Trade preview calculates correctly
-- Confirm posts trade and optional comment
-- Cancel clears selection
+## Recommended Approach: Test-Driven Development
 
-**Charts:**
-- Timeframe changes update chart data
-- Price/Volume toggle switches chart type
-- Comment bubbles positioned correctly
-- Categorical shows multi-line with legend
-- 2D cell selector changes displayed history
-- Conditional probability toggle works
-- Division by zero handled gracefully
+See `product-plan/sections/market-detail/tests.md` for detailed test instructions.
 
-**Resolved Markets:**
-- RESOLVED badge visible
-- Trading panel hidden
-- Single-column layout
-- Resolution info above chart
-- Comments read-only
+**TDD Workflow:**
+1. Read `tests.md` and write failing tests for MarketHeader, TradingPanel, PriceChart, CommentSection, and resolved-market layout
+2. Implement each component to make the tests pass
+3. Refactor while keeping tests green
 
-**Responsive:**
-- Desktop shows two-column layout
-- Tablet shows collapsible trading panel
-- Mobile shows sticky Trade button
-- Trade modal opens on mobile tap
+## What to Implement
 
----
+### Components
 
-## Completion
+Copy from `product-plan/sections/market-detail/components/`:
 
-After completing Market Detail, all 5 milestones are complete. Verify:
+- `MarketDetail` — Main two-column layout container
+- `MarketHeader` — Title, background image, tags, creator info, metrics footer
+- `MarketStats` — Key market metrics (volume, liquidity, traders, like count)
+- `TradingPanel` — Buy/Sell toggle, Market/Limit tabs, outcome selection, trade form
+- `PriceChart` — Line chart with timeframe selector, price/volume toggle, and comment bubbles
+- `OrderBookSection` — Bid/ask depth visualization
+- `ActivityFeed` — Recent trades list with infinite scroll
+- `CommentSection` — Comment list with likes (read-only; no input field)
+- `RelatedMarkets` — Horizontal scrollable related market cards
+- `ResolutionInfo` — Resolution criteria, source, date, and status
 
-- [ ] All routes navigable
-- [ ] All market types display correctly
-- [ ] Trading works for all types
-- [ ] Charts render with all features
-- [ ] Resolved markets handled correctly
-- [ ] Responsive on all viewports
+### Data Layer
+
+Key types (see `product-plan/sections/market-detail/types.ts`):
+- `YesNoMarketDetail`, `CategoricalMarketDetail`, `TwoDimensionalMarketDetail`
+- `TradeSelection`, `TradePreview`, `OrderBook`, `PriceHistory`, `Trade`, `Comment`, `RelatedMarket`, `ResolutionDetails`
+
+API endpoints to implement:
+- `GET /markets/:id` — full market detail including current odds, stats, resolution info
+- `GET /markets/:id/price-history?timeframe=1H|24H|7D|30D|ALL` — price/volume time series
+- `GET /markets/:id/order-book` — current bid/ask depth
+- `GET /markets/:id/trades?page=` — paginated recent trades
+- `GET /markets/:id/comments?page=` — paginated comments
+- `GET /markets/:id/related` — related markets list
+- `POST /markets/:id/trade` — execute trade (buy or sell, market or limit order)
+- `POST /markets/:id/like` — toggle market like
+- `POST /markets/:id/comments/:commentId/like` — toggle comment like
+- `POST /markets/:id/trade-preview` — calculate predicted odds, payout, and fees for a proposed trade
+
+Sample data at `product-plan/sections/market-detail/sample-data.json`.
+
+### Callbacks
+
+Wire up these props on the `MarketDetail` component:
+
+| Callback | What to do |
+|----------|------------|
+| `onTimeframeChange` | Fetch price history for selected timeframe |
+| `onChartTypeChange` | Toggle price vs. volume chart |
+| `onTradeSelect` | Set selected outcome in local state |
+| `onTradeClear` | Clear selected outcome |
+| `onAmountChange` | Update amount, call trade-preview API |
+| `onTradeConfirm` | Call trade API, post comment if text entered, refresh data |
+| `onTradeSideChange` | Toggle Buy/Sell mode |
+| `onOrderTypeChange` | Toggle Market/Limit order type |
+| `onLimitPriceChange` | Update limit price in trade form state |
+| `onLikeToggle` | Call like API, update like count optimistically |
+| `onShare` | Copy market URL to clipboard or open share sheet |
+| `onCommentLike` | Call comment like API, update count optimistically |
+| `onRelatedMarketClick` | Navigate to `/markets/:id` for related market |
+| `onCreatorClick` | Navigate to creator profile or portfolio |
+| `onChartCellChange` | Update selected 2D cell for chart display |
+| `onFixDimension` | Update conditional probability dimension for 2D chart |
+
+### Empty States
+
+- No trades yet: "No trades yet" in activity feed
+- No comments yet: "No comments yet. Place a trade to leave a comment!"
+- No related markets: hide related markets section or show "No related markets"
+- Chart data load failure: show retry button
+
+## Files to Reference
+
+- `product-plan/sections/market-detail/README.md`
+- `product-plan/sections/market-detail/tests.md`
+- `product-plan/sections/market-detail/components/`
+- `product-plan/sections/market-detail/types.ts`
+- `product-plan/sections/market-detail/sample-data.json`
+
+## Expected User Flows
+
+**Standard trade (Yes/No market):**
+1. User navigates to `/markets/:id` — two-column layout loads, trading panel visible on right
+2. User clicks "YES" button — outcome highlighted, trade form expands below
+3. User enters 500 sats — trade preview shows predicted odds, price impact, payout, and fees
+4. User adds optional comment, clicks "Confirm Trade" — trade executes, comment appears in comment section, odds update in header and chart
+
+**Buy/Sell toggle:**
+1. User already holds a position; navigates to market detail
+2. User clicks "SELL" toggle in trading panel — panel switches to sell mode
+3. User selects outcome and amount — preview shows estimated proceeds
+4. User confirms — position reduced or closed
+
+**Limit order:**
+1. User clicks "Limit" tab in trading panel
+2. Limit price input appears; user enters target price
+3. User confirms — limit order created, visible in order book
+
+**Conditional probability (2D market):**
+1. User views a 2D (Yes/No x Yes/No) market detail
+2. Chart shows probability grid by default
+3. User clicks "BTC=Yes" dimension toggle — chart shows two conditional probability lines (ETH=Yes|BTC=Yes and ETH=No|BTC=Yes)
+4. User clicks "All" — chart returns to standard view
+
+**Resolved market:**
+1. User navigates to a resolved market
+2. RESOLVED badge visible in header; trading panel not rendered
+3. Single-column layout; resolution info shows final outcome above chart
+4. Comments section read-only
+
+## Done When
+
+- [ ] Tests written and passing
+- [ ] Market detail loads for all three market types (Yes/No, Categorical, 2D)
+- [ ] Trading panel shows correct outcomes for each type
+- [ ] Buy/Sell toggle and Market/Limit tabs both functional
+- [ ] Trade preview recalculates on amount change
+- [ ] Trade executes and page data refreshes
+- [ ] Price chart renders with timeframe and type toggles
+- [ ] Comment bubbles overlay chart at correct positions
+- [ ] 2D conditional probability toggle works
+- [ ] Order book renders bid/ask depth
+- [ ] Activity feed paginates via infinite scroll
+- [ ] Comments load and comment likes work
+- [ ] Related markets scroll horizontally and navigate
+- [ ] Resolved market layout: no trading panel, single column, outcome prominent
+- [ ] Mobile: sticky Trade button opens full-screen modal
+- [ ] Responsive on tablet and desktop

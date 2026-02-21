@@ -1,86 +1,54 @@
 # Market Detail
 
 ## Overview
+Comprehensive view of a single prediction market with trading panel, price charts, order book, activity, and comments. Supports Yes/No, Categorical, and 2D composite markets. Trading panel supports Buy/Sell toggle and Market/Limit order types.
 
-Comprehensive view of a single prediction market, providing the full trading interface, price charts, activity feed, and related markets. This is the most feature-rich section, supporting all market types and special views for resolved markets.
+## User Flows
+- View current odds, price history, market stats
+- Select outcome and enter trade amount
+- See predicted odds, payout, and fees
+- Confirm trade with optional comment
+- Toggle Buy/Sell mode and Market/Limit order types
+- Switch chart timeframes (1H, 24H, 7D, 30D, All)
+- Toggle price/volume chart
+- View order book, recent trades, comments
+- Like market and comments
+- Browse related markets
+- Resolved markets show single-column layout without trading panel
 
-## Design Intent
+## Data Used
+**Entities:** MarketDetail (YesNoMarketDetail, CategoricalMarketDetail, TwoDimensionalMarketDetail), TradeSelection, TradePreview, OrderBook, PriceHistory, Trade, Comment, RelatedMarket, ResolutionDetails, MarketCreator
+**From global model:** Bought, Sold, CommentPosted, MarketLiked, MarketResolved
 
-- **Trading-first**: Trading panel prominently placed (sidebar on desktop, modal on mobile)
-- **Rich analysis**: Price charts with timeframe selection and comment overlays
-- **2D visualization**: Grid with two-tone gradients and conditional probability toggle
-- **Resolved markets**: Clean read-only view without trading clutter
-- **Engagement**: Comments posted with trades encourage thoughtful trading
+## Components Provided
+- `MarketDetail` — Main two-column layout
+- `MarketHeader` — Title, image, tags, creator, metrics footer
+- `MarketStats` — Key market metrics
+- `PriceChart` — Line chart with timeframe selector and comment bubbles
+- `TradingPanel` — Buy/Sell toggle, Market/Limit tabs, outcome selection, trade form
+- `OrderBookSection` — Bid/ask visualization
+- `CommentSection` — Comment list with likes
+- `ActivityFeed` — Recent trades list
+- `RelatedMarkets` — Horizontal scrollable related markets
+- `ResolutionInfo` — Resolution criteria and status
 
-## Key Features
+## Callback Props
 
-### Market Header
-- Large title with optional background image
-- Category tags, close date with countdown
-- Creator info with avatar and reputation
-- Metrics footer: Volume, Liquidity, Traders, Likes
-
-### Trading Panel
-- **Yes/No**: Two large percentage buttons
-- **Categorical**: Vertical outcome list
-- **2D**: Grid with two-tone gradient cells
-  - Yes/Yes: solid emerald
-  - Yes/No: emerald→rose gradient
-  - No/Yes: rose→emerald gradient
-  - No/No: solid red
-- Trade form with amount, preview, optional comment
-
-### Price Chart
-- Current odds as section header (not "Price Chart")
-- Line chart with timeframe selector (1H, 24H, 7D, 30D, ALL)
-- Price/Volume toggle
-- Comment speech bubbles overlaid on chart
-- Categorical: multi-line with legend
-- 2D: cell selector + conditional probability toggle
-
-### 2D Conditional Probability
-For Yes/No × Yes/No markets:
-- Toggle buttons to fix one dimension
-- Shows conditional probabilities as two lines
-- "Conditional on [label]" subtitle
-- Handles division by zero gracefully
-
-### Resolved Market View
-- RESOLVED badge at top
-- No trading panel (desktop sidebar and mobile bar hidden)
-- Single-column layout
-- Resolution info moved above chart
-- Comments read-only
-
-### Responsive Layout
-- Desktop: Two-column (content + sticky sidebar)
-- Tablet: Single-column with collapsible trading
-- Mobile: Sticky "Trade" button → full-screen modal
-
-## Components
-
-| Component | Description |
-|-----------|-------------|
-| `MarketDetail` | Main page container |
-| `MarketHeader` | Title, image, tags, creator, metrics |
-| `TradingPanel` | Outcome selection and trade form |
-| `PriceChart` | Chart with timeframes, bubbles, toggles |
-| `ResolutionInfo` | Resolution criteria and status |
-| `ActivityFeed` | Recent trades list |
-| `CommentSection` | Comments display (read-only) |
-| `RelatedMarkets` | Horizontal carousel |
-
-## Files
-
-- `types.ts` — TypeScript interfaces (imports from market-discovery)
-- `sample-data.json` — Sample markets of all types
-- `tests.md` — Test requirements
-- `components/` — Reference React implementations
-
-## AMM Trading
-
-Trading uses an Automated Market Maker model:
-- No order book
-- Price determined by formula
-- Trades affect odds immediately
-- Preview shows predicted odds after trade
+| Callback | Description |
+|----------|-------------|
+| `onTimeframeChange` | Change chart timeframe |
+| `onChartTypeChange` | Toggle price/volume |
+| `onTradeSelect` | Select outcome for trading |
+| `onTradeClear` | Clear trade selection |
+| `onAmountChange` | Change trade amount |
+| `onTradeConfirm` | Confirm trade |
+| `onTradeSideChange` | Toggle Buy/Sell |
+| `onOrderTypeChange` | Toggle Market/Limit |
+| `onLimitPriceChange` | Change limit price |
+| `onLikeToggle` | Like/unlike market |
+| `onShare` | Share market |
+| `onCommentLike` | Like a comment |
+| `onRelatedMarketClick` | Navigate to related market |
+| `onCreatorClick` | View creator profile |
+| `onChartCellChange` | Select cell for 2D chart |
+| `onFixDimension` | Fix dimension for conditional probability |

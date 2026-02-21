@@ -1,252 +1,159 @@
-# Market Detail — Test Instructions
+# Test Instructions: Market Detail
 
-These test instructions are **framework-agnostic**. Adapt them to your testing setup.
+These test-writing instructions are **framework-agnostic**. Adapt them to your testing setup.
 
----
+## Overview
+Test the full market detail page: trading (buy/sell, market/limit), charts, order book, activity, comments, and resolved state.
 
-## Unit Tests
+## User Flow Tests
 
-### MarketHeader Component
+### Flow 1: Buy Market Order on Yes/No Market
+**Success Path:**
+- Setup: Open Yes/No market with currentOdds {yes: 67.5, no: 32.5}
+- Steps: Select "Yes" outcome → enter 1000 sats → see predicted odds and payout → click "Buy YES for ₿..."
+- Expected: onTradeConfirm called, trade preview shows correct values
 
-**Display:**
-- Title renders prominently
-- Background image with gradient (if imageUrl present)
-- Category tags displayed as pills
-- Close date with countdown (if within 7 days)
-- Creator avatar, name, reputation visible
+**Failure Path:**
+- Setup: Amount left at 0
+- Expected: Confirm button disabled, no preview displayed
 
-**Metrics footer:**
-- Volume in ₿ format (amber color)
-- Liquidity with droplet icon
-- Traders with users icon
-- Like button with count
+### Flow 2: Sell Position
+**Success Path:**
+- Setup: User has active Yes position with 150 shares
+- Steps: Toggle to "Sell" → select Yes outcome → enter share amount → see proceeds → confirm
+- Expected: onTradeSideChange('sell') and onTradeConfirm called with correct params
 
-**Interaction:**
-- Share button calls `onShare`
-- Like button toggles like state
-- Creator click calls `onCreatorClick`
+### Flow 3: Place Limit Order
+**Success Path:**
+- Steps: Select "Limit" tab → set limit price to 65% → enter 1000 sats → see preview → confirm
+- Expected: onOrderTypeChange('limit'), onLimitPriceChange(65), onTradeConfirm called
+- Preview shows: shares if filled, fees, total cost, disclaimer about order not guaranteed to fill
 
-### TradingPanel Component
+**Failure Path:**
+- Limit price set to 0 or above 100 → validation error, Confirm disabled
 
-**Yes/No markets:**
-- Two large buttons showing percentages
-- Clicking Yes selects it with visual highlight
-- Clicking No selects it with visual highlight
-- Selection clears when Cancel clicked
+### Flow 4: Switch Chart Timeframes
+- Steps: Click "24H" → click "Volume" toggle
+- Expected: onTimeframeChange('24h') called, then onChartTypeChange('volume') called, chart re-renders
 
-**Categorical markets:**
-- Vertical list of all outcomes with odds
-- Yes/No buttons per outcome
-- Clicking selects that outcome + side
+### Flow 5: Like Market
+- Steps: Click heart icon in metrics footer
+- Expected: onLikeToggle called, like count increments by 1, icon fills
 
-**2D markets:**
-- Grid layout with all cells
-- Yes/Yes cell: solid emerald background
-- Yes/No cell: diagonal gradient emerald→rose
-- No/Yes cell: diagonal gradient rose→emerald
-- No/No cell: solid red background
-- Clicking cell selects it
+### Flow 6: View Resolved Market
+- Setup: Market with resolution.status === 'resolved', outcome: 'Yes'
+- Expected: RESOLVED badge visible, no trading panel shown, single-column layout, resolution info displayed prominently
 
-**Trade form (after selection):**
-- Amount input accepts numbers
-- Quick buttons (100, 500, 1000, 5000) set amount
-- Trade preview shows:
-  - Predicted odds
-  - Price impact
-  - Potential payout
-  - Fees
-- Comment textarea optional, 280 char limit
-- Confirm Trade calls `onTradeConfirm`
-- Cancel calls `onTradeClear`
+### Flow 7: Trade on 2D Market
+- Steps: View 2D market grid → click Yes/Yes cell → enter 1000 sats → confirm
+- Expected: onTradeSelect called with cellId: "yes-yes", trade preview reflects 2D pricing
 
-### PriceChart Component
+### Flow 8: Comment via Trade
+- Steps: Enter trade amount → type comment in textarea (max 280 chars) → confirm trade
+- Expected: Comment text included in onTradeConfirm payload, comment appears in CommentSection after trade
 
-**Header:**
-- Shows current percentage (Yes/No: yes odds)
-- Categorical: shows leading outcome
-- Resolved: shows "Resolved: [outcome]"
+## Empty State Tests
+- No comments → "No comments yet. Place a trade to leave a comment!" message, no input field
+- No recent trades in ActivityFeed → "No trades yet" message
+- No related markets → Related Markets section hidden entirely
 
-**Chart:**
-- Renders line chart with data
-- Y-axis 0-100%
-- Data points connected
-
-**Timeframe selector:**
-- 1H, 24H, 7D, 30D, ALL buttons
-- Clicking changes timeframe
-- Active button highlighted
-- Calls `onTimeframeChange`
-
-**Price/Volume toggle:**
-- Defaults to Price
-- Toggle switches chart type
-- Volume shows bar chart
-
-**Comment bubbles (price mode):**
-- Bubbles positioned by timestamp
-- Size 24-40px based on like count
-- Opacity 0.4-1.0 based on like count
-- Tooltip on hover shows username, content, likes
-- Only visible in price mode, not volume
-
-**Categorical multi-line:**
-- Multiple lines, one per outcome
-- Color-coded legend
-- Legend toggleable
-
-**2D cell selector:**
-- Dropdown with cell options
-- Changing selection updates chart
-- Calls `onChartCellChange`
-
-**Conditional probability toggle (Yes/No × Yes/No):**
-- Buttons: All, Dim1=Yes, Dim1=No, Dim2=Yes, Dim2=No
-- "All" shows cell selector dropdown
-- Fixing dimension shows two conditional probability lines
-- "Conditional on [label]" subtitle appears
-- Calls `onFixDimension`
-
-**Division by zero:**
-- Points where denominator is 0 are skipped
-- Chart renders without those points
-
-### ResolutionInfo Component
-
-**Display:**
-- Resolution criteria text
-- Source (oracle, manual, etc.)
-- Resolution date
-- Status badge
-
-**Resolved state:**
-- Final outcome prominently displayed
-- Status shows "Resolved"
-
-### ActivityFeed Component
-
-**Trade items:**
-- User (anonymized), side, amount, price, timestamp
-- Relative time format ("2 min ago")
-- Side color-coded (yes=green, no=red)
-
-**Infinite scroll:**
-- "Load more" button or scroll trigger
-- Loading indicator during fetch
-- Calls `onLoadMoreTrades`
-
-### CommentSection Component
-
-**Display:**
-- Comments sorted by timestamp
-- Each shows avatar, username, content, timestamp
-- Like button per comment with count
-
-**Empty state:**
-- "No comments yet. Place a trade to leave a comment!"
-
-**Read-only:**
-- No comment input field
-- Comments posted via trading panel only
-
-**Infinite scroll:**
-- Load more behavior
-- Calls `onLoadMoreComments`
-
-### RelatedMarkets Component
-
-**Display:**
-- Horizontal scrollable list
-- Mini cards with title, odds, volume
-
-**Interaction:**
-- Clicking card calls `onRelatedMarketClick`
-
----
-
-## Integration Tests
-
-### Open Market Flow
-
-**Page load:**
-- Header displays correctly
-- Trading panel visible (desktop sidebar)
-- Chart renders with data
-- Comments and trades load
-
-**Trading flow:**
-1. Select outcome (Yes/No)
-2. Enter amount
-3. Preview updates
-4. Add optional comment
-5. Confirm trade
-6. Trade posts, comment appears in section
-
-### Resolved Market View
-
-**Visual changes:**
-- RESOLVED badge visible at top
-- Trading panel hidden
-- Single-column layout
-- Resolution info above chart
-
-**Behavior:**
-- No Trade button on mobile
-- Comments section read-only
-- Chart still functional
-
-### 2D Market Flow
-
-**Grid display:**
-- All 4 cells visible with correct gradients
-- Odds displayed in each cell
-
-**Trading:**
-- Click cell to select
-- Trade form appears
-- Confirm completes trade
-
-**Conditional probability:**
-- Click "BTC=Yes" button
-- Chart shows two lines (ETH outcomes)
-- "Conditional on BTC=Yes" subtitle appears
-- Click "All" to return to normal
-
-### Responsive Behavior
-
-**Desktop:**
-- Two-column layout
-- Sidebar sticky on scroll
-
-**Tablet:**
-- Single column
-- Trading panel collapsible
-
-**Mobile:**
-- Sticky "Trade" button at bottom
-- Tapping opens full-screen modal
-- Modal contains full trading panel
-- Close modal returns to page
-
----
+## Component Tests
+- TradingPanel Yes button shows percentage, highlights on selection
+- TradingPanel Sell toggle switches form to sell mode
+- PriceChart renders line with Y-axis 0-100%
+- PriceChart timeframe buttons highlight active selection
+- ActivityFeed shows side color-coded (yes=green, no=red)
+- CommentSection has no direct input field (trade-gated)
+- MarketHeader like button toggles filled/outline state
+- 2D grid cells have correct gradient colors: yes-yes solid emerald, no-no solid red, mixed cells diagonal gradient
 
 ## Edge Cases
+- Very long market titles wrap gracefully in header
+- 2D conditional probability toggle: fixing a dimension shows two conditional lines, "Conditional on [label]" subtitle appears
+- Conditional probability division by zero: data points with zero denominator skipped, chart renders without gaps in line
+- Comment character limit (280): input blocks further typing, character counter shown
+- Quick amount buttons (100, 500, 1000, 5000) correctly set input value
+- Order book with no liquidity displays empty state, not an error
 
-**Empty states:**
-- No trades: "No trades yet"
-- No comments: "No comments yet. Place a trade..."
-- No related markets: Section hidden or "No related markets"
+## Accessibility
+- Trading panel outcome buttons keyboard navigable with clear focus state
+- Buy/Sell toggle accessible via keyboard
+- Chart timeframe buttons have aria-pressed reflecting active state
+- Modal trading panel on mobile closeable with Escape key
+- Like button has aria-label reflecting current state ("Like market" / "Unlike market")
 
-**Error handling:**
-- Trade failure: Error message, form state preserved
-- Chart data load failure: Retry option
+## Sample Test Data
+```typescript
+const mockOpenYesNoMarket = {
+  id: "mkt-001",
+  type: "yesno",
+  title: "Will Bitcoin reach $100K by end of 2026?",
+  currentOdds: { yes: 67.5, no: 32.5 },
+  volume: 2847500,
+  liquidity: 450000,
+  traderCount: 1823,
+  likeCount: 342,
+  isLiked: false,
+  closingDate: "2026-12-31T23:59:59Z",
+  resolution: { status: "open", criteria: "CoinGecko BTC/USD closing price", source: "oracle" }
+};
 
-**Data variations:**
-- Very long title: Truncates appropriately
-- No market image: Default background
-- Many categorical outcomes: Scrollable
-- 2D with categorical base: Larger grid renders
+const mockResolvedMarket = {
+  ...mockOpenYesNoMarket,
+  id: "mkt-resolved",
+  resolution: {
+    status: "resolved",
+    outcome: "Yes",
+    resolvedAt: "2026-06-15T14:30:00Z",
+    criteria: "CoinGecko BTC/USD closing price",
+    source: "oracle"
+  }
+};
 
-**Conditional probability edge cases:**
-- All probability in one cell: Other cells show 0%
-- Division by zero: Points skipped gracefully
-- Toggle while loading: Handles correctly
+const mockTradePreview = {
+  amount: 1000,
+  predictedOdds: 68.2,
+  priceImpact: 0.7,
+  potentialPayout: 1481,
+  creatorFee: 5,
+  platformFee: 0,
+  totalCost: 1000
+};
+
+const mockLimitOrderPreview = {
+  amount: 1000,
+  limitPrice: 65,
+  sharesIfFilled: 1538,
+  creatorFee: 5,
+  platformFee: 0,
+  totalCost: 1000,
+  disclaimer: "Order will only execute if market reaches 65%"
+};
+
+const mockComments = [
+  {
+    id: "cmt-001",
+    userId: "usr-a1b2",
+    displayName: "SatoshiTrader",
+    avatarUrl: null,
+    content: "Strong fundamentals support this.",
+    likeCount: 12,
+    timestamp: "2026-02-20T10:15:00Z",
+    tradeContext: { side: "yes", amountSats: 5000 }
+  }
+];
+
+const mockEmptyComments: typeof mockComments = [];
+
+const mockActivityItems = [
+  {
+    id: "act-001",
+    userId: "usr-a1b2",
+    displayName: "SatoshiTrader",
+    side: "yes",
+    amountSats: 5000,
+    pricePercent: 67.3,
+    timestamp: "2026-02-20T10:15:00Z"
+  }
+];
+```

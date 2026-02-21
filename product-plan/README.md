@@ -1,6 +1,6 @@
 # bitCaster — Design Handoff
 
-This folder contains everything needed to implement bitCaster, a Bitcoin-native prediction market platform.
+This folder contains everything needed to implement bitCaster, a Bitcoin-native prediction market platform built on Cashu, Nostr, and DLC oracles.
 
 ## What's Included
 
@@ -11,13 +11,13 @@ This folder contains everything needed to implement bitCaster, a Bitcoin-native 
 **Instructions:**
 - `product-overview.md` — Product summary (provide with every implementation)
 - `instructions/one-shot-instructions.md` — All milestones combined for full implementation
-- `instructions/incremental/` — 5 milestone instructions (foundation, then 4 sections)
+- `instructions/incremental/` — 8 milestone instructions (foundation + 7 sections)
 
 **Design Assets:**
 - `design-system/` — Colors, fonts, design tokens
 - `event-model/` — Domain events and entity relationships
 - `shell/` — Application shell components (navigation, layout)
-- `sections/` — 4 section component packages with test instructions
+- `sections/` — 7 section component packages with test instructions
 
 ## How to Use This
 
@@ -38,8 +38,11 @@ Build your app milestone by milestone for better control:
 1. `01-foundation.md` — Design tokens, routing, shell
 2. `02-market-discovery-and-trading.md` — Core marketplace
 3. `03-market-creation-and-management.md` — Creator dashboard
-4. `04-mypage.md` — Personal dashboard
+4. `04-portfolio.md` — Trading dashboard with positions and activity
 5. `05-market-detail.md` — Market detail with trading, charts, and activity
+6. `06-settings.md` — User preferences and configuration
+7. `07-wallet-setup.md` — First-time onboarding wizard
+8. `08-market-creation.md` — Seven-step market creation wizard
 
 ### Option B: One-Shot
 
@@ -65,20 +68,26 @@ The test instructions are **framework-agnostic** — they describe WHAT to test,
 
 ## Sections Overview
 
-| Section | Description | Components |
-|---------|-------------|------------|
+| Section | Description | Key Components |
+|---------|-------------|----------------|
 | **Market Discovery & Trading** | Core marketplace with tag navigation, filters, inline trading | MarketDiscovery, TagBar, FilterControls, MarketCard |
-| **Market Creation & Management** | Creator dashboard with stats, analytics, market list | MarketCreationDashboard, StatCard, MarketRow, VolumeChart, Pagination |
-| **MyPage** | Personal dashboard with positions, orders, created markets | MyPage, ProfileHeader, PLCard, ExpandableSection, PositionsSection, etc. |
-| **Market Detail** | Full market view with trading panel, price charts, activity | MarketDetail, MarketHeader, TradingPanel, PriceChart, CommentSection, etc. |
+| **Market Creation & Management** | Creator dashboard with stats, analytics, market list | MarketCreationDashboard, StatCard, MarketRow, VolumeChart |
+| **Portfolio** | Personal dashboard with positions, P/L chart, activity feed | Portfolio, PLChart, StatsRow, PositionRow, ActivityFeed |
+| **Market Detail** | Full market view with trading panel, price charts, activity | MarketDetail, MarketHeader, TradingPanel, PriceChart |
+| **Settings** | User preferences in 4 collapsible categories | Settings (General, Cashu, Nostr, Oracle) |
+| **Wallet Setup** | First-time onboarding wizard | WalletSetupWizard, WelcomeLanding, CreateWallet, RecoverWallet |
+| **Market Creation** | 7-step market creation wizard | MarketCreationWizard, OracleCheck, BasicInfo, Outcomes, etc. |
 
 ## Technology Notes
 
-- Components are built with **React** and **TypeScript**
+- Components are built with **React 19** and **TypeScript** strict mode
 - Styling uses **Tailwind CSS** with blue/amber/slate color scheme
 - Icons from **lucide-react**
 - Supports **light and dark mode**
 - Components are **props-based** and framework-agnostic for easy integration
+- **Cashu** ecash protocol for token management
+- **Nostr** (NDK) for decentralized identity and social features
+- **DLC oracles** for trustless market resolution
 
 ## Tips
 

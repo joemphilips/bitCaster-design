@@ -1,150 +1,129 @@
-# Market Discovery & Trading — Test Instructions
+# Test Instructions: Market Discovery & Trading
 
-These test instructions are **framework-agnostic**. Adapt them to your testing setup (Jest, Vitest, Playwright, Cypress, etc.).
+These test-writing instructions are **framework-agnostic**. Adapt them to your testing setup.
 
----
+## Overview
+Test the core marketplace: browsing markets, tag filtering, search, and quick trading from market cards.
 
-## Unit Tests
+## User Flow Tests
 
-### TagBar Component
+### Flow 1: Browse Markets by Tag
+**Success Path:**
+- Setup: Multiple markets with different meta/category tags
+- Steps: Navigate to Markets page → see Trending tag pre-selected → click "Sports" tag
+- Expected: Only sports markets shown, Trending tag deselected, Sports tag highlighted
 
-**Selection behavior:**
-- Renders all meta tags and category tags
-- Clicking a tag selects it and deselects others
-- "Trending" is selected by default on initial render
-- Selected tag has visual indicator (e.g., filled background)
-- Calls `onTagChange` callback with selected tag
+### Flow 2: Quick Trade on Yes/No Market
+**Success Path:**
+- Setup: Yes/No market with currentOdds {yes: 67.5, no: 32.5}
+- Steps: Click "Buy Yes" on card → card transforms to trade view → enter 1000 sats → click "BUY"
+- Expected: onBuyYes called with (marketId, 1000), card returns to normal state
 
-**Accessibility:**
-- Tags are keyboard navigable
-- Active tag has appropriate aria attributes
+**Failure Path:**
+- Setup: Trade amount is 0 or negative
+- Expected: BUY button disabled
 
-### FilterControls Component
+### Flow 3: Quick Trade on Categorical Market
+**Success Path:**
+- Steps: Scroll through outcomes, click "Yes" on "LA Lakers" → enter amount → confirm
+- Expected: onBuyOutcomeYes called with (marketId, "lakers", amount)
 
-**Toggle behavior:**
-- Filter row is hidden by default
-- Clicking filter icon reveals filter row
-- Clicking again hides filter row
+### Flow 4: Navigate to Market Detail
+- Steps: Click anywhere on market card except Yes/No buttons
+- Expected: onViewMarket called with marketId
 
-**Filter functionality:**
-- Market Type dropdown shows all options
-- Volume range accepts min/max values
-- Filters call `onFilterChange` with filter state
+### Flow 5: Apply Filters
+- Steps: Click filter icon → select "Yes/No" market type → set volume range
+- Expected: Market list filters in real-time
 
-### MarketCard Component
+### Flow 6: 2D Market Interaction
+- Steps: View 2D Yes/No market → click Yes/Yes cell → confirm trade
+- Expected: onBuy2DYesNoCombo called with correct parameters
 
-**Card types:**
-- Renders Yes/No market with chance percentage and buttons
-- Renders Categorical market with scrollable outcome list
-- Renders 2D market with grid layout
-- All card types maintain 280px height
+## Empty State Tests
+- No markets match current filters → "No markets found" message with "Clear filters" link
+- No markets at all → helpful empty state with guidance
 
-**Yes/No markets:**
-- Displays title, chance percentage, Yes/No buttons
-- Clicking Buy Yes opens trading overlay with "Yes" selected
-- Clicking Buy No opens trading overlay with "No" selected
-
-**Categorical markets:**
-- Displays all outcomes in scrollable list
-- Each outcome shows name and percentage
-- Clicking Yes/No on outcome opens trading overlay
-
-**2D markets:**
-- Displays base and secondary questions
-- Grid shows all cells with percentages
-- Cells have correct gradient colors
-- Clicking cell opens trading overlay
-
-**Metrics footer:**
-- Always visible when not in trading mode
-- Shows volume with ₿ prefix
-- Shows liquidity, traders, likes
-
-### TradingOverlay Component
-
-**Display:**
-- Covers entire card area
-- Shows selected outcome
-- Shows current odds and predicted odds
-
-**Interaction:**
-- Amount input accepts numbers
-- Quick buttons (100, 500, 1000, 5000) set amount
-- BUY button calls `onTrade` callback
-- Cancel (×) returns card to normal view
-
-**Size constraint:**
-- Card dimensions do not change when overlay is shown
-
-### SecondaryMarketsList
-
-**Expansion:**
-- "and..." link visible on markets with secondaryMarkets
-- Clicking expands card to show secondary list
-- Expanded height equals 280px + 40px × number of secondaries
-- Clicking again collapses
-
-**Navigation:**
-- Clicking secondary market calls `onSecondaryClick`
-
----
-
-## Integration Tests
-
-### Market Discovery Page
-
-**Initial load:**
-- Page loads with Trending tag selected
-- Markets grid displays markets
-- Filter row is hidden
-
-**Tag navigation:**
-- Selecting "Sports" shows only sports markets
-- Selecting "Popular" shows popular markets
-- Markets update when tag changes
-
-**Filtering:**
-- Opening filter row shows controls
-- Setting "Yes/No" type filter shows only Yes/No markets
-- Multiple filters combine correctly
-
-**Trading flow:**
-- Clicking Buy Yes on a market shows trading overlay
-- Entering amount and clicking BUY executes trade
-- After trade, overlay closes and card updates
-
-**Infinite scroll:**
-- Scrolling to bottom loads more markets
-- Loading indicator visible during fetch
-- New markets append to existing list
-
----
-
-## Visual/Snapshot Tests
-
-**Card consistency:**
-- All three market types at exactly 280px height
-- Trading overlay covers full card
-- Gradient colors correct on 2D cells
-
-**Responsive:**
-- Tag bar scrolls horizontally on narrow viewport
-- Cards resize appropriately
-- Filter row adapts to screen width
-
----
+## Component Tests
+- MarketCard renders title, odds, volume, like count correctly
+- TagBar shows only one tag selected at a time
+- FilterControls toggle visibility with filter icon
+- Trading overlay covers entire card at same card size
 
 ## Edge Cases
+- Very long market titles truncate properly
+- Markets with 0 volume display correctly
+- Infinite scroll triggers onLoadMore at bottom
+- 2D market "and..." link expands card height correctly
 
-**Empty states:**
-- No markets match filter: "No markets found"
-- No markets in category: Appropriate message
+## Accessibility
+- All interactive elements keyboard accessible
+- Trading overlay dismissible with Escape
+- Screen reader announces tag selection changes
 
-**Error handling:**
-- Trade failure shows error message
-- Network error during load shows retry option
+## Sample Test Data
+```typescript
+const mockYesNoMarket = {
+  id: "mkt-001",
+  type: "yesno",
+  title: "Will Bitcoin reach $100K?",
+  currentOdds: { yes: 67.5, no: 32.5 },
+  volume: 2847500,
+  liquidity: 450000,
+  traderCount: 1823,
+  likeCount: 342,
+  isLiked: false,
+  closingDate: "2026-06-30T23:59:59Z",
+  baseMarket: "sats"
+};
 
-**Data variations:**
-- Very long market titles truncate correctly
-- Markets with no image show placeholder
-- Categorical with many outcomes scrolls correctly
+const mockCategoricalMarket = {
+  id: "mkt-002",
+  type: "categorical",
+  title: "Which team will win the NBA Finals?",
+  outcomes: [
+    { id: "lakers", label: "LA Lakers", odds: 28.5 },
+    { id: "celtics", label: "Boston Celtics", odds: 34.1 },
+    { id: "warriors", label: "Golden State Warriors", odds: 19.7 },
+    { id: "other", label: "Other", odds: 17.7 }
+  ],
+  volume: 1203400,
+  liquidity: 200000,
+  traderCount: 641,
+  likeCount: 89,
+  isLiked: true,
+  closingDate: "2026-06-15T23:59:59Z",
+  baseMarket: "sats"
+};
+
+const mock2DMarket = {
+  id: "mkt-003",
+  type: "2d-yesno",
+  title: "Bitcoin > $100K AND Ethereum > $5K by end of 2026?",
+  axes: {
+    x: { label: "BTC > $100K", yes: 67.5, no: 32.5 },
+    y: { label: "ETH > $5K", yes: 54.0, no: 46.0 }
+  },
+  cells: {
+    "yes-yes": { odds: 36.5 },
+    "yes-no": { odds: 31.0 },
+    "no-yes": { odds: 17.5 },
+    "no-no": { odds: 15.0 }
+  },
+  volume: 589200,
+  likeCount: 57,
+  isLiked: false,
+  closingDate: "2026-12-31T23:59:59Z",
+  baseMarket: "sats"
+};
+
+const mockTags = [
+  { id: "trending", label: "Trending", isSelected: true },
+  { id: "sports", label: "Sports", isSelected: false },
+  { id: "crypto", label: "Crypto", isSelected: false },
+  { id: "politics", label: "Politics", isSelected: false },
+  { id: "entertainment", label: "Entertainment", isSelected: false }
+];
+
+const mockEmptyMarkets: typeof mockYesNoMarket[] = [];
+```

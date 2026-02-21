@@ -1,160 +1,111 @@
-# Market Creation & Management — Test Instructions
+# Test Instructions: Market Creation & Management
 
-These test instructions are **framework-agnostic**. Adapt them to your testing setup.
+These test-writing instructions are **framework-agnostic**. Adapt them to your testing setup.
 
----
+## Overview
+Test the creator dashboard: stats, market list, volume analytics, and the 5-step market creation wizard.
 
-## Unit Tests
+## User Flow Tests
 
-### Tab Navigation
+### Flow 1: View Dashboard Stats
+**Success Path:**
+- Setup: dashboardStats with activeMarketsCount: 3, totalVolumeSats: 1583100
+- Expected: Stats cards display "3 Active", "₿0.01583100" volume
 
-**Display:**
-- Renders Overview, Analytics, and Add Market tabs
-- Add Market styled differently (CTA appearance)
-- Overview is default active tab
+### Flow 2: Browse Market List
+**Success Path:**
+- Steps: View Overview tab → see paginated market list → click "View Details"
+- Expected: onViewDetails called with marketId
 
-**Interaction:**
-- Clicking Analytics switches to analytics view
-- Clicking Add Market opens creation wizard
-- Active tab has visual indicator
+### Flow 3: Claim Fees from Resolved Market
+**Success Path:**
+- Steps: Find resolved market with unclaimed fees → click "Claim Fees"
+- Expected: onClaimFees called with marketId
 
-### StatCard Component
+### Flow 4: View Analytics
+**Success Path:**
+- Steps: Switch to Analytics tab → view aggregate chart → switch to per-market → change to weekly
+- Expected: Chart updates, onTabChange/onChartModeChange/onTimeScaleChange called
 
-**Rendering:**
-- Displays label and value
-- Formats large numbers correctly (₿12.5K)
-- Shows appropriate icon
+### Flow 5: Create Market via Wizard
+**Success Path:**
+- Steps: Click "Add Market" → fill basic info → select outcome type → set fees → review → submit
+- Expected: onCreateMarket called with wizard data
 
-### MarketRow Component
+**Failure Path:**
+- Empty title → validation error shown, Next button disabled
 
-**Display:**
-- Shows thumbnail, title, status, volume, end date, fees
-- Status has appropriate color/badge
-- "View Details" button visible
+## Empty State Tests
+- No created markets → "No markets yet. Create your first market!" with CTA
+- No volume data → Chart shows empty state with guidance message
 
-**Interaction:**
-- Clicking View Details calls `onViewDetails`
-- Clicking row navigates to market detail
-
-### Pagination Component
-
-**Display:**
-- Shows current page indicator
-- Previous/Next buttons
-- Page number buttons (limited range)
-
-**Interaction:**
-- Previous disabled on page 1
-- Next disabled on last page
-- Clicking page number navigates
-
-### VolumeChart Component
-
-**Rendering:**
-- Displays chart with data
-- Shows legend when per-market mode
-- Time scale selector visible
-
-**Toggles:**
-- Aggregate/Per-market toggle changes chart mode
-- Time scale buttons change x-axis
-
-### Creation Wizard
-
-**Step 1 - Basic Info:**
-- Thumbnail upload accepts images
-- Title input has max length validation
-- Category tag selector allows multi-select
-- End date picker requires future date
-- Answer URLs can be added/removed
-
-**Step 2 - Market Outcomes:**
-- Type selection (Yes/No, Numeric, Categorical)
-- Yes/No shows no additional fields
-- Numeric shows min/max inputs
-- Categorical allows adding outcomes
-- Probability preview updates and normalizes
-
-**Step 3 - Market Parameters:**
-- Liquidity input accepts positive numbers
-- Fee inputs accept percentages (0-100)
-- Validation on reasonable ranges
-
-**Step 4 - Review:**
-- Summary shows all entered data
-- Cost calculation displayed
-- Edit buttons jump to respective steps
-
-**Step 5 - Final Review:**
-- Rich text editor functional
-- "Generate with AI" button visible
-- Submit button enabled when valid
-
-**Wizard Navigation:**
-- Step indicator shows current step
-- Back button goes to previous step
-- Next validates and advances
-- State preserved on navigation
-
----
-
-## Integration Tests
-
-### Overview Tab
-
-**Initial load:**
-- Stats display correct values
-- Market list shows first page
-- Pagination reflects total count
-
-**Market list:**
-- Changing page updates displayed markets
-- View Details navigates correctly
-
-### Analytics Tab
-
-**Chart display:**
-- Chart renders with data
-- Toggle changes chart mode
-- Time scale changes update chart
-
-### Creation Flow
-
-**Full wizard completion:**
-1. Fill Basic Info → Next succeeds
-2. Configure outcomes → Next succeeds
-3. Set parameters → Next succeeds
-4. Review shows correct summary → Next succeeds
-5. Add description → Submit succeeds
-6. Redirects to new market detail page
-
-**Validation flow:**
-- Missing required field shows error
-- Invalid date shows error
-- Errors clear on correction
-
-**State preservation:**
-- Go forward to step 3
-- Go back to step 1
-- Data in steps 1-3 preserved
-
----
+## Component Tests
+- StatCard renders label and formatted value correctly
+- MarketRow shows thumbnail, title, status badge, volume, end date, and fees
+- Pagination disables Previous on page 1, Next on last page
+- VolumeChart aggregate/per-market toggle changes chart mode
+- Wizard step indicator highlights current step
 
 ## Edge Cases
+- Market with very long title truncates correctly in MarketRow
+- All market statuses display correctly: pending, approved, rejected, resolved, cancelled
+- Pagination with many markets shows correct page range
+- Categorical outcome probabilities normalize automatically
 
-**Empty states:**
-- No markets created: "You haven't created any markets yet"
-- Analytics with no data: Appropriate empty chart
+## Accessibility
+- Wizard steps navigable by keyboard
+- Error messages associated with form fields via aria-describedby
+- Status badges have text content (not color only) to convey meaning
 
-**Validation:**
-- End date in past: Blocked with error
-- Negative liquidity: Blocked with error
-- Probabilities don't sum to 100: Warning shown
+## Sample Test Data
+```typescript
+const mockStats = {
+  activeMarketsCount: 3,
+  resolvedMarketsCount: 2,
+  totalVolumeSats: 1583100,
+  totalFeesEarnedSats: 30512
+};
 
-**Error handling:**
-- Submit failure: Error banner with retry
-- Network error: Appropriate feedback
+const mockEmptyStats = {
+  activeMarketsCount: 0,
+  resolvedMarketsCount: 0,
+  totalVolumeSats: 0,
+  totalFeesEarnedSats: 0
+};
 
-**Large data:**
-- Many markets: Pagination handles correctly
-- Many outcomes: Scrollable list
+const mockMarkets = [
+  {
+    id: "mkt-001",
+    title: "Will Bitcoin reach $100K by end of 2026?",
+    status: "active",
+    volumeSats: 847500,
+    closingDate: "2026-12-31T23:59:59Z",
+    creatorFeeSats: 16950,
+    unclaimedFees: false
+  },
+  {
+    id: "mkt-002",
+    title: "NBA Finals 2026 winner",
+    status: "resolved",
+    volumeSats: 412300,
+    closingDate: "2026-06-20T23:59:59Z",
+    creatorFeeSats: 8246,
+    unclaimedFees: true
+  }
+];
+
+const mockWizardDraft = {
+  basicInfo: {
+    title: "Will Bitcoin exceed $150K by 2027?",
+    categoryTags: ["crypto", "bitcoin"],
+    closingDate: "2027-01-01T00:00:00Z",
+    answerUrls: []
+  },
+  outcomes: { type: "yesno" },
+  parameters: {
+    initialLiquiditySats: 100000,
+    creatorFeePercent: 2,
+    platformFeePercent: 0.5
+  }
+};
+```

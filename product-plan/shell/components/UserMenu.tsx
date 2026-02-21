@@ -1,21 +1,27 @@
 import { useState } from 'react'
-import { User, LogOut, ChevronDown, Wallet } from 'lucide-react'
+import { User, LogOut, ChevronDown, Wallet, Sparkles, Settings } from 'lucide-react'
 
-interface UserMenuProps {
-  user: { name: string; avatarUrl?: string; balance?: number }
-  onLogout?: () => void
-  onNavigate?: (href: string) => void
-}
-
-function formatBalance(sats?: number): string {
-  if (sats === undefined || sats === 0) return '₿0'
+/** Format sats with ₿ prefix. Abbreviates large values. */
+function formatBtc(sats: number): string {
   const abs = Math.abs(sats)
   if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
   if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
   return `₿${sats.toLocaleString()}`
 }
 
-export function UserMenu({ user, onLogout, onNavigate }: UserMenuProps) {
+function formatBalance(sats?: number): string {
+  if (sats === undefined || sats === 0) return '₿0'
+  return formatBtc(sats)
+}
+
+interface UserMenuProps {
+  user: { name: string; avatarUrl?: string; balance?: number }
+  onLogout?: () => void
+  onNavigate?: (href: string) => void
+  onCreateClick?: () => void
+}
+
+export function UserMenu({ user, onLogout, onNavigate, onCreateClick }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -58,15 +64,39 @@ export function UserMenu({ user, onLogout, onNavigate }: UserMenuProps) {
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 z-20 overflow-hidden">
+            {onCreateClick && (
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  onCreateClick()
+                }}
+                className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>CreatorPage</span>
+              </button>
+            )}
+            <div className="border-t border-slate-200 dark:border-slate-700" />
             <button
               onClick={() => {
                 setIsOpen(false)
-                onNavigate?.('/mypage')
+                onNavigate?.('/portfolio')
               }}
               className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-2"
             >
               <Wallet className="w-4 h-4" />
-              <span>MyPage</span>
+              <span>Portfolio</span>
+            </button>
+            <div className="border-t border-slate-200 dark:border-slate-700" />
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                onNavigate?.('/settings')
+              }}
+              className="w-full px-4 py-3 text-left text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-2"
+            >
+              <Settings className="w-4 h-4" />
+              <span>Settings</span>
             </button>
             <div className="border-t border-slate-200 dark:border-slate-700" />
             <button

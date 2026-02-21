@@ -1,66 +1,48 @@
 # Market Discovery & Trading
 
 ## Overview
+Core marketplace where users browse prediction markets through a single-select tag navigation system, filter and search markets, and execute quick trades directly from market cards. The default view shows Trending markets.
 
-Core marketplace where users browse active prediction markets, view odds, and place trades in real-time. This is the default home view of bitCaster.
+## User Flows
+- User lands on page and sees Trending markets by default
+- User taps a tag to switch view (single-select)
+- User applies filters (Market Type, Volume range, Closing date)
+- For Yes/No markets: clicks Buy Yes/No → card transforms to trade interface
+- For categorical markets: scrolls through choices, clicks Yes/No on a choice
+- User confirms trade or cancels with × button
+- Clicking anywhere else on card navigates to market detail page
+- Infinite scroll for loading more markets
 
-## Design Intent
+## Design Decisions
+- Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags
+- Three market types: Yes/No, Categorical, Two-Dimensional (2D composite)
+- 2D markets show composite probability grids
+- Markets with secondaryMarkets show expandable "and..." link
+- Fixed card height of 280px for all types
+- Trading overlay covers entire card
 
-- **Discoverability**: Tag-based navigation lets users quickly find markets by interest
-- **Low friction**: Inline trading means users can trade without leaving the browse view
-- **Unified cards**: All market types (Yes/No, Categorical, 2D) use consistent 280px card height
-- **Information density**: Metrics footer provides key stats at a glance
+## Data Used
+**Entities:** Market (YesNoMarket, CategoricalMarket, TwoDimensionalMarket), MetaTag, CategoryTag, TradeState, FilterState
+**From global model:** Bought, Sold events update market odds and volume
 
-## Key Features
+## Components Provided
+- `MarketDiscovery` — Main container with tag bar, filters, and market grid
+- `MarketCard` — Individual market card with trading overlay
+- `FilterControls` — Market type, volume range, and closing date filters
+- `TagBar` — Horizontal tag navigation (single-select)
 
-### Tag Navigation
-- Single-select horizontal tag bar
-- Meta tags (Trending, Popular, New) + category tags
-- Trending is default selection
+## Callback Props
 
-### Filter Controls
-- Hidden by default to keep interface clean
-- Toggle with filter icon
-- Market Type, Volume range, Closing date filters
-
-### Market Cards
-- Fixed 280px height for visual consistency
-- Yes/No: Chance percentage with Buy Yes/No buttons
-- Categorical: Scrollable outcome list with individual Yes/No
-- 2D: Grid layout showing composite odds
-
-### Inline Trading
-- Card transforms to trading overlay on Buy click
-- Amount input with quick buttons (100, 500, 1000, 5000)
-- Predicted odds and cancel option
-- Card size does NOT change during transformation
-
-### Secondary Markets (2D)
-- "and..." link expands to show secondary markets
-- Each secondary market navigates to its detail page
-- Expanded height: 280px + 40px per secondary
-
-## Components
-
-| Component | Description |
-|-----------|-------------|
-| `MarketDiscovery` | Main page container with tag bar, filters, and grid |
-| `TagBar` | Horizontal tag navigation with single-select |
-| `FilterControls` | Collapsible filter row |
-| `MarketCard` | Unified card handling all market types |
-| `TradingOverlay` | Inline trading transformation |
-| `MetricsFooter` | Volume, liquidity, traders, likes |
-
-## Files
-
-- `types.ts` — TypeScript interfaces for markets, tags, and filters
-- `sample-data.json` — Sample markets for development
-- `tests.md` — Test requirements
-- `components/` — Reference React implementations
-
-## Currency Display
-
-All values use ₿ prefix (not "sats" suffix):
-- `₿12,500` for exact amounts
-- `₿12.5K` for thousands
-- `₿1.2M` for millions
+| Callback | Description |
+|----------|-------------|
+| `onSearch` | Called when user searches for markets |
+| `onTagSelect` | Called when user selects a tag |
+| `onBuyYes` | Called when user buys Yes on a yes/no market |
+| `onBuyNo` | Called when user buys No on a yes/no market |
+| `onBuyOutcomeYes` | Called when user buys Yes on a categorical outcome |
+| `onBuyOutcomeNo` | Called when user buys No on a categorical outcome |
+| `onViewMarket` | Called when user navigates to market detail |
+| `onLoadMore` | Called for infinite scroll |
+| `onBuy2DYesNoCombo` | Called when user buys a 2D yes/no combo |
+| `onBuy2DCategoricalCombo` | Called when user buys a 2D categorical combo |
+| `onViewSecondaryMarket` | Called when user clicks a secondary market |

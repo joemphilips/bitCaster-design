@@ -1,162 +1,147 @@
 # Milestone 3: Market Creation & Management
 
-## Objective
-Build the creator dashboard with analytics and market creation wizard.
-
-## Prerequisites
-- Milestone 1 (Foundation) complete
-- Milestone 2 (Market Discovery) complete (recommended, not required)
-
-## Reference Files
-- `sections/market-creation-and-management/README.md` — Overview and design intent
-- `sections/market-creation-and-management/types.ts` — TypeScript interfaces
-- `sections/market-creation-and-management/sample-data.json` — Sample data
-- `sections/market-creation-and-management/tests.md` — Test requirements
-- `sections/market-creation-and-management/components/` — Reference implementations
+> **Provide alongside:** `product-overview.md`
+> **Prerequisites:** Milestone 1 (Foundation) complete
 
 ---
 
-## Tasks
+## About These Instructions
 
-### 3.1 Three-Tab Layout
+**What you're receiving:**
+- Finished UI designs (React components with full styling)
+- Data model definitions (TypeScript types and sample data)
+- UI/UX specifications (user flows, requirements, screenshots)
+- Design system tokens (colors, typography, spacing)
+- Test-writing instructions for each section (for TDD approach)
 
-Create a tabbed interface with a special CTA-styled third tab.
+**What you need to build:**
+- Backend API endpoints and database schema
+- Authentication and authorization
+- Data fetching and state management
+- Business logic and validation
+- Integration of the provided UI components with real data
 
-**Tabs:**
-1. **Overview** (default) — Dashboard with stats and market list
-2. **Analytics** — Volume charts over time
-3. **Add Market** — Styled as a filled CTA button, not a standard tab
-
-The "Add Market" tab should visually stand out (e.g., filled primary color, "+" icon).
-
-### 3.2 Overview Tab
-
-#### Stat Cards Row
-Display 4 summary cards:
-- **Active Markets**: Count of live markets
-- **Resolved Markets**: Count of completed markets
-- **Total Volume**: Sum of all trading volume (₿ format)
-- **Creator Fees**: Total fees earned (₿ format)
-
-#### Market List
-Paginated table/list of user's markets:
-
-| Thumbnail | Title | Status | Volume | End Date | Fees | Action |
-|-----------|-------|--------|--------|----------|------|--------|
-| [img] | Will BTC... | Active | ₿0.5K | Jan 31 | ₿125 | View Details |
-
-- Pagination controls (Previous, page numbers, Next)
-- "View Details" navigates to market detail page
-
-### 3.3 Analytics Tab
-
-#### Volume Chart
-- Line or bar chart showing volume over time
-- Y-axis: Volume in sats
-- X-axis: Time periods
-
-#### Controls
-- **Aggregate/Per-market toggle**: Show combined volume or separate lines per market
-- **Time scale selector**: Daily | Weekly | Monthly | Yearly
-
-### 3.4 Market Creation Wizard
-
-5-step wizard with persistent state. User can navigate back/forward without losing data.
-
-#### Step 1: Basic Info
-- **Thumbnail upload**: Image file picker with preview
-- **Title**: Text input (required, max 200 chars)
-- **Category tags**: Multi-select from predefined categories
-- **End date/time**: DateTime picker (must be in future)
-- **Answer URLs**: List of URLs for resolution sources (add/remove)
-
-#### Step 2: Market Outcomes
-- **Type selection**: Radio buttons for Yes/No, Numeric, Categorical
-
-**Yes/No:**
-- No additional configuration needed
-- Shows preview: Yes vs No
-
-**Numeric:**
-- Min/max range inputs
-- Outcomes auto-generated and sorted
-
-**Categorical:**
-- Add outcomes dynamically
-- Each outcome has:
-  - Description (required)
-  - Thumbnail (optional)
-  - Initial probability (optional, default: even distribution)
-- Show normalized probability preview (must sum to 100%)
-
-#### Step 3: Market Parameters
-- **Liquidity**: Number input for initial sats deposit
-- **Sell fee %**: Fee on sell transactions
-- **Buy fee %**: Fee on buy transactions
-- **Win fee %**: Fee on winnings at resolution
-
-#### Step 4: Review
-Summary of all settings:
-- Title, category, end date
-- Market type and outcomes
-- Liquidity and fee structure
-- **Initial Cost / Worst Case Loss**: `liquidity + 1000` sats (placeholder calculation)
-
-Edit buttons to jump back to specific steps.
-
-#### Step 5: Final Review
-- **Rich text editor**: Description field with formatting (bold, italic, lists, links)
-- **"Generate with AI" button**: Placeholder for AI description generation
-- **Submit button**: Creates market
-
-#### Wizard Navigation
-- Step indicator showing current position (1-2-3-4-5)
-- "Back" button (disabled on step 1)
-- "Next" button (validates current step)
-- "Submit" button on final step
-
-#### Error Handling
-- Per-field validation with inline errors
-- On submit failure: Error summary banner at top
-- Preserve form state on error
-
-#### Success Flow
-On successful creation:
-1. Show success message
-2. Navigate to the new market's detail page
+**Important guidelines:**
+- **DO NOT** redesign or restyle the provided components — use them as-is
+- **DO** wire up the callback props to your routing and API calls
+- **DO** replace sample data with real data from your backend
+- **DO** implement proper error handling and loading states
+- **DO** implement empty states when no records exist (first-time users, after deletions)
+- **DO** use test-driven development — write tests first using `tests.md` instructions
+- The components are props-based and ready to integrate — focus on the backend and data layer
 
 ---
 
-## Component Checklist
+## Goal
 
-- [ ] `MarketCreationDashboard` — Main container with tabs
-- [ ] `StatCard` — Individual stat display
-- [ ] `MarketRow` / `MarketTable` — Market list item
-- [ ] `Pagination` — Page navigation controls
-- [ ] `VolumeChart` — Analytics chart component
-- [ ] `WizardContainer` — Multi-step form wrapper
-- [ ] `StepIndicator` — Progress visualization
-- [ ] `BasicInfoStep` — Step 1 form
-- [ ] `OutcomesStep` — Step 2 form
-- [ ] `ParametersStep` — Step 3 form
-- [ ] `ReviewStep` — Step 4 summary
-- [ ] `FinalReviewStep` — Step 5 with rich editor
+Implement the Market Creation & Management feature — the creator dashboard for monitoring, analyzing, and managing prediction markets.
 
----
+## Overview
 
-## Test Points
+Authenticated market creators land on a tabbed dashboard showing aggregate stats, a paginated list of their markets, and volume analytics charts. From the dashboard they can cancel active markets, claim accumulated creator fees, and launch the Market Creation Wizard (Milestone 8) to publish new markets. The Analytics tab presents time-series volume data togglable between aggregate and per-market views.
 
-See `tests.md` for detailed requirements. Key scenarios:
-- Tab switching works correctly
-- Stats display correct values
-- Market list paginates properly
-- Wizard state persists across navigation
-- Validation blocks progression on invalid data
-- Successful submission navigates to detail
+**Key Functionality:**
+- Dashboard stats: active market count, resolved count, total volume, total fees earned
+- Paginated market list with status badges, per-market volume, and per-market fees
+- Volume chart with daily/weekly/monthly time scale and aggregate vs. per-market toggle
+- Cancel market action (with confirmation)
+- Claim creator fees action
+- "Add Market" CTA that launches the Market Creation Wizard at `/creator/new`
 
----
+## Recommended Approach: Test-Driven Development
 
-## Next Steps
+See `product-plan/sections/market-creation-and-management/tests.md` for detailed test instructions.
 
-After completing Market Creation, proceed to:
-→ `04-mypage.md`
+**TDD Workflow:**
+1. Read `tests.md` and write failing tests for StatCard, MarketRow, VolumeChart, Pagination, and tab navigation
+2. Implement each component to make the tests pass
+3. Refactor while keeping tests green
+
+## What to Implement
+
+### Components
+
+Copy from `product-plan/sections/market-creation-and-management/components/`:
+
+- `MarketCreationDashboard` — Main tabbed container (Overview / Analytics / Add Market)
+- `MarketRow` — Individual market list item with status, volume, fees, and actions
+- `StatCard` — Single stat display (label, value, icon)
+- `VolumeChart` — Time-series volume chart with aggregate/per-market toggle
+- `Pagination` — Page navigation (previous, numbered pages, next)
+
+### Data Layer
+
+Key types (see `product-plan/sections/market-creation-and-management/types.ts`):
+- `DashboardStats`, `CreatorMarket`, `VolumeChartData`, `MarketVolumeData`, `PaginationState`
+
+API endpoints to implement:
+- `GET /creator/stats` — aggregate dashboard stats for the authenticated creator
+- `GET /creator/markets?page=&limit=` — paginated list of creator's markets
+- `GET /creator/analytics?timeScale=daily|weekly|monthly&mode=aggregate|per-market` — volume chart data
+- `POST /creator/markets/:id/cancel` — cancel a market
+- `POST /creator/markets/:id/claim-fees` — claim accumulated fees for a market
+
+Sample data available at `product-plan/sections/market-creation-and-management/sample-data.json`.
+
+### Callbacks
+
+Wire up these props on the `MarketCreationDashboard` component:
+
+| Callback | What to do |
+|----------|------------|
+| `onViewDetails` | Navigate to `/markets/:id` |
+| `onTabChange` | Switch between Overview, Analytics, and Add Market tabs |
+| `onCreateMarket` | Navigate to `/creator/new` (Market Creation Wizard) |
+| `onCancelMarket` | Show confirmation dialog, then call cancel API |
+| `onClaimFees` | Call claim-fees API for the given market |
+| `onSaveDraft` | Persist wizard draft to backend |
+| `onTimeScaleChange` | Fetch analytics with updated `timeScale` parameter |
+| `onChartModeChange` | Fetch analytics with updated `mode` parameter |
+| `onPageChange` | Fetch the selected page of creator markets |
+
+### Empty States
+
+- No markets created yet: "You haven't created any markets yet" with CTA to create first market
+- Analytics tab with no data: empty chart with "No trading data yet" message
+- Fees of zero: show ₿0 rather than hiding the fee column
+
+## Files to Reference
+
+- `product-plan/sections/market-creation-and-management/README.md`
+- `product-plan/sections/market-creation-and-management/tests.md`
+- `product-plan/sections/market-creation-and-management/components/`
+- `product-plan/sections/market-creation-and-management/types.ts`
+- `product-plan/sections/market-creation-and-management/sample-data.json`
+
+## Expected User Flows
+
+**Review dashboard:**
+1. Creator navigates to `/creator` — Overview tab loads with stats and first page of markets
+2. Creator sees aggregate stats: active count, resolved count, total volume, total fees
+3. Creator browses paginated market list; clicks page 2 to see older markets
+
+**Analyze volume:**
+1. Creator clicks Analytics tab — volume chart renders with daily data in aggregate mode
+2. Creator clicks "Weekly" — chart x-axis updates to weekly buckets
+3. Creator clicks "Per Market" toggle — chart splits into individual colored lines per market
+
+**Claim fees:**
+1. Creator sees a market with unclaimed fees in the list
+2. Creator clicks "Claim Fees" on that row — confirmation dialog appears
+3. Creator confirms — API call executes, fee value resets to ₿0 and success toast appears
+
+**Create a new market:**
+1. Creator clicks the "Add Market" tab or CTA button
+2. User is navigated to `/creator/new` (Market Creation Wizard — see Milestone 8)
+
+## Done When
+
+- [ ] Tests written and passing
+- [ ] Stats load with real data from API
+- [ ] Market list paginates correctly
+- [ ] Volume chart renders and responds to time scale and mode toggles
+- [ ] Cancel market flow works end-to-end with confirmation
+- [ ] Claim fees flow works end-to-end
+- [ ] "Add Market" navigates to wizard route
+- [ ] Empty state shows for creators with no markets
+- [ ] Responsive on mobile (stats stack, chart scrollable)

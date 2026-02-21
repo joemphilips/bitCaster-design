@@ -1,7 +1,20 @@
 import React, { useState } from 'react'
-import { TrendingUp, Search, Plus, User } from 'lucide-react'
+import { TrendingUp, Search, User, Bell, Sparkles } from 'lucide-react'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
+
+/** Format sats with ₿ prefix. Abbreviates large values. */
+function formatBtc(sats: number): string {
+  const abs = Math.abs(sats)
+  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
+  return `₿${sats.toLocaleString()}`
+}
+
+function formatBalance(sats?: number): string {
+  if (sats === undefined || sats === 0) return '₿0'
+  return formatBtc(sats)
+}
 
 export interface AppShellProps {
   children: React.ReactNode
@@ -11,14 +24,6 @@ export interface AppShellProps {
   onLogout?: () => void
   onSearchChange?: (query: string) => void
   onCreateClick?: () => void
-}
-
-function formatBalance(sats?: number): string {
-  if (sats === undefined || sats === 0) return '₿0'
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
 }
 
 export function AppShell({
@@ -39,7 +44,7 @@ export function AppShell({
       <div
         className="fixed inset-0 pointer-events-none select-none overflow-hidden opacity-[0.03] dark:opacity-[0.02]"
         style={{
-          backgroundImage: 'url(/brand_motto.png)',
+          backgroundImage: 'url(/product/brand_motto.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -64,15 +69,12 @@ export function AppShell({
               onSearchChange={onSearchChange}
             />
 
-            {/* Create Button */}
-            {onCreateClick && (
-              <button
-                onClick={onCreateClick}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
-              >
-                Create
-              </button>
-            )}
+            {/* Notification Bell */}
+            <button
+              className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <Bell className="w-5 h-5" />
+            </button>
 
             {/* User Menu */}
             {user && (
@@ -80,6 +82,7 @@ export function AppShell({
                 user={user}
                 onLogout={onLogout}
                 onNavigate={onNavigate}
+                onCreateClick={onCreateClick}
               />
             )}
           </div>
@@ -100,7 +103,7 @@ export function AppShell({
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 md:hidden">
-        <div className="grid grid-cols-4 h-16">
+        <div className="grid grid-cols-5 h-16">
           {/* Markets */}
           <button
             onClick={() => onNavigate?.('/markets')}
@@ -123,18 +126,32 @@ export function AppShell({
             <span className="text-xs font-medium">Search</span>
           </button>
 
-          {/* Create */}
+          {/* Notifications */}
           <button
-            onClick={onCreateClick}
-            className="flex flex-col items-center justify-center gap-1 text-blue-600 dark:text-blue-400 transition-colors"
+            onClick={() => onNavigate?.('/notifications')}
+            className="flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-400 transition-colors relative"
           >
-            <Plus className="w-5 h-5" />
-            <span className="text-xs font-medium">Create</span>
+            <div className="relative">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-[#f7931a] text-white text-[10px] font-bold flex items-center justify-center">
+                3
+              </span>
+            </div>
+            <span className="text-xs font-medium">Notifications</span>
           </button>
 
-          {/* User */}
+          {/* Creator */}
           <button
-            onClick={() => setMobileUserMenuOpen(!mobileUserMenuOpen)}
+            onClick={onCreateClick}
+            className="flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-400 transition-colors"
+          >
+            <Sparkles className="w-5 h-5" />
+            <span className="text-xs font-medium">Creator</span>
+          </button>
+
+          {/* User → Portfolio */}
+          <button
+            onClick={() => onNavigate?.('/portfolio')}
             className="flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-400 transition-colors"
           >
             {user?.avatarUrl ? (
@@ -212,11 +229,20 @@ export function AppShell({
             <button
               onClick={() => {
                 setMobileUserMenuOpen(false)
-                onNavigate?.('/mypage')
+                onNavigate?.('/portfolio')
               }}
               className="w-full py-3 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg px-3"
             >
-              MyPage
+              Portfolio
+            </button>
+            <button
+              onClick={() => {
+                setMobileUserMenuOpen(false)
+                onNavigate?.('/settings')
+              }}
+              className="w-full py-3 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg px-3"
+            >
+              Settings
             </button>
             <button
               onClick={() => {
