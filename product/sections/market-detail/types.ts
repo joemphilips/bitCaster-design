@@ -187,6 +187,22 @@ export type FixedDimension = {
 }
 
 // =============================================================================
+// Trade Side & Order Type
+// =============================================================================
+
+export type TradeSide = 'buy' | 'sell'
+export type OrderType = 'market' | 'limit'
+
+export interface LimitOrderPreview {
+  limitPrice: number        // 1-99 (%)
+  amount: number            // sats
+  sharesIfFilled: number    // amount / (limitPrice/100)
+  creatorFee: number
+  platformFee: number
+  totalCost: number
+}
+
+// =============================================================================
 // Trade State Types
 // =============================================================================
 
@@ -194,6 +210,9 @@ export interface TradeSelection {
   side: 'yes' | 'no'
   outcomeId?: string // For categorical
   cellId?: string // For 2D (e.g., "yes-yes", "outcome1-no")
+  tradeSide?: TradeSide
+  orderType?: OrderType
+  limitPrice?: number
 }
 
 export interface TradePreview {
@@ -282,4 +301,25 @@ export interface MarketDetailProps {
 
   /** Currently fixed dimension for conditional probability chart */
   fixedDimension?: FixedDimension | null
+
+  /** Current buy/sell trade side */
+  tradeSide: TradeSide
+
+  /** Called when user toggles between buy and sell */
+  onTradeSideChange?: (side: TradeSide) => void
+
+  /** Current order type (market or limit) */
+  orderType: OrderType
+
+  /** Called when user toggles between market and limit order */
+  onOrderTypeChange?: (type: OrderType) => void
+
+  /** Preview for limit orders (null if not applicable) */
+  limitOrderPreview?: LimitOrderPreview | null
+
+  /** Current limit price (1-99%) */
+  limitPrice?: number
+
+  /** Called when user changes limit price */
+  onLimitPriceChange?: (price: number) => void
 }

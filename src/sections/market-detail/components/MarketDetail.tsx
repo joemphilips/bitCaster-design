@@ -69,6 +69,10 @@ export function MarketDetail({
   tradeSelection,
   tradeAmount,
   tradePreview,
+  tradeSide,
+  orderType,
+  limitOrderPreview,
+  limitPrice,
   onTimeframeChange,
   onChartTypeChange,
   onTradeSelect,
@@ -85,6 +89,9 @@ export function MarketDetail({
   onCreatorClick,
   onFixDimension,
   fixedDimension,
+  onTradeSideChange,
+  onOrderTypeChange,
+  onLimitPriceChange,
 }: MarketDetailProps) {
   // Get outcomes for categorical markets
   const outcomes = market.type === 'categorical' ? market.outcomes : undefined
@@ -139,11 +146,18 @@ export function MarketDetail({
                   tradeSelection={tradeSelection}
                   tradeAmount={tradeAmount}
                   tradePreview={tradePreview}
+                  tradeSide={tradeSide}
+                  orderType={orderType}
+                  limitOrderPreview={limitOrderPreview}
+                  limitPrice={limitPrice}
                   onTradeSelect={onTradeSelect}
                   onTradeClear={onTradeClear}
                   onAmountChange={onAmountChange}
                   onTradeConfirm={onTradeConfirm}
                   onCommentPost={onCommentPost}
+                  onTradeSideChange={onTradeSideChange}
+                  onOrderTypeChange={onOrderTypeChange}
+                  onLimitPriceChange={onLimitPriceChange}
                 />
               </div>
             )}
@@ -203,11 +217,18 @@ export function MarketDetail({
                   tradeSelection={tradeSelection}
                   tradeAmount={tradeAmount}
                   tradePreview={tradePreview}
+                  tradeSide={tradeSide}
+                  orderType={orderType}
+                  limitOrderPreview={limitOrderPreview}
+                  limitPrice={limitPrice}
                   onTradeSelect={onTradeSelect}
                   onTradeClear={onTradeClear}
                   onAmountChange={onAmountChange}
                   onTradeConfirm={onTradeConfirm}
                   onCommentPost={onCommentPost}
+                  onTradeSideChange={onTradeSideChange}
+                  onOrderTypeChange={onOrderTypeChange}
+                  onLimitPriceChange={onLimitPriceChange}
                 />
               </div>
             </div>

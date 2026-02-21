@@ -1,7 +1,7 @@
 # Market Detail Specification
 
 ## Overview
-The Market Detail page provides a comprehensive view of a single prediction market, enabling users to analyze market data, execute trades, and track activity. Accessed by clicking on any market card from the discovery view, this page serves as the primary trading interface for all market types (Yes/No, Categorical, and 2D composite markets). Trading uses an AMM (Automated Market Maker) model; there is no order book.
+The Market Detail page provides a comprehensive view of a single prediction market, enabling users to analyze market data, execute trades, and track activity. Accessed by clicking on any market card from the discovery view, this page serves as the primary trading interface for all market types (Yes/No, Categorical, and 2D composite markets). The trading panel supports both AMM-based market orders (instant execution with price impact) and order book limit orders (placed at a specific price, filled when the market reaches that level).
 
 ## User Flows
 
@@ -45,6 +45,23 @@ The Market Detail page provides a comprehensive view of a single prediction mark
   - Like button with count (heart icon)
 
 ### Trading Panel (Right Sidebar on Desktop)
+
+#### Buy/Sell Toggle
+- Top-level tab row spanning full width: `[Buy] [Sell]`
+- Buy active: emerald accent (`bg-emerald-500/10 text-emerald-600 border-b-2 border-emerald-500`)
+- Sell active: red accent (`bg-red-500/10 text-red-600 border-b-2 border-red-500`)
+- When Sell is active, outcome buttons change context (e.g., "Sell Yes" / "Sell No")
+- Sell mode: amount label changes to "Shares to sell", preview shows proceeds after fees
+
+#### Market/Limit Sub-tabs
+- Segmented control below Buy/Sell: `[Market] [Limit]` pill toggle
+- Active state: `bg-blue-600 text-white`, inactive: transparent
+- Matches PriceChart timeframe selector style
+
+#### Layout Order
+Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
+
+#### Buy + Market (Default)
 - Current odds display:
   - **Yes/No markets**: Two large buttons showing Yes % and No %
   - **Categorical markets**: Vertical list of outcomes with odds
@@ -54,11 +71,31 @@ The Market Detail page provides a comprehensive view of a single prediction mark
 - Predicted odds after trade (shows price impact)
 - Potential payout calculation
 - Creator fee display (e.g., "0.5% creator fee")
+- Confirm button: "Buy YES for ₿X"
+
+#### Buy + Limit
+- Set limit price (1-99%) with number input and range slider
+- Amount input (same as market order)
+- Preview shows: limit price, shares if filled, fees, total cost
+- Disclaimer: "Order will fill when market price reaches your specified level"
+- Confirm button: "Place Limit Order for ₿X"
+
+#### Sell + Market
+- Select shares to sell (outcome buttons show "Sell Yes" / "Sell No")
+- Amount label: "Shares to sell"
+- Preview shows proceeds after fees (not potential payout)
+- Confirm button: "Sell YES for ₿X"
+
+#### Sell + Limit
+- Set limit price + amount
+- Preview shows limit sell details
+- Confirm button: "Place Sell Limit Order for ₿X"
+
+#### Common Elements
 - Optional comment textarea (280 character limit) between trade preview and confirm button
   - Placeholder: "Share your reasoning..."
   - Character counter shown below textarea
   - Comment is posted alongside the trade on confirm
-- Confirm Trade button (primary blue)
 - Cancel button to clear selection
 
 ### Price Chart Section

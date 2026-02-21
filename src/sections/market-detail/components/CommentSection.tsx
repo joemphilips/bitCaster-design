@@ -1,4 +1,5 @@
-import { Heart } from 'lucide-react'
+import { useRef, useState, useEffect } from 'react'
+import { Heart, ChevronUp, ChevronDown } from 'lucide-react'
 import type { Comment } from '@/../product/sections/market-detail/types'
 
 interface CommentSectionProps {
@@ -84,6 +85,36 @@ export function CommentSection({
   onCommentLike,
   onLoadMoreComments,
 }: CommentSectionProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [canScrollUp, setCanScrollUp] = useState(false)
+  const [canScrollDown, setCanScrollDown] = useState(false)
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current
+      setCanScrollUp(scrollTop > 2)
+      setCanScrollDown(scrollTop < scrollHeight - clientHeight - 2)
+    }
+  }
+
+  useEffect(() => {
+    checkScroll()
+    const resizeObserver = new ResizeObserver(checkScroll)
+    if (scrollRef.current) {
+      resizeObserver.observe(scrollRef.current)
+    }
+    return () => resizeObserver.disconnect()
+  }, [comments])
+
+  const scroll = (direction: 'up' | 'down') => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        top: direction === 'up' ? -100 : 100,
+        behavior: 'smooth',
+      })
+    }
+  }
+
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
       {/* Header */}
@@ -97,29 +128,54 @@ export function CommentSection({
       </div>
 
       {/* Content */}
-      <div className="p-4 max-h-96 overflow-y-auto">
-        {comments.length === 0 ? (
-          <p className="text-center text-sm text-slate-400 dark:text-slate-500 py-8">
-            No comments yet. Place a trade to leave a comment!
-          </p>
-        ) : (
-          <>
-            {comments.map((comment) => (
-              <CommentRow
-                key={comment.id}
-                comment={comment}
-                onLike={() => onCommentLike?.(comment.id)}
-              />
-            ))}
-            {comments.length >= 3 && (
-              <button
-                onClick={onLoadMoreComments}
-                className="w-full py-3 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-              >
-                Load more comments
-              </button>
-            )}
-          </>
+      <div className="relative group/comments">
+        {canScrollUp && (
+          <button
+            onClick={() => scroll('up')}
+            className="absolute left-1/2 -translate-x-1/2 top-1 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/comments:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
+          >
+            <ChevronUp className="w-4 h-4" />
+          </button>
+        )}
+
+        <div
+          ref={scrollRef}
+          onScroll={checkScroll}
+          className="p-4 max-h-96 overflow-y-auto scrollbar-hide"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {comments.length === 0 ? (
+            <p className="text-center text-sm text-slate-400 dark:text-slate-500 py-8">
+              No comments yet. Place a trade to leave a comment!
+            </p>
+          ) : (
+            <>
+              {comments.map((comment) => (
+                <CommentRow
+                  key={comment.id}
+                  comment={comment}
+                  onLike={() => onCommentLike?.(comment.id)}
+                />
+              ))}
+              {comments.length >= 3 && (
+                <button
+                  onClick={onLoadMoreComments}
+                  className="w-full py-3 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                >
+                  Load more comments
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        {canScrollDown && (
+          <button
+            onClick={() => scroll('down')}
+            className="absolute left-1/2 -translate-x-1/2 bottom-1 z-10 w-7 h-7 bg-white dark:bg-slate-800 shadow-lg rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 opacity-0 group-hover/comments:opacity-100 transition-opacity border border-slate-200 dark:border-slate-700"
+          >
+            <ChevronDown className="w-4 h-4" />
+          </button>
         )}
       </div>
     </div>

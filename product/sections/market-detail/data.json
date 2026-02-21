@@ -557,5 +557,13 @@
     "creatorFee": 5,
     "platformFee": 0,
     "totalCost": 1000
+  },
+  "limitOrderPreviewExample": {
+    "limitPrice": 65,
+    "amount": 1000,
+    "sharesIfFilled": 1538,
+    "creatorFee": 5,
+    "platformFee": 0,
+    "totalCost": 1000
   }
 }

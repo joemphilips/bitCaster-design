@@ -6,6 +6,9 @@ import type {
   ChartType,
   TradeSelection,
   TradePreview,
+  LimitOrderPreview,
+  TradeSide,
+  OrderType,
   FixedDimension,
   MarketDetail as MarketDetailType,
 } from '@/../product/sections/market-detail/types'
@@ -30,6 +33,9 @@ export function MarketDetailPreview() {
   const [tradeSelection, setTradeSelection] = useState<TradeSelection | null>(null)
   const [tradeAmount, setTradeAmount] = useState<number>(0)
   const [fixedDimension, setFixedDimension] = useState<FixedDimension | null>(null)
+  const [tradeSide, setTradeSide] = useState<TradeSide>('buy')
+  const [orderType, setOrderType] = useState<OrderType>('market')
+  const [limitPrice, setLimitPrice] = useState<number>(50)
 
   // Get the selected market data
   const market = data[selectedMarketKey] as unknown as MarketDetailType
@@ -46,6 +52,19 @@ export function MarketDetailPreview() {
         totalCost: tradeAmount,
       }
     : null
+
+  // Generate limit order preview when limit mode is active
+  const limitOrderPreview: LimitOrderPreview | null =
+    orderType === 'limit' && tradeSelection && tradeAmount > 0
+      ? {
+          limitPrice,
+          amount: tradeAmount,
+          sharesIfFilled: Math.round(tradeAmount / (limitPrice / 100)),
+          creatorFee: Math.round(tradeAmount * (market.creator.feePercent / 100)),
+          platformFee: 0,
+          totalCost: tradeAmount,
+        }
+      : null
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
@@ -64,6 +83,9 @@ export function MarketDetailPreview() {
                   setTradeSelection(null)
                   setTradeAmount(0)
                   setFixedDimension(null)
+                  setTradeSide('buy')
+                  setOrderType('market')
+                  setLimitPrice(50)
                 }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   selectedMarketKey === key
@@ -86,6 +108,22 @@ export function MarketDetailPreview() {
         tradeSelection={tradeSelection}
         tradeAmount={tradeAmount}
         tradePreview={tradePreview}
+        tradeSide={tradeSide}
+        orderType={orderType}
+        limitOrderPreview={limitOrderPreview}
+        limitPrice={limitPrice}
+        onTradeSideChange={(side) => {
+          console.log('Trade side changed:', side)
+          setTradeSide(side)
+        }}
+        onOrderTypeChange={(type) => {
+          console.log('Order type changed:', type)
+          setOrderType(type)
+        }}
+        onLimitPriceChange={(price) => {
+          console.log('Limit price changed:', price)
+          setLimitPrice(price)
+        }}
         onTimeframeChange={(tf) => {
           console.log('Timeframe changed:', tf)
           setChartTimeframe(tf)
