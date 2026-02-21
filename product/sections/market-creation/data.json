@@ -1,0 +1,71 @@
+{
+  "_meta": {
+    "events": {
+      "OracleCheckChoiceSelected": "User selects existing oracle or become-oracle path",
+      "OracleAnnouncementSelected": "User selects a specific oracle announcement",
+      "OracleCheckContinued": "User continues past oracle check step",
+      "OutcomeTypeSelected": "User selects Yes/No or Categorical market type",
+      "BasicInfoUpdated": "User updates title, categories, closing date, or answer URLs",
+      "ThumbnailUploaded": "User uploads a market thumbnail image",
+      "OutcomeAdded": "User adds a new outcome to the market",
+      "OutcomeRemoved": "User removes an outcome from the market",
+      "OutcomeUpdated": "User updates an outcome label or probability",
+      "MarketSettingsUpdated": "User updates fee configuration",
+      "MarketPreviewCalculated": "User calculates cost/risk preview",
+      "MarketPreviewConfirmed": "User confirms the cost/risk preview",
+      "DescriptionUpdated": "User updates the market description",
+      "MarketCreated": "User submits the market for creation",
+      "WizardExited": "User exits the wizard (back to dashboard or settings)"
+    },
+    "currentState": {
+      "currentStep": "Current step in the 7-step wizard (1=Oracle Check, 2=Get Started, 3=Basic Info, 4=Outcomes, 5=Settings, 6=Preview, 7=Review)",
+      "stepOracleCheck": "Oracle check step data (choice and selected announcement)",
+      "stepGetStarted": "Get started step data (outcome type selection)",
+      "stepBasicInfo": "Basic info step data (title, categories, closing date, answer URLs)",
+      "stepOutcomes": "Outcomes step data (outcome type and outcome definitions)",
+      "stepMarketSettings": "Market settings step data (fee configuration)",
+      "stepMarketPreview": "Market preview step data (cost/risk calculations)",
+      "stepReviewAndCreate": "Review step data (description text)"
+    }
+  },
+  "draft": {
+    "currentStep": 1,
+    "lastModified": "2026-02-21T10:00:00Z",
+    "stepOracleCheck": null,
+    "stepGetStarted": null,
+    "stepBasicInfo": null,
+    "stepOutcomes": null,
+    "stepMarketSettings": null,
+    "stepMarketPreview": null,
+    "stepReviewAndCreate": null
+  },
+  "oracleAnnouncements": [
+    {
+      "id": "ann-1",
+      "eventId": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+      "oraclePubkey": "npub1qqqsyqcyq5rqwzqfhg9scl28lmjd3hqk5ehfxph",
+      "description": "Will Bitcoin exceed $150,000 by end of Q2 2026?",
+      "resolutionDate": "2026-06-30T23:59:59Z",
+      "outcomes": ["Yes", "No"]
+    },
+    {
+      "id": "ann-2",
+      "eventId": "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+      "oraclePubkey": "npub1qqqsyqcyq5rqwzqfhg9scl28lmjd3hqk5ehfxpq",
+      "description": "Which team will win the 2026 Champions League Final?",
+      "resolutionDate": "2026-05-30T21:00:00Z",
+      "outcomes": ["Real Madrid", "Manchester City", "Bayern Munich", "Other"]
+    },
+    {
+      "id": "ann-3",
+      "eventId": "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+      "oraclePubkey": "npub1qqqsyqcyq5rqwzqfhg9scl28lmjd3hqk5ehfxpr",
+      "description": "US Federal Reserve interest rate decision - March 2026",
+      "resolutionDate": "2026-03-19T18:00:00Z",
+      "outcomes": ["Cut", "Hold", "Raise"]
+    }
+  ],
+  "categoryTags": [
+    "Crypto", "Sports", "Politics", "Finance", "Technology", "Entertainment", "Science", "Weather"
+  ]
+}

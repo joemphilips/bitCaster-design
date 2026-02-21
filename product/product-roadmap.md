@@ -19,3 +19,6 @@ User preferences including base currency, theme, connected mints, and seed phras
 
 ### 6. Wallet Setup
 First-time onboarding wizard for creating a new wallet or recovering an existing one from a seed phrase.
+
+### 7. Market Creation
+Seven-step wizard for creating new prediction markets, starting with oracle announcement check, then market type, basic info, outcomes, fee settings, cost preview, and final review.
