@@ -3,7 +3,7 @@
 // =============================================================================
 
 export type SetupChoice = 'create' | 'recover'
-export type SetupStep = 1 | 2 | 3
+export type SetupStep = 1 | 2 | 3 | 4 | 5
 
 // =============================================================================
 // Mint Connection Types
@@ -22,8 +22,11 @@ export interface MintConnectionTest {
 // =============================================================================
 
 export interface WalletSetupProps {
-  /** Current step in the setup flow */
+  /** Current step in the setup flow (1=Welcome, 2=PWA, 3=Choice, 4=Seed, 5=Mint) */
   currentStep: SetupStep
+
+  /** Whether the Terms of Service popup is visible */
+  showTerms: boolean
 
   /** User's choice: create new or recover existing */
   choice: SetupChoice | null
@@ -39,6 +42,18 @@ export interface WalletSetupProps {
 
   /** Mint connection tests */
   mintConnections: MintConnectionTest[]
+
+  /** Called when user clicks Next on the welcome landing */
+  onWelcomeNext?: () => void
+
+  /** Called when user clicks Terms of Service link */
+  onShowTerms?: () => void
+
+  /** Called when user closes the Terms of Service popup */
+  onCloseTerms?: () => void
+
+  /** Called when user clicks Next on the PWA confirmation step */
+  onPwaNext?: () => void
 
   /** Called when user selects create or recover */
   onChoiceSelect?: (choice: SetupChoice) => void
@@ -61,7 +76,7 @@ export interface WalletSetupProps {
   /** Called when user removes a mint */
   onRemoveMint?: (url: string) => void
 
-  /** Called when user clicks Continue (step 2 → step 3) */
+  /** Called when user clicks Continue (step 4 → step 5) */
   onContinue?: () => void
 
   /** Called when user clicks Back */

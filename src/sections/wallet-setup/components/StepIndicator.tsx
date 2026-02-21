@@ -5,16 +5,16 @@ interface StepIndicatorProps {
   currentStep: SetupStep
 }
 
-const steps = [
-  { step: 1 as SetupStep, label: 'Choice' },
-  { step: 2 as SetupStep, label: 'Seed' },
-  { step: 3 as SetupStep, label: 'Mint Setup' },
+const steps: { step: SetupStep; label: string; display: number }[] = [
+  { step: 3, label: 'Choice', display: 1 },
+  { step: 4, label: 'Seed', display: 2 },
+  { step: 5, label: 'Mint Setup', display: 3 },
 ]
 
 export function StepIndicator({ currentStep }: StepIndicatorProps) {
   return (
     <div className="flex items-center justify-center gap-0">
-      {steps.map(({ step, label }, index) => {
+      {steps.map(({ step, label, display }, index) => {
         const isCompleted = step < currentStep
         const isCurrent = step === currentStep
         const isFuture = step > currentStep
@@ -35,7 +35,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                 {isCompleted ? (
                   <Check className="w-4 h-4" strokeWidth={2.5} />
                 ) : (
-                  step
+                  display
                 )}
               </div>
               <span

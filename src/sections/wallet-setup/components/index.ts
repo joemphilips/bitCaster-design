@@ -1,5 +1,7 @@
 export { WalletSetup } from './WalletSetup'
 export { StepIndicator } from './StepIndicator'
+export { WelcomeLanding } from './WelcomeLanding'
+export { PwaConfirmation } from './PwaConfirmation'
 export { ChoiceCards } from './ChoiceCards'
 export { SeedDisplay } from './SeedDisplay'
 export { SeedInput } from './SeedInput'

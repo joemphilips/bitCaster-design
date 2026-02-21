@@ -10,6 +10,7 @@ import type {
 
 export function WalletSetupPreview() {
   const [currentStep, setCurrentStep] = useState<SetupStep>(data.currentStep as SetupStep)
+  const [showTerms, setShowTerms] = useState(data.showTerms)
   const [choice, setChoice] = useState<SetupChoice | null>(data.choice as SetupChoice | null)
   const [seedSaved, setSeedSaved] = useState(data.seedSaved)
   const [inputSeedWords, setInputSeedWords] = useState<string[]>(data.inputSeedWords)
@@ -19,15 +20,30 @@ export function WalletSetupPreview() {
 
   const props: WalletSetupProps = {
     currentStep,
+    showTerms,
     choice,
     seedWords: data.seedWords,
     inputSeedWords,
     seedSaved,
     mintConnections,
+    onWelcomeNext: () => {
+      console.log('Welcome Next clicked')
+      setCurrentStep(2)
+    },
+    onShowTerms: () => {
+      setShowTerms(true)
+    },
+    onCloseTerms: () => {
+      setShowTerms(false)
+    },
+    onPwaNext: () => {
+      console.log('PWA Next clicked')
+      setCurrentStep(3)
+    },
     onChoiceSelect: (c) => {
       console.log('Choice selected:', c)
       setChoice(c)
-      setCurrentStep(2)
+      setCurrentStep(4)
     },
     onSeedSavedToggle: (saved) => {
       setSeedSaved(saved)
@@ -46,19 +62,21 @@ export function WalletSetupPreview() {
     },
     onRecover: () => {
       console.log('Recover clicked')
-      setCurrentStep(3)
+      setCurrentStep(5)
     },
     onContinue: () => {
       console.log('Continue clicked')
-      setCurrentStep(3)
+      setCurrentStep(5)
     },
     onBack: () => {
-      if (currentStep === 3) {
-        setCurrentStep(2)
-      } else if (currentStep === 2) {
+      if (currentStep === 2) {
         setCurrentStep(1)
+      } else if (currentStep === 4) {
+        setCurrentStep(3)
         setChoice(null)
         setSeedSaved(false)
+      } else if (currentStep === 5) {
+        setCurrentStep(4)
       }
     },
     onAddMint: (url) => {
@@ -67,7 +85,6 @@ export function WalletSetupPreview() {
         ...prev,
         { url, status: 'connecting' },
       ])
-      // Simulate connection test
       setTimeout(() => {
         setMintConnections((prev) =>
           prev.map((m) =>
@@ -86,37 +103,46 @@ export function WalletSetupPreview() {
     },
   }
 
+  const stepLabels: Record<number, string> = {
+    1: 'Welcome',
+    2: 'PWA',
+    3: 'Choice',
+    4: 'Seed',
+    5: 'Mint',
+  }
+
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
       {/* Preview Controls */}
-      <div className="sticky top-0 z-50 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+      <div className="sticky top-0 z-[60] bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
               Step:
             </span>
-            {([1, 2, 3] as SetupStep[]).map((step) => (
+            {([1, 2, 3, 4, 5] as SetupStep[]).map((step) => (
               <button
                 key={step}
                 onClick={() => {
                   setCurrentStep(step)
-                  if (step === 1) {
+                  setShowTerms(false)
+                  if (step <= 3) {
                     setChoice(null)
                     setSeedSaved(false)
                   }
-                  if (step === 2 && !choice) setChoice('create')
+                  if (step === 4 && !choice) setChoice('create')
                 }}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   currentStep === step
                     ? 'bg-blue-600 text-white'
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                 }`}
               >
-                Step {step}
+                {step}. {stepLabels[step]}
               </button>
             ))}
 
-            {currentStep === 2 && (
+            {currentStep === 4 && (
               <>
                 <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1" />
                 <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">

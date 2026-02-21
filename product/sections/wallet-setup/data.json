@@ -1,6 +1,10 @@
 {
   "_meta": {
     "events": {
+      "WelcomeNextClicked": "User clicks Next on the welcome landing page",
+      "TermsOfServiceViewed": "User opens the Terms of Service popup",
+      "TermsOfServiceClosed": "User closes the Terms of Service popup",
+      "PwaConfirmationNext": "User clicks Next on the PWA confirmation step",
       "SetupChoiceSelected": "User selects create new wallet or recover existing",
       "SeedPhraseGenerated": "New seed phrase generated for wallet creation",
       "SeedPhraseSaved": "User confirms they have saved their seed phrase",
@@ -12,7 +16,8 @@
       "WalletSetupCompleted": "User completes wallet setup and navigates to Portfolio"
     },
     "currentState": {
-      "currentStep": "Current step in the 3-step wizard",
+      "currentStep": "Current step in the 5-step wizard (1=Welcome, 2=PWA, 3=Choice, 4=Seed, 5=Mint)",
+      "showTerms": "Whether the Terms of Service popup is visible",
       "choice": "User's selected path (create or recover), null if not yet chosen",
       "seedWords": "Generated 12-word seed phrase (create flow)",
       "inputSeedWords": "User-entered seed words (recover flow)",
@@ -21,6 +26,7 @@
     }
   },
   "currentStep": 1,
+  "showTerms": false,
   "choice": null,
   "seedWords": [
     "abandon", "ability", "able", "about",
