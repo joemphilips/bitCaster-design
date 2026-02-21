@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "events": {
+      "SetupChoiceSelected": "User selects create new wallet or recover existing",
+      "SeedPhraseGenerated": "New seed phrase generated for wallet creation",
+      "SeedPhraseSaved": "User confirms they have saved their seed phrase",
+      "SeedPhraseEntered": "User enters seed words for wallet recovery",
+      "WalletRecovered": "Wallet successfully recovered from seed phrase",
+      "SetupMintAdded": "User adds a mint URL during setup",
+      "SetupMintRemoved": "User removes a mint URL during setup",
+      "MintConnectionTested": "Connection test result for a mint URL",
+      "WalletSetupCompleted": "User completes wallet setup and navigates to Portfolio"
+    },
+    "currentState": {
+      "currentStep": "Current step in the 3-step wizard",
+      "choice": "User's selected path (create or recover), null if not yet chosen",
+      "seedWords": "Generated 12-word seed phrase (create flow)",
+      "inputSeedWords": "User-entered seed words (recover flow)",
+      "seedSaved": "Whether user confirmed saving seed phrase",
+      "mintConnections": "List of mints with connection test status"
+    }
+  },
+  "currentStep": 1,
+  "choice": null,
+  "seedWords": [
+    "abandon", "ability", "able", "about",
+    "above", "absent", "absorb", "abstract",
+    "absurd", "abuse", "access", "accident"
+  ],
+  "inputSeedWords": ["", "", "", "", "", "", "", "", "", "", "", ""],
+  "seedSaved": false,
+  "mintConnections": [
+    {
+      "url": "http://localhost:3338",
+      "status": "connected"
+    }
+  ]
+}

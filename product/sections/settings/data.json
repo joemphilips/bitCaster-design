@@ -1,0 +1,34 @@
+{
+  "_meta": {
+    "events": {
+      "BaseCurrencyChanged": "User changes preferred display currency",
+      "ThemeChanged": "User changes theme preference",
+      "MintAdded": "User adds a new mint URL to their connected mints",
+      "MintRemoved": "User removes a non-default mint from their list",
+      "SeedPhraseViewed": "User views their wallet seed phrase after confirmation"
+    },
+    "currentState": {
+      "baseCurrency": "Current display currency preference",
+      "theme": "Current theme setting",
+      "mints": "List of configured mints with connection status",
+      "appVersion": "Application version string"
+    }
+  },
+  "baseCurrency": "BTC",
+  "theme": "dark",
+  "mints": [
+    {
+      "url": "http://localhost:3338",
+      "isDefault": true,
+      "connectionStatus": "connected",
+      "addedDate": "2025-08-15T09:30:00Z"
+    },
+    {
+      "url": "https://mint.minibits.cash",
+      "isDefault": false,
+      "connectionStatus": "connected",
+      "addedDate": "2025-12-01T14:00:00Z"
+    }
+  ],
+  "appVersion": "0.1.0"
+}

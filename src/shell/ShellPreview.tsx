@@ -32,7 +32,7 @@ export default function ShellPreview() {
             <li>Trading-graph icon with Markets navigation</li>
             <li>Integrated search box for market discovery</li>
             <li>Notification bell icon for alerts</li>
-            <li>User menu with CreatorPage, MyPage, and Logout options</li>
+            <li>User menu with CreatorPage, Portfolio, Settings, and Logout options</li>
             <li>Static brand motto background image</li>
             <li>Single navigation bar across all viewports</li>
           </ul>

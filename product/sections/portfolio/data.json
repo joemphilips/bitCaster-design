@@ -16,43 +16,68 @@
       "CreatorFeeClaimed": "Market creator claims fee earnings from resolved market"
     },
     "currentState": {
+      "walletState": "Whether user has a configured wallet",
+      "baseCurrency": "User's preferred display currency",
+      "selectedTimeRange": "Currently selected P/L chart time range",
       "profile": "User profile derived from UserRegistered + UserProfileUpdated events",
-      "plSummary": "Profit/Loss metrics computed from Bought, Sold, and PayoutClaimed events over various time windows",
+      "plChartData": "P/L chart data points for each time range",
+      "stats": "Portfolio statistics computed from positions and trades",
       "positions": "Active and closed positions derived from Bought, Sold, and MarketResolved events",
-      "orderHistory": "Deposits and withdrawals from DepositReceived, WithdrawalRequested, and WithdrawalCompleted events",
-      "createdMarkets": "Markets created by user from MarketCreated, MarketApproved, MarketRejected, and MarketResolved events"
-    },
-    "eventFlows": [
-      "UserRegistered creates initial profile, UserProfileUpdated modifies avatar/display name",
-      "DepositReceived adds sats to wallet, WithdrawalRequested+WithdrawalCompleted removes sats",
-      "Bought creates position or adds shares, Sold reduces shares or closes position",
-      "MarketResolved triggers PayoutClaimed for winning positions",
-      "MarketCreated starts pending, MarketApproved enables trading, MarketResolved enables CreatorFeeClaimed"
-    ]
+      "activity": "All activity derived from deposits, withdrawals, trades, payouts, and fee claims",
+      "createdMarkets": "Markets created by user from MarketCreated and related events"
+    }
   },
+  "walletState": "ready",
+  "baseCurrency": "BTC",
+  "selectedTimeRange": "ALL",
   "profile": {
     "userId": "usr-a1b2c3d4",
     "displayName": "SatoshiTrader",
     "avatarUrl": "/images/avatars/satoshi-trader.png",
-    "registeredDate": "2025-08-15T09:30:00Z"
+    "registeredDate": "2025-08-15T09:30:00Z",
+    "viewCount": 1247
   },
-  "plSummary": {
-    "last24h": {
-      "amountSats": 12500,
-      "percentChange": 2.4
-    },
-    "last7d": {
-      "amountSats": -8200,
-      "percentChange": -1.5
-    },
-    "last30d": {
-      "amountSats": 87350,
-      "percentChange": 8.7
-    },
-    "allTime": {
-      "amountSats": 234580,
-      "percentChange": 23.5
-    }
+  "plChartData": {
+    "1D": [
+      { "timestamp": "2026-01-22T00:00:00Z", "cumulativePL": 220000 },
+      { "timestamp": "2026-01-22T04:00:00Z", "cumulativePL": 222100 },
+      { "timestamp": "2026-01-22T08:00:00Z", "cumulativePL": 218500 },
+      { "timestamp": "2026-01-22T12:00:00Z", "cumulativePL": 225300 },
+      { "timestamp": "2026-01-22T16:00:00Z", "cumulativePL": 230100 },
+      { "timestamp": "2026-01-22T20:00:00Z", "cumulativePL": 232500 },
+      { "timestamp": "2026-01-23T00:00:00Z", "cumulativePL": 234580 }
+    ],
+    "1W": [
+      { "timestamp": "2026-01-16T00:00:00Z", "cumulativePL": 242780 },
+      { "timestamp": "2026-01-17T00:00:00Z", "cumulativePL": 238400 },
+      { "timestamp": "2026-01-18T00:00:00Z", "cumulativePL": 235100 },
+      { "timestamp": "2026-01-19T00:00:00Z", "cumulativePL": 230800 },
+      { "timestamp": "2026-01-20T00:00:00Z", "cumulativePL": 228500 },
+      { "timestamp": "2026-01-21T00:00:00Z", "cumulativePL": 231200 },
+      { "timestamp": "2026-01-22T00:00:00Z", "cumulativePL": 234580 }
+    ],
+    "1M": [
+      { "timestamp": "2025-12-23T00:00:00Z", "cumulativePL": 147230 },
+      { "timestamp": "2025-12-30T00:00:00Z", "cumulativePL": 162500 },
+      { "timestamp": "2026-01-06T00:00:00Z", "cumulativePL": 178900 },
+      { "timestamp": "2026-01-13T00:00:00Z", "cumulativePL": 205400 },
+      { "timestamp": "2026-01-20T00:00:00Z", "cumulativePL": 228500 },
+      { "timestamp": "2026-01-22T00:00:00Z", "cumulativePL": 234580 }
+    ],
+    "ALL": [
+      { "timestamp": "2025-08-15T00:00:00Z", "cumulativePL": 0 },
+      { "timestamp": "2025-09-15T00:00:00Z", "cumulativePL": 15200 },
+      { "timestamp": "2025-10-15T00:00:00Z", "cumulativePL": 42800 },
+      { "timestamp": "2025-11-15T00:00:00Z", "cumulativePL": 98500 },
+      { "timestamp": "2025-12-15T00:00:00Z", "cumulativePL": 147230 },
+      { "timestamp": "2026-01-15T00:00:00Z", "cumulativePL": 215600 },
+      { "timestamp": "2026-01-22T00:00:00Z", "cumulativePL": 234580 }
+    ]
+  },
+  "stats": {
+    "positionsValueSats": 492190,
+    "biggestWinSats": 86400,
+    "predictionsCount": 8
   },
   "positions": [
     {
@@ -183,9 +208,9 @@
       "acquiredDate": "2025-07-15T11:00:00Z"
     }
   ],
-  "orderHistory": [
+  "activity": [
     {
-      "id": "ord-001",
+      "id": "act-001",
       "type": "deposit",
       "amountSats": 500000,
       "date": "2025-08-15T09:35:00Z",
@@ -194,7 +219,19 @@
       "lightningInvoice": null
     },
     {
-      "id": "ord-002",
+      "id": "act-002",
+      "type": "buy",
+      "amountSats": 93600,
+      "date": "2025-09-20T10:30:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-resolved-001",
+      "marketTitle": "Will Ethereum merge to PoS successfully complete by end of 2025?",
+      "positionId": "pos-005"
+    },
+    {
+      "id": "act-003",
       "type": "deposit",
       "amountSats": 150000,
       "date": "2025-10-22T14:10:00Z",
@@ -203,7 +240,7 @@
       "lightningInvoice": "lnbc1500u1pjq8xyzpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52dl"
     },
     {
-      "id": "ord-003",
+      "id": "act-004",
       "type": "withdrawal",
       "amountSats": 75000,
       "date": "2025-11-05T18:30:00Z",
@@ -212,7 +249,31 @@
       "lightningInvoice": null
     },
     {
-      "id": "ord-004",
+      "id": "act-005",
+      "type": "buy",
+      "amountSats": 95000,
+      "date": "2025-11-01T13:45:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-resolved-002",
+      "marketTitle": "Will the Fed raise interest rates in December 2025?",
+      "positionId": "pos-006"
+    },
+    {
+      "id": "act-006",
+      "type": "payout_claimed",
+      "amountSats": 180000,
+      "date": "2025-11-30T23:59:59Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-resolved-003",
+      "marketTitle": "Will SpaceX Starship complete a successful orbital flight by November 2025?",
+      "positionId": "pos-008"
+    },
+    {
+      "id": "act-007",
       "type": "deposit",
       "amountSats": 250000,
       "date": "2025-12-01T10:45:00Z",
@@ -221,7 +282,31 @@
       "lightningInvoice": "lnbc2500u1pjq8abcpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x9"
     },
     {
-      "id": "ord-005",
+      "id": "act-008",
+      "type": "buy",
+      "amountSats": 93000,
+      "date": "2025-12-10T14:22:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-001",
+      "marketTitle": "Will Bitcoin reach $100,000 before end of Q2 2026?",
+      "positionId": "pos-001"
+    },
+    {
+      "id": "act-009",
+      "type": "sell",
+      "amountSats": 45000,
+      "date": "2025-12-15T09:00:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-resolved-001",
+      "marketTitle": "Will Ethereum merge to PoS successfully complete by end of 2025?",
+      "positionId": "pos-005"
+    },
+    {
+      "id": "act-010",
       "type": "withdrawal",
       "amountSats": 100000,
       "date": "2025-12-20T16:20:00Z",
@@ -230,7 +315,19 @@
       "lightningInvoice": "lnbc1m1pjq8defpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52mn"
     },
     {
-      "id": "ord-006",
+      "id": "act-011",
+      "type": "payout_claimed",
+      "amountSats": 100000,
+      "date": "2025-12-31T23:59:59Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-resolved-001",
+      "marketTitle": "Will Ethereum merge to PoS successfully complete by end of 2025?",
+      "positionId": "pos-005"
+    },
+    {
+      "id": "act-012",
       "type": "deposit",
       "amountSats": 50000,
       "date": "2026-01-05T08:00:00Z",
@@ -239,7 +336,31 @@
       "lightningInvoice": null
     },
     {
-      "id": "ord-007",
+      "id": "act-013",
+      "type": "buy",
+      "amountSats": 43800,
+      "date": "2026-01-08T09:20:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-006",
+      "marketTitle": "Ethereum gas price average in February 2026",
+      "positionId": "pos-007"
+    },
+    {
+      "id": "act-014",
+      "type": "buy",
+      "amountSats": 108000,
+      "date": "2026-01-12T11:05:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-003",
+      "marketTitle": "Will Apple announce AR glasses at WWDC 2026?",
+      "positionId": "pos-002"
+    },
+    {
+      "id": "act-015",
       "type": "withdrawal",
       "amountSats": 200000,
       "date": "2026-01-15T12:30:00Z",
@@ -248,7 +369,18 @@
       "lightningInvoice": null
     },
     {
-      "id": "ord-008",
+      "id": "act-016",
+      "type": "creator_fee_claimed",
+      "amountSats": 17842,
+      "date": "2026-01-16T10:00:00Z",
+      "status": "completed",
+      "txId": null,
+      "lightningInvoice": null,
+      "marketId": "mkt-user-003",
+      "marketTitle": "Will Nostr protocol reach 10 million users by December 2025?"
+    },
+    {
+      "id": "act-017",
       "type": "deposit",
       "amountSats": 30000,
       "date": "2026-01-18T15:45:00Z",
@@ -258,17 +390,7 @@
       "failureReason": "Invoice expired before payment received"
     },
     {
-      "id": "ord-009",
-      "type": "withdrawal",
-      "amountSats": 25000,
-      "date": "2026-01-10T09:15:00Z",
-      "status": "failed",
-      "txId": null,
-      "lightningInvoice": null,
-      "failureReason": "Insufficient routing liquidity"
-    },
-    {
-      "id": "ord-010",
+      "id": "act-018",
       "type": "deposit",
       "amountSats": 80000,
       "date": "2026-01-22T11:30:00Z",

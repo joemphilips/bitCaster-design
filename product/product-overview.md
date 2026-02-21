@@ -22,3 +22,11 @@ Market creators can monetize their insights by collecting fees from the markets 
 - Real-time trading with live price discovery
 - Hybrid moderation (permissionless with quality controls)
 - Brand motto display: "FINANCE WANTS TO BE FREE | FAKE MUST BE EXPENSIVE"
+
+## Sections
+- **Markets** — Market discovery and trading (default home view)
+- **Portfolio** — Trading dashboard with positions, P/L chart, activity, and created markets
+- **Settings** — User preferences (currency, theme, connected mints, seed backup)
+- **Wallet Setup** — First-time onboarding wizard for wallet creation or recovery
+- **Creator** — Market creation tools
+- **Notifications** — User notification feed

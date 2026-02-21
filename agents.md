@@ -135,6 +135,8 @@ When creating screen designs, follow these guidelines:
 
 - **No Navigation in Section Screen Designs**: Section screen designs should not include navigation chrome. The shell handles all navigation.
 
+- **Test with Playwright**: To check the intended change works correctly, go to `https://localhost:3000/bitCaster-design` using `playwright-cli` with running dev server instance. dev server can be started with `npm run dev`.
+
 ---
 
 ## Tailwind CSS Directives

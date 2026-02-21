@@ -91,7 +91,7 @@ export function AppShell({
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 md:hidden">
-        <div className="grid grid-cols-4 h-16">
+        <div className="grid grid-cols-5 h-16">
           {/* Markets */}
           <button
             onClick={() => onNavigate?.('/markets')}
@@ -114,18 +114,32 @@ export function AppShell({
             <span className="text-xs font-medium">Search</span>
           </button>
 
+          {/* Notifications */}
+          <button
+            onClick={() => onNavigate?.('/notifications')}
+            className="flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-400 transition-colors relative"
+          >
+            <div className="relative">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-[#f7931a] text-white text-[10px] font-bold flex items-center justify-center">
+                3
+              </span>
+            </div>
+            <span className="text-xs font-medium">Notifications</span>
+          </button>
+
           {/* Creator */}
           <button
             onClick={onCreateClick}
-            className="flex flex-col items-center justify-center gap-1 text-blue-600 dark:text-blue-400 transition-colors"
+            className="flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-400 transition-colors"
           >
             <Sparkles className="w-5 h-5" />
             <span className="text-xs font-medium">Creator</span>
           </button>
 
-          {/* User */}
+          {/* User → Portfolio */}
           <button
-            onClick={() => setMobileUserMenuOpen(!mobileUserMenuOpen)}
+            onClick={() => onNavigate?.('/portfolio')}
             className="flex flex-col items-center justify-center gap-1 text-slate-600 dark:text-slate-400 transition-colors"
           >
             {user?.avatarUrl ? (
@@ -203,11 +217,20 @@ export function AppShell({
             <button
               onClick={() => {
                 setMobileUserMenuOpen(false)
-                onNavigate?.('/mypage')
+                onNavigate?.('/portfolio')
               }}
               className="w-full py-3 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg px-3"
             >
-              MyPage
+              Portfolio
+            </button>
+            <button
+              onClick={() => {
+                setMobileUserMenuOpen(false)
+                onNavigate?.('/settings')
+              }}
+              className="w-full py-3 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg px-3"
+            >
+              Settings
             </button>
             <button
               onClick={() => {
