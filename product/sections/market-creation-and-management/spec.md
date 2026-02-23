@@ -1,7 +1,7 @@
 # Market Creation & Management Specification
 
 ## Overview
-A section for market creators to manage their prediction markets. Includes three tabbed views: Overview (dashboard with stats and market list), Analytics (volume charts over time), and Add Market (a CTA-styled button leading to a 5-step wizard for creating new markets).
+A section for market creators to manage their prediction markets. Markets go live immediately after creation — there is no approval or review gate. Includes three tabbed views: Overview (dashboard with stats and market list), Analytics (volume charts over time), and Add Market (a CTA-styled button leading to a 5-step wizard for creating new markets). If the oracle does not attest an outcome in time, the market is refunded.
 
 ## User Flows
 - View dashboard with active/resolved market counts, total volumes, and creator fees earned

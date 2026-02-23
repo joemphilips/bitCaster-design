@@ -17,30 +17,20 @@ function formatDate(dateStr: string): string {
 }
 
 const statusConfig: Record<MarketStatus, { label: string; color: string; dotColor: string }> = {
-  pending: {
-    label: 'Pending Review',
-    color: 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:ring-amber-800',
-    dotColor: 'bg-amber-500'
-  },
-  approved: {
+  active: {
     label: 'Live',
     color: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-400 dark:ring-emerald-800',
     dotColor: 'bg-emerald-500 animate-pulse'
-  },
-  rejected: {
-    label: 'Rejected',
-    color: 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-950/50 dark:text-rose-400 dark:ring-rose-800',
-    dotColor: 'bg-rose-500'
   },
   resolved: {
     label: 'Resolved',
     color: 'bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:ring-blue-800',
     dotColor: 'bg-blue-500'
   },
-  cancelled: {
-    label: 'Cancelled',
-    color: 'bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700',
-    dotColor: 'bg-slate-400'
+  refunded: {
+    label: 'Refunded',
+    color: 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:ring-amber-800',
+    dotColor: 'bg-amber-500'
   }
 }
 
@@ -48,7 +38,7 @@ export function MarketRow({ market, onViewDetails, onClaimFees, onCancelMarket }
   const { label: statusLabel, color: statusColor, dotColor } = statusConfig[market.status]
   const hasUnclaimedFees = market.status === 'resolved' && market.feesEarnedSats > market.feesClaimedSats
   const unclaimedFees = market.feesEarnedSats - market.feesClaimedSats
-  const canCancel = market.status === 'pending' || market.status === 'approved'
+  const canCancel = market.status === 'active'
 
   return (
     <div
@@ -120,12 +110,6 @@ export function MarketRow({ market, onViewDetails, onClaimFees, onCancelMarket }
               </span>
             </div>
 
-            {/* Rejection reason if rejected */}
-            {market.status === 'rejected' && market.rejectionReason && (
-              <div className="mt-3 rounded-lg bg-rose-50 p-2.5 text-sm text-rose-700 dark:bg-rose-950/30 dark:text-rose-400">
-                <span className="font-semibold">Reason:</span> {market.rejectionReason}
-              </div>
-            )}
           </div>
 
           {/* Stats row */}

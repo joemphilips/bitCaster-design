@@ -35,13 +35,6 @@
     }
   },
   {
-    "type": "MarketApproved",
-    "payload": {
-      "marketId": "market_456",
-      "approvedDate": "2025-02-02T15:00:00Z"
-    }
-  },
-  {
     "type": "Bought",
     "payload": {
       "tradeId": "trade_001",

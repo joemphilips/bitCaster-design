@@ -169,27 +169,12 @@ export function MarketCreationDashboard({
               />
             </div>
 
-            {/* Additional stats for pending/rejected/cancelled */}
-            {(dashboardStats.pendingMarketsCount > 0 || dashboardStats.rejectedMarketsCount > 0 || dashboardStats.cancelledMarketsCount > 0) && (
+            {dashboardStats.refundedMarketsCount > 0 && (
               <div className="flex flex-wrap gap-3">
-                {dashboardStats.pendingMarketsCount > 0 && (
-                  <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2 text-sm font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-                    <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-                    {dashboardStats.pendingMarketsCount} pending review
-                  </div>
-                )}
-                {dashboardStats.rejectedMarketsCount > 0 && (
-                  <div className="inline-flex items-center gap-2 rounded-full bg-rose-100 px-4 py-2 text-sm font-medium text-rose-700 dark:bg-rose-900/40 dark:text-rose-400">
-                    <span className="h-2 w-2 rounded-full bg-rose-500" />
-                    {dashboardStats.rejectedMarketsCount} rejected
-                  </div>
-                )}
-                {dashboardStats.cancelledMarketsCount > 0 && (
-                  <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                    <span className="h-2 w-2 rounded-full bg-slate-400" />
-                    {dashboardStats.cancelledMarketsCount} cancelled
-                  </div>
-                )}
+                <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2 text-sm font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                  <span className="h-2 w-2 rounded-full bg-amber-500" />
+                  {dashboardStats.refundedMarketsCount} refunded
+                </div>
               </div>
             )}
 

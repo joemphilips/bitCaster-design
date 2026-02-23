@@ -58,28 +58,16 @@ User creates a new prediction market with outcomes, closing date, and fee config
 - `categoryTags`: Array of category tags for discovery
 - `date`: ISO 8601 timestamp
 
-**MarketApproved**
-Market passes quality control checks and becomes tradeable.
-- `marketId`: Market identifier
-- `approvedDate`: ISO 8601 timestamp
-
-**MarketRejected**
-Market fails quality control checks and is not listed.
-- `marketId`: Market identifier
-- `rejectedDate`: ISO 8601 timestamp
-- `rejectionReason`: Reason for rejection
-
 **MarketResolved**
 Market closing date reached and outcome is determined. Winning position holders can claim payouts.
 - `marketId`: Market identifier
 - `winningOutcomeId`: ID of the winning outcome
 - `resolvedDate`: ISO 8601 timestamp
 
-**MarketCancelled**
-Market is cancelled and funds are refunded to position holders and liquidity providers.
+**MarketRefunded**
+Oracle did not attest an outcome in time. All participants are refunded.
 - `marketId`: Market identifier
-- `cancelledDate`: ISO 8601 timestamp
-- `cancellationReason`: Reason for cancellation
+- `refundedDate`: ISO 8601 timestamp
 - `refundedSats`: Total amount refunded in satoshis
 
 ### Trading Events
@@ -155,26 +143,22 @@ User posts a comment on a market discussion thread.
 ### Market Lifecycle
 
 ```
-MarketCreated
+MarketCreated (market is immediately active)
   ↓
-  └─→ MarketApproved (quality check passes)
-  │     ↓
-  │     ├─→ Bought (users buy shares)
-  │     ├─→ Sold (users sell shares)
-  │     ├─→ LiquidityDeposited (liquidity providers stake)
-  │     ├─→ MarketLiked (users bookmark)
-  │     ├─→ CommentPosted (discussion)
-  │     ↓
-  │     MarketResolved (outcome determined)
-  │       ↓
-  │       ├─→ PayoutClaimed (winners claim winnings)
-  │       └─→ CreatorFeeClaimed (creator claims fees)
-  │
-  └─→ MarketRejected (quality check fails)
+  ├─→ Bought (users buy shares)
+  ├─→ Sold (users sell shares)
+  ├─→ LiquidityDeposited (liquidity providers stake)
+  ├─→ MarketLiked (users bookmark)
+  ├─→ CommentPosted (discussion)
+  ↓
+  MarketResolved (oracle attests outcome)
+    ↓
+    ├─→ PayoutClaimed (winners claim winnings)
+    └─→ CreatorFeeClaimed (creator claims fees)
 
   OR
 
-  └─→ MarketCancelled (cancelled before resolution)
+  MarketRefunded (oracle did not attest in time)
 ```
 
 ### User Wallet Lifecycle

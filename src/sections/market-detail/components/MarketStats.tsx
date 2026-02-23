@@ -69,8 +69,8 @@ export function MarketStats({ market }: MarketStatsProps) {
     },
     {
       icon: CheckCircle,
-      label: 'Approved',
-      value: formatDate(market.approvedDate),
+      label: 'Active Since',
+      value: formatDate(market.activeSince),
       color: 'text-emerald-500',
     },
     {

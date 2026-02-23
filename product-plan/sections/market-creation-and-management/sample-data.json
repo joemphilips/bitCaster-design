@@ -2,35 +2,30 @@
   "_meta": {
     "events": {
       "MarketCreated": "User creates a new prediction market with question, outcomes, resolution date, fee structure, and parameters",
-      "MarketApproved": "Market passes quality controls and goes live for trading",
-      "MarketRejected": "Market fails quality controls with rejection reason",
       "MarketResolved": "Outcome determined and market closed",
-      "MarketCancelled": "Market cancelled before resolution, funds returned to participants",
+      "MarketRefunded": "Oracle did not attest in time, all participants refunded",
       "LiquidityDeposited": "Creator deposits initial liquidity when creating market",
       "Bought": "User buys shares, contributing to market volume",
       "Sold": "User sells shares, contributing to market volume",
       "CreatorFeeClaimed": "Market creator claims fee earnings from resolved market"
     },
     "currentState": {
-      "dashboardStats": "Aggregate metrics computed from MarketCreated, MarketApproved, MarketResolved, Bought, Sold, and CreatorFeeClaimed events",
-      "creatorMarkets": "Full market details derived from MarketCreated + status events (Approved/Rejected/Resolved/Cancelled) + trading activity",
+      "dashboardStats": "Aggregate metrics computed from MarketCreated, MarketResolved, MarketRefunded, Bought, Sold, and CreatorFeeClaimed events",
+      "creatorMarkets": "Full market details derived from MarketCreated + status events (Resolved/Refunded) + trading activity",
       "volumeChartData": "Time-series volume data aggregated from Bought and Sold events across all creator's markets",
       "wizardDraft": "Transient state for 5-step market creation wizard, persisted locally until submission"
     },
     "eventFlows": [
-      "MarketCreated initiates a new market in pending status with LiquidityDeposited for initial funds",
-      "MarketApproved or MarketRejected follows MarketCreated after quality review",
-      "Once MarketApproved, Bought and Sold events accumulate volume and generate creator fees",
+      "MarketCreated initiates a new market in active status with LiquidityDeposited for initial funds",
+      "Bought and Sold events accumulate volume and generate creator fees",
       "MarketResolved closes the market and enables CreatorFeeClaimed",
-      "MarketCancelled can occur anytime before resolution, returning funds"
+      "MarketRefunded occurs when oracle does not attest in time, returning funds"
     ]
   },
   "dashboardStats": {
-    "activeMarketsCount": 3,
+    "activeMarketsCount": 4,
     "resolvedMarketsCount": 2,
-    "pendingMarketsCount": 1,
-    "rejectedMarketsCount": 1,
-    "cancelledMarketsCount": 1,
+    "refundedMarketsCount": 1,
     "totalVolumeSats": 1583100,
     "totalFeesEarnedSats": 30512,
     "totalFeesClaimedSats": 17842,
@@ -44,7 +39,7 @@
       "imageUrl": "/images/markets/bitcoin-150k.jpg",
       "type": "yesno",
       "categoryTags": ["crypto", "finance"],
-      "status": "approved",
+      "status": "active",
       "currentOdds": {
         "yes": 58.3,
         "no": 41.7
@@ -53,7 +48,6 @@
       "liquidity": 250000,
       "traderCount": 1234,
       "createdDate": "2025-10-15T10:30:00Z",
-      "approvedDate": "2025-10-15T14:20:00Z",
       "closingDate": "2026-12-31T23:59:59Z",
       "creatorFeePercent": 2.0,
       "feesEarnedSats": 16950,
@@ -70,7 +64,7 @@
       "imageUrl": "/images/markets/gpt5-release.jpg",
       "type": "yesno",
       "categoryTags": ["technology"],
-      "status": "approved",
+      "status": "active",
       "currentOdds": {
         "yes": 72.1,
         "no": 27.9
@@ -79,7 +73,6 @@
       "liquidity": 120000,
       "traderCount": 567,
       "createdDate": "2025-11-20T08:15:00Z",
-      "approvedDate": "2025-11-20T10:45:00Z",
       "closingDate": "2026-12-31T23:59:59Z",
       "creatorFeePercent": 1.5,
       "feesEarnedSats": 6348,
@@ -108,7 +101,6 @@
       "liquidity": 80000,
       "traderCount": 892,
       "createdDate": "2025-06-10T14:00:00Z",
-      "approvedDate": "2025-06-10T16:30:00Z",
       "closingDate": "2026-07-19T23:59:59Z",
       "resolvedDate": "2026-07-19T23:30:00Z",
       "winningOutcomeId": "france",
@@ -135,7 +127,6 @@
       "liquidity": 45000,
       "traderCount": 234,
       "createdDate": "2025-08-20T11:00:00Z",
-      "approvedDate": "2025-08-20T12:30:00Z",
       "closingDate": "2026-12-31T23:59:59Z",
       "resolvedDate": "2026-12-28T18:00:00Z",
       "winningOutcomeId": "yes",
@@ -153,7 +144,7 @@
       "imageUrl": "/images/markets/eth-staking-yield.jpg",
       "type": "yesno",
       "categoryTags": ["crypto"],
-      "status": "pending",
+      "status": "active",
       "currentOdds": {
         "yes": 50,
         "no": 50
@@ -171,37 +162,13 @@
       ]
     },
     {
-      "id": "mkt-creator-006",
-      "title": "Something will happen in the future regarding blockchain technology and its adoption across various industries and governments worldwide including potential regulatory frameworks",
-      "description": "This market is intentionally vague to test rejection handling.",
-      "imageUrl": "/images/markets/vague-blockchain.jpg",
-      "type": "yesno",
-      "categoryTags": ["crypto", "technology"],
-      "status": "rejected",
-      "currentOdds": {
-        "yes": 50,
-        "no": 50
-      },
-      "volume": 0,
-      "liquidity": 0,
-      "traderCount": 0,
-      "createdDate": "2026-01-08T16:00:00Z",
-      "rejectedDate": "2026-01-08T17:30:00Z",
-      "rejectionReason": "Market question is too vague and lacks clear, objective resolution criteria. Please specify a concrete, measurable outcome with verifiable sources.",
-      "closingDate": "2026-12-31T23:59:59Z",
-      "creatorFeePercent": 2.5,
-      "feesEarnedSats": 0,
-      "feesClaimedSats": 0,
-      "answerUrls": []
-    },
-    {
       "id": "mkt-creator-007",
       "title": "Will the Fed cut rates in January 2026?",
       "description": "This market resolves YES if the Federal Reserve announces a rate cut at their January 2026 FOMC meeting.",
       "imageUrl": "/images/markets/fed-rate-cut.jpg",
       "type": "yesno",
       "categoryTags": ["finance"],
-      "status": "cancelled",
+      "status": "refunded",
       "currentOdds": {
         "yes": 35.2,
         "no": 64.8
@@ -210,9 +177,7 @@
       "liquidity": 25000,
       "traderCount": 45,
       "createdDate": "2025-12-01T10:00:00Z",
-      "approvedDate": "2025-12-01T11:15:00Z",
-      "cancelledDate": "2025-12-15T14:30:00Z",
-      "cancellationReason": "Market creator requested cancellation due to duplicate market already existing",
+      "refundedDate": "2025-12-15T14:30:00Z",
       "closingDate": "2026-01-31T23:59:59Z",
       "creatorFeePercent": 1.5,
       "feesEarnedSats": 184,
@@ -229,7 +194,7 @@
       "imageUrl": "/images/markets/exoplanets-count.jpg",
       "type": "categorical",
       "categoryTags": ["science"],
-      "status": "approved",
+      "status": "active",
       "outcomes": [
         { "id": "under-5500", "label": "Under 5,500", "odds": 8.2 },
         { "id": "5500-5750", "label": "5,500 - 5,750", "odds": 24.5 },
@@ -241,7 +206,6 @@
       "liquidity": 30000,
       "traderCount": 78,
       "createdDate": "2026-01-10T08:30:00Z",
-      "approvedDate": "2026-01-10T09:45:00Z",
       "closingDate": "2026-12-31T23:59:59Z",
       "creatorFeePercent": 2.0,
       "feesEarnedSats": 900,
@@ -383,7 +347,7 @@
   "pagination": {
     "currentPage": 1,
     "pageSize": 10,
-    "totalItems": 8,
+    "totalItems": 7,
     "totalPages": 1
   },
   "activeTab": "overview",

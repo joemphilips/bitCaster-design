@@ -20,17 +20,11 @@ Withdrawal finalized and sats successfully sent to user's external wallet.
 ### MarketCreated
 User creates a new prediction market. Contains market question, outcomes, resolution date, fee structure, and other parameters.
 
-### MarketApproved
-Market passes quality controls and goes live for trading. All markets must be approved before trading begins.
-
-### MarketRejected
-Market fails quality controls and is rejected. Contains rejection reason.
-
 ### MarketResolved
 Outcome determined and market closed. Contains the winning outcome and resolution details.
 
-### MarketCancelled
-Market cancelled before resolution. Funds returned to participants.
+### MarketRefunded
+Oracle did not attest an outcome in time. All participants are refunded.
 
 ### Bought
 User buys shares/positions in a market outcome. Contains market identifier, outcome, amount of sats, and number of shares purchased.
@@ -55,11 +49,11 @@ User posts a comment on a market. Contains market identifier, user identifier, a
 
 ## Event Flows
 
-- When **MarketCreated** occurs, it must go through **MarketApproved** or **MarketRejected** before trading begins
-- **MarketApproved** enables **Bought**, **Sold**, and **LiquidityDeposited** events for that market
+- When **MarketCreated** occurs, the market is immediately active for trading
+- **Bought**, **Sold**, and **LiquidityDeposited** events occur during active market trading
 - **LiquidityDeposited** can occur anytime during a market's active period (not just at creation)
-- **Bought** and **Sold** events occur during active market trading
 - When **MarketResolved** occurs, it enables **PayoutClaimed** and **CreatorFeeClaimed** events
+- **MarketRefunded** occurs when the oracle does not attest in time, returning funds to participants
 - **WithdrawalRequested** leads to **WithdrawalCompleted**
 - **DepositReceived** increases user's available balance for trading and withdrawals
-- **MarketLiked** and **CommentPosted** can occur on any approved market (after **MarketApproved**)
+- **MarketLiked** and **CommentPosted** can occur on any active market

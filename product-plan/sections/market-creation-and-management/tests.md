@@ -48,7 +48,7 @@ Test the creator dashboard: stats, market list, volume analytics, and the 5-step
 
 ## Edge Cases
 - Market with very long title truncates correctly in MarketRow
-- All market statuses display correctly: pending, approved, rejected, resolved, cancelled
+- All market statuses display correctly: active, resolved, refunded
 - Pagination with many markets shows correct page range
 - Categorical outcome probabilities normalize automatically
 

@@ -12,7 +12,7 @@ Dashboard for market creators to manage their prediction markets. Includes tabbe
 
 ## Data Used
 **Entities:** DashboardStats, CreatorMarket, VolumeChartData, MarketVolumeData, WizardDraft, PaginationState
-**From global model:** MarketCreated, MarketApproved, MarketRejected, MarketResolved, MarketCancelled, CreatorFeeClaimed
+**From global model:** MarketCreated, MarketResolved, MarketRefunded, CreatorFeeClaimed
 
 ## Components Provided
 - `MarketCreationDashboard` — Main tabbed container

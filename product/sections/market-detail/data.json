@@ -14,7 +14,7 @@
     "traderCount": 342,
     "closingDate": "2025-12-31T23:59:59Z",
     "createdDate": "2024-06-15T10:30:00Z",
-    "approvedDate": "2024-06-15T14:22:00Z",
+    "activeSince": "2024-06-15T14:22:00Z",
     "likeCount": 89,
     "isLiked": false,
     "creator": {
@@ -99,7 +99,7 @@
     "traderCount": 567,
     "closingDate": "2025-02-09T23:30:00Z",
     "createdDate": "2024-09-01T12:00:00Z",
-    "approvedDate": "2024-09-01T15:30:00Z",
+    "activeSince": "2024-09-01T15:30:00Z",
     "likeCount": 156,
     "isLiked": true,
     "creator": {
@@ -192,7 +192,7 @@
     "traderCount": 891,
     "closingDate": "2025-01-15T23:59:59Z",
     "createdDate": "2024-03-01T08:00:00Z",
-    "approvedDate": "2024-03-01T10:30:00Z",
+    "activeSince": "2024-03-01T10:30:00Z",
     "likeCount": 214,
     "isLiked": true,
     "creator": {
@@ -275,7 +275,7 @@
     "traderCount": 267,
     "closingDate": "2027-12-31T23:59:59Z",
     "createdDate": "2025-06-10T09:00:00Z",
-    "approvedDate": "2025-06-10T12:15:00Z",
+    "activeSince": "2025-06-10T12:15:00Z",
     "likeCount": 73,
     "isLiked": false,
     "creator": {
@@ -411,7 +411,7 @@
     "traderCount": 412,
     "closingDate": "2028-12-31T23:59:59Z",
     "createdDate": "2025-09-01T10:00:00Z",
-    "approvedDate": "2025-09-01T14:00:00Z",
+    "activeSince": "2025-09-01T14:00:00Z",
     "likeCount": 118,
     "isLiked": false,
     "creator": {
