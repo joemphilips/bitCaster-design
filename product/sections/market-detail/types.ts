@@ -134,6 +134,7 @@ interface BaseMarketDetail {
   activeSince: string
   likeCount: number
   isLiked: boolean
+  baseUnit: string // e.g. "sats", "USD", "¢"
   creator: MarketCreator
   resolution: ResolutionDetails
   priceHistory: PriceHistory
@@ -194,9 +195,9 @@ export type TradeSide = 'buy' | 'sell'
 export type OrderType = 'market' | 'limit'
 
 export interface LimitOrderPreview {
-  limitPrice: number        // 1-99 (%)
+  limitPrice: number        // in market's base unit (e.g. sats)
   amount: number            // sats
-  sharesIfFilled: number    // amount / (limitPrice/100)
+  sharesIfFilled: number    // amount * 10000 / limitPrice (assumes 10000 sats per full share)
   creatorFee: number
   platformFee: number
   totalCost: number
@@ -317,9 +318,12 @@ export interface MarketDetailProps {
   /** Preview for limit orders (null if not applicable) */
   limitOrderPreview?: LimitOrderPreview | null
 
-  /** Current limit price (1-99%) */
+  /** Current limit price (in market's base unit) */
   limitPrice?: number
 
   /** Called when user changes limit price */
   onLimitPriceChange?: (price: number) => void
+
+  /** Number of shares the user currently holds (for sell percentage calculation) */
+  userHoldings?: number
 }

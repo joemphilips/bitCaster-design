@@ -92,6 +92,7 @@ export function MarketDetail({
   onTradeSideChange,
   onOrderTypeChange,
   onLimitPriceChange,
+  userHoldings,
 }: MarketDetailProps) {
   // Get outcomes for categorical markets
   const outcomes = market.type === 'categorical' ? market.outcomes : undefined
@@ -158,6 +159,7 @@ export function MarketDetail({
                   onTradeSideChange={onTradeSideChange}
                   onOrderTypeChange={onOrderTypeChange}
                   onLimitPriceChange={onLimitPriceChange}
+                  userHoldings={userHoldings}
                 />
               </div>
             )}
@@ -229,6 +231,7 @@ export function MarketDetail({
                   onTradeSideChange={onTradeSideChange}
                   onOrderTypeChange={onOrderTypeChange}
                   onLimitPriceChange={onLimitPriceChange}
+                  userHoldings={userHoldings}
                 />
               </div>
             </div>

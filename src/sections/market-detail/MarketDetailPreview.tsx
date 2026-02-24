@@ -35,7 +35,8 @@ export function MarketDetailPreview() {
   const [fixedDimension, setFixedDimension] = useState<FixedDimension | null>(null)
   const [tradeSide, setTradeSide] = useState<TradeSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
-  const [limitPrice, setLimitPrice] = useState<number>(50)
+  const [limitPrice, setLimitPrice] = useState<number>(6500)
+  const userHoldings = 1000 // Mock: user holds 1000 shares
 
   // Get the selected market data
   const market = data[selectedMarketKey] as unknown as MarketDetailType
@@ -59,7 +60,7 @@ export function MarketDetailPreview() {
       ? {
           limitPrice,
           amount: tradeAmount,
-          sharesIfFilled: Math.round(tradeAmount / (limitPrice / 100)),
+          sharesIfFilled: Math.round(tradeAmount * 10000 / limitPrice),
           creatorFee: Math.round(tradeAmount * (market.creator.feePercent / 100)),
           platformFee: 0,
           totalCost: tradeAmount,
@@ -85,7 +86,7 @@ export function MarketDetailPreview() {
                   setFixedDimension(null)
                   setTradeSide('buy')
                   setOrderType('market')
-                  setLimitPrice(50)
+                  setLimitPrice(6500)
                 }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   selectedMarketKey === key
@@ -112,6 +113,7 @@ export function MarketDetailPreview() {
         orderType={orderType}
         limitOrderPreview={limitOrderPreview}
         limitPrice={limitPrice}
+        userHoldings={userHoldings}
         onTradeSideChange={(side) => {
           console.log('Trade side changed:', side)
           setTradeSide(side)

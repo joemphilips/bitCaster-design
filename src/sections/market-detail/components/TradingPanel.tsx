@@ -22,6 +22,7 @@ interface TradingPanelProps {
   orderType: OrderType
   limitOrderPreview?: LimitOrderPreview | null
   limitPrice?: number
+  userHoldings?: number
   onTradeSelect?: (selection: TradeSelection) => void
   onTradeClear?: () => void
   onAmountChange?: (amount: number) => void
@@ -33,6 +34,7 @@ interface TradingPanelProps {
 }
 
 const QUICK_AMOUNTS = [100, 500, 1000, 5000]
+const QUICK_SELL_PERCENTAGES = [25, 50, 75, 100]
 
 // Custom scrollable container with chevron buttons
 function ScrollableContainer({
@@ -383,7 +385,7 @@ function BuySellToggle({
         onClick={() => onTradeSideChange?.('buy')}
         className={`py-2.5 text-sm font-semibold transition-colors border-b-2 ${
           tradeSide === 'buy'
-            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500'
+            ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white'
             : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300'
         }`}
       >
@@ -393,7 +395,7 @@ function BuySellToggle({
         onClick={() => onTradeSideChange?.('sell')}
         className={`py-2.5 text-sm font-semibold transition-colors border-b-2 ${
           tradeSide === 'sell'
-            ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500'
+            ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white'
             : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300'
         }`}
       >
@@ -438,9 +440,11 @@ function MarketLimitToggle({
 
 function LimitPriceInput({
   limitPrice,
+  baseUnit,
   onLimitPriceChange,
 }: {
   limitPrice: number
+  baseUnit: string
   onLimitPriceChange?: (price: number) => void
 }) {
   return (
@@ -448,33 +452,20 @@ function LimitPriceInput({
       <label className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2 block">
         Limit Price
       </label>
-      <div className="relative mb-2">
+      <div className="relative">
         <input
           type="number"
           value={limitPrice}
           onChange={(e) => {
-            const val = Math.max(1, Math.min(99, Number(e.target.value)))
+            const val = Math.max(1, Number(e.target.value))
             onLimitPriceChange?.(val)
           }}
           min={1}
-          max={99}
-          className="w-full pr-8 pl-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pr-14 pl-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm">
-          %
+          {baseUnit}
         </span>
-      </div>
-      <input
-        type="range"
-        value={limitPrice}
-        onChange={(e) => onLimitPriceChange?.(Number(e.target.value))}
-        min={1}
-        max={99}
-        className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
-      />
-      <div className="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 mt-1">
-        <span>1%</span>
-        <span>99%</span>
       </div>
     </div>
   )
@@ -483,16 +474,18 @@ function LimitPriceInput({
 function LimitOrderPreviewSection({
   preview,
   feePercent,
+  baseUnit,
 }: {
   preview: LimitOrderPreview
   feePercent: number
+  baseUnit: string
 }) {
   return (
     <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 space-y-2 mb-4">
       <div className="flex justify-between text-sm">
         <span className="text-slate-500 dark:text-slate-400">Limit price</span>
         <span className="font-medium text-slate-600 dark:text-slate-300">
-          {preview.limitPrice}%
+          {preview.limitPrice.toLocaleString()} {baseUnit}
         </span>
       </div>
       <div className="flex justify-between text-sm">
@@ -534,6 +527,7 @@ export function TradingPanel({
   onAmountChange,
   onTradeConfirm,
   onCommentPost,
+  userHoldings,
   onTradeSideChange,
   onOrderTypeChange,
   onLimitPriceChange,
@@ -541,6 +535,7 @@ export function TradingPanel({
   const [tradeComment, setTradeComment] = useState('')
   const isSell = tradeSide === 'sell'
   const isLimit = orderType === 'limit'
+  const baseUnit = market.baseUnit ?? 'sats'
 
   // Build confirm button text
   const getConfirmText = () => {
@@ -602,7 +597,7 @@ export function TradingPanel({
       {/* Trade Form (shown when outcome selected) */}
       {tradeSelection && (
         <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
               {isSell ? 'Shares to sell' : 'Amount (₿)'}
             </span>
@@ -614,12 +609,11 @@ export function TradingPanel({
             </button>
           </div>
 
-          {/* Limit Price Input (shown for limit orders) */}
-          {isLimit && (
-            <LimitPriceInput
-              limitPrice={limitPrice}
-              onLimitPriceChange={onLimitPriceChange}
-            />
+          {/* Balance hint when selling */}
+          {isSell && userHoldings != null && (
+            <p className="text-xs text-slate-400 dark:text-slate-500 mb-2">
+              Balance: {userHoldings.toLocaleString()} shares
+            </p>
           )}
 
           {/* Amount Input */}
@@ -638,22 +632,50 @@ export function TradingPanel({
             />
           </div>
 
-          {/* Quick Amount Buttons */}
+          {/* Quick Amount / Percentage Buttons */}
           <div className="flex gap-2 mb-4">
-            {QUICK_AMOUNTS.map((amount) => (
-              <button
-                key={amount}
-                onClick={() => onAmountChange?.(amount)}
-                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
-                  tradeAmount === amount
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                }`}
-              >
-                {amount.toLocaleString()}
-              </button>
-            ))}
+            {isSell ? (
+              QUICK_SELL_PERCENTAGES.map((pct) => {
+                const calculatedAmount = userHoldings ? Math.round(userHoldings * pct / 100) : 0
+                return (
+                  <button
+                    key={pct}
+                    onClick={() => onAmountChange?.(calculatedAmount)}
+                    className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
+                      tradeAmount === calculatedAmount && calculatedAmount > 0
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    }`}
+                  >
+                    {pct}%
+                  </button>
+                )
+              })
+            ) : (
+              QUICK_AMOUNTS.map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => onAmountChange?.(amount)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    tradeAmount === amount
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  }`}
+                >
+                  {amount.toLocaleString()}
+                </button>
+              ))
+            )}
           </div>
+
+          {/* Limit Price Input (shown for limit orders, below amount) */}
+          {isLimit && (
+            <LimitPriceInput
+              limitPrice={limitPrice}
+              baseUnit={baseUnit}
+              onLimitPriceChange={onLimitPriceChange}
+            />
+          )}
 
           {/* Market Order Preview */}
           {!isLimit && tradePreview && tradeAmount > 0 && (
@@ -692,6 +714,7 @@ export function TradingPanel({
             <LimitOrderPreviewSection
               preview={limitOrderPreview}
               feePercent={market.creator.feePercent}
+              baseUnit={baseUnit}
             />
           )}
 
@@ -722,11 +745,7 @@ export function TradingPanel({
               }
             }}
             disabled={!tradeAmount || tradeAmount <= 0}
-            className={`w-full py-3 rounded-xl font-semibold transition-colors disabled:cursor-not-allowed ${
-              isSell
-                ? 'bg-red-600 hover:bg-red-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white'
-                : 'bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white'
-            }`}
+            className="w-full py-3 rounded-xl font-semibold transition-colors disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white"
           >
             {getConfirmText()}
           </button>
