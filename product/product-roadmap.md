@@ -2,26 +2,26 @@
 
 ## Sections
 
-### 1. Market Discovery & Trading
-Core marketplace where users browse active prediction markets, view odds, and place trades in real-time.
+### 1. Wallet Setup
+First-time onboarding wizard for creating a new wallet or recovering an existing one from a seed phrase. This is the entry point for all new users and must complete before any other section is accessible.
 
-### 2. Market Creation & Management
-Tools for users to create new prediction markets, configure parameters, set fees, and manage their markets.
+### 2. Market Discovery & Trading
+Core marketplace where users browse active prediction markets, view odds, and place trades in real-time. The default home view after onboarding.
 
-### 3. Portfolio
-Trading dashboard with positions, P/L chart, deposit/withdraw, activity feed, and created markets.
+### 3. Market Detail
+Detailed view of a single prediction market, showing comprehensive market information, trading interface (buy/sell with market and limit orders), order book, price charts, market activity, comments, and related markets.
 
-### 4. Market Detail
-Detailed view of a single prediction market, showing comprehensive market information, trading interface, order book, price charts, market activity, and related markets.
+### 4. Portfolio
+Trading dashboard with positions (active and closed), base ecash funds, P/L chart, activity feed (deposits, withdrawals, trades, payouts), and created markets.
 
-### 5. Settings
-User preferences including base currency, theme, connected mints, and seed phrase backup.
-
-### 6. Wallet Setup
-First-time onboarding wizard for creating a new wallet or recovering an existing one from a seed phrase.
-
-### 7. Market Creation
-Seven-step wizard for creating new prediction markets, starting with oracle announcement check, then market type, basic info, outcomes, fee settings, cost preview, and final review.
-
-### 8. Deposit / Withdraw
+### 5. Deposit / Withdraw
 Modal overlay flows for depositing and withdrawing sats via Ecash or Lightning. Mirrors cashu.me Receive/Send UX with method chooser bottom sheet and method-specific full-screen views.
+
+### 6. Settings
+User preferences including base currency, language, theme, connected Cashu mints, Nostr identity and relays, oracle configuration, and seed phrase backup.
+
+### 7. Market Creation & Management
+Dashboard for market creators to manage their prediction markets. Includes overview with stats and market list, analytics with volume charts, and an Add Market wizard for creating new markets via a 5-step flow. Later phase.
+
+### 8. Market Creation
+Seven-step wizard for creating new prediction markets, accessed from the Market Creation & Management dashboard. Starts with oracle announcement check, then market type, basic info, outcomes, fee settings, cost preview, and final review. Later phase.
