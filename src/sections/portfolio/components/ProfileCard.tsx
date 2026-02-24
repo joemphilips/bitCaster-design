@@ -1,12 +1,14 @@
 import type { UserProfile } from '@/../product/sections/portfolio/types'
 import { Camera, Eye } from 'lucide-react'
+import { formatBtc } from '@/lib/format'
 
 interface ProfileCardProps {
   profile: UserProfile
+  totalBalanceSats: number
   onAvatarUpload?: (file: File) => void
 }
 
-export function ProfileCard({ profile, onAvatarUpload }: ProfileCardProps) {
+export function ProfileCard({ profile, totalBalanceSats, onAvatarUpload }: ProfileCardProps) {
   const joinedDate = new Date(profile.registeredDate).toLocaleDateString('en-US', {
     month: 'short',
     year: 'numeric',
@@ -59,6 +61,14 @@ export function ProfileCard({ profile, onAvatarUpload }: ProfileCardProps) {
         <div className="flex items-center gap-1 mt-0.5 text-xs text-slate-400 dark:text-slate-500">
           <Eye className="w-3 h-3" />
           <span>{profile.viewCount.toLocaleString()} views</span>
+        </div>
+
+        {/* Total Balance */}
+        <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+          <div className="text-xs text-slate-500 dark:text-slate-400">Total Balance</div>
+          <div className="text-lg font-bold font-mono text-slate-900 dark:text-white">
+            {formatBtc(totalBalanceSats)}
+          </div>
         </div>
       </div>
     </div>

@@ -24,14 +24,14 @@ export function PortfolioPreview() {
     selectedTimeRange,
     profile: data.profile as PortfolioProps['profile'],
     plChartData: data.plChartData as PortfolioProps['plChartData'],
-    stats: data.stats as PortfolioProps['stats'],
+    totalBalanceSats: data.totalBalanceSats,
     positions: data.positions as PortfolioProps['positions'],
+    funds: data.funds as PortfolioProps['funds'],
     activity: data.activity as PortfolioProps['activity'],
     createdMarkets: data.createdMarkets as PortfolioProps['createdMarkets'],
     positionsTab,
     onGetStarted: () => {
-      console.log('Get Started clicked')
-      setWalletState('ready')
+      alert('Navigate to Wallet Setup')
     },
     onAvatarUpload: (file) => {
       console.log('Avatar upload:', file.name)
@@ -61,6 +61,9 @@ export function PortfolioPreview() {
     onViewActivity: (activityId) => {
       console.log('View activity:', activityId)
     },
+    onViewFund: (fundId) => {
+      console.log('View fund:', fundId)
+    },
     onPositionsTabChange: (tab) => {
       console.log('Positions tab changed:', tab)
       setPositionsTab(tab)
@@ -88,7 +91,10 @@ export function PortfolioPreview() {
               Preview:
             </span>
             <button
-              onClick={() => setWalletState('none')}
+              onClick={() => {
+                alert('Navigate to Wallet Setup')
+                setWalletState('none')
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 walletState === 'none'
                   ? 'bg-blue-600 text-white'

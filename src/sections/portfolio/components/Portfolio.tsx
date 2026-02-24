@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import type { PortfolioProps } from '@/../product/sections/portfolio/types'
-import { Settings } from 'lucide-react'
+import { Settings, ChevronDown } from 'lucide-react'
 import { ProfileCard } from './ProfileCard'
 import { PLChart } from './PLChart'
-import { StatsRow } from './StatsRow'
 import { PositionsList } from './PositionsList'
+import { FundsList } from './FundsList'
 import { ActivityFeed } from './ActivityFeed'
 import { MyMarkets } from './MyMarkets'
 
-type MainTab = 'positions' | 'activity'
+type MainTab = 'positions' | 'funds'
 
 export function Portfolio(props: PortfolioProps) {
   const [mainTab, setMainTab] = useState<MainTab>('positions')
+  const [activityOpen, setActivityOpen] = useState(false)
 
   // No-wallet CTA state
   if (props.walletState === 'none') {
@@ -55,6 +56,7 @@ export function Portfolio(props: PortfolioProps) {
           {/* Left: Profile */}
           <ProfileCard
             profile={props.profile}
+            totalBalanceSats={props.totalBalanceSats}
             onAvatarUpload={props.onAvatarUpload}
           />
 
@@ -66,9 +68,6 @@ export function Portfolio(props: PortfolioProps) {
           />
         </div>
       </div>
-
-      {/* Stats Row */}
-      <StatsRow stats={props.stats} />
 
       {/* Deposit / Withdraw Buttons */}
       <div className="grid grid-cols-2 gap-3">
@@ -86,10 +85,10 @@ export function Portfolio(props: PortfolioProps) {
         </button>
       </div>
 
-      {/* Main Tabs: Positions | Activity */}
+      {/* Main Tabs: Positions | Funds */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
         <div className="flex border-b border-slate-200 dark:border-slate-700">
-          {(['positions', 'activity'] as const).map((tab) => (
+          {(['positions', 'funds'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setMainTab(tab)}
@@ -118,12 +117,34 @@ export function Portfolio(props: PortfolioProps) {
               onViewPosition={props.onViewPosition}
             />
           ) : (
+            <FundsList
+              funds={props.funds}
+              onViewFund={props.onViewFund}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Activity (Collapsible) */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+        <button
+          onClick={() => setActivityOpen(!activityOpen)}
+          className="w-full flex items-center justify-between p-4 text-left"
+        >
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            Activity ({props.activity.length})
+          </h3>
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${activityOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {activityOpen && (
+          <div className="px-4 pb-4">
             <ActivityFeed
               activity={props.activity}
               onViewActivity={props.onViewActivity}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* My Markets (Collapsible) */}
