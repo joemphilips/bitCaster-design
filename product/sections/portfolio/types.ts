@@ -36,16 +36,6 @@ export interface UserProfile {
 }
 
 // =============================================================================
-// Portfolio Stats Types
-// =============================================================================
-
-export interface PortfolioStats {
-  positionsValueSats: number
-  biggestWinSats: number
-  predictionsCount: number
-}
-
-// =============================================================================
 // Position Types
 // =============================================================================
 
@@ -69,6 +59,18 @@ export interface Position {
   status: PositionStatus
   closedDate?: string
   acquiredDate: string
+  mintUrl: string
+}
+
+// =============================================================================
+// Fund Types (base ecash assets)
+// =============================================================================
+
+export interface Fund {
+  id: string
+  unit: 'sats' | 'usd'
+  amount: number
+  mintUrl: string
 }
 
 // =============================================================================
@@ -131,11 +133,14 @@ export interface PortfolioProps {
   /** P/L chart data for each time range */
   plChartData: PLChartData
 
-  /** Portfolio statistics */
-  stats: PortfolioStats
+  /** Total balance in sats (positions + funds) */
+  totalBalanceSats: number
 
   /** User's positions in markets */
   positions: Position[]
+
+  /** User's base ecash funds (non-position tokens) */
+  funds: Fund[]
 
   /** Activity feed (deposits, withdrawals, trades, payouts, fees) */
   activity: ActivityItem[]
@@ -181,6 +186,9 @@ export interface PortfolioProps {
 
   /** Called when user claims payout from a winning position */
   onClaimPayout?: (positionId: string) => void
+
+  /** Called when user clicks to view fund details */
+  onViewFund?: (fundId: string) => void
 
   /** Called when user opens Settings */
   onOpenSettings?: () => void

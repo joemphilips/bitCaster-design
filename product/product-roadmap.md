@@ -22,3 +22,6 @@ First-time onboarding wizard for creating a new wallet or recovering an existing
 
 ### 7. Market Creation
 Seven-step wizard for creating new prediction markets, starting with oracle announcement check, then market type, basic info, outcomes, fee settings, cost preview, and final review.
+
+### 8. Deposit / Withdraw
+Modal overlay flows for depositing and withdrawing sats via Ecash or Lightning. Mirrors cashu.me Receive/Send UX with method chooser bottom sheet and method-specific full-screen views.
