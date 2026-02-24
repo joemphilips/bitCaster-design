@@ -4,60 +4,102 @@ Core entities that describe the bitCaster domain. Each entity maps to TypeScript
 
 ---
 
-## Market
+## Condition
 
-A prediction market with outcomes, odds, and resolution criteria.
+A prediction question with defined outcomes, registered on a NUT-CTF compliant mint. This is the protocol-level entity — all static market data comes from the mint's `GET /v1/conditions/{condition_id}` endpoint.
 
 | Field | Type | Description |
 |---|---|---|
-| id | string | Unique identifier |
-| title | string | Market question |
-| type | `yesno` \| `categorical` \| `twodimensional` | Outcome structure |
-| imageUrl | string | Thumbnail image |
-| categoryTags | string[] | Category labels |
-| metaTags | string[] | Meta labels (Trending, Popular, New) |
-| volume | number | Total traded volume in sats |
-| liquidity | number | Current liquidity in sats |
-| traderCount | number | Number of unique traders |
-| closingDate | string | When trading closes (ISO 8601) |
-| createdDate | string | When the market was created |
-| activeSince | string | When the market became active |
+| condition_id | hex string (32 bytes) | Unique identifier computed from oracle announcements (tagged hash) |
+| threshold | number | Minimum oracles required for attestation (default: 1) |
+| description | string | Human-readable condition description |
+| announcements | hex string[] | DLC oracle announcement TLV bytes |
+| keysets | Record<string, string> | Map of outcome collection → keyset ID |
+| partitions | Partition[] | Registered partitions (see below) |
+| attestation | Attestation? | Oracle attestation state (see below) |
+
+### Partition (nested)
+
+| Field | Type | Description |
+|---|---|---|
+| partition | string[] | Outcome collection grouping (e.g. `["YES", "NO"]`) |
+| collateral | string | Unit string (`"sat"`) or parent outcome_collection_id |
+| parent_collection_id | hex string | Parent collection for combinatorial markets (zero bytes for root) |
+
+### Attestation (nested)
+
+| Field | Type | Description |
+|---|---|---|
+| status | `pending` \| `attested` \| `expired` \| `violation` | Resolution state |
+| winning_outcome | string? | Attested outcome (null if pending) |
+| attested_at | number? | Unix timestamp of attestation (null if pending) |
+
+**Source:** NUT-CTF spec `Condition Info` (`GET /v1/conditions/{condition_id}`)
+
+---
+
+## Market
+
+A tradeable view of a Condition — combines protocol-level data from the mint with real-time trade data from the matching engine.
+
+| Field | Type | Description |
+|---|---|---|
+| id | string | Display identifier (maps to `condition_id`) |
+| condition | Condition | The underlying NUT-CTF condition (from mint) |
+| type | `yesno` \| `categorical` \| `twodimensional` | UI display type (derived from condition's outcomes) |
+| imageUrl | string | Thumbnail image (matching engine metadata) |
+| categoryTags | string[] | Category labels (matching engine metadata) |
+| metaTags | string[] | Meta labels — Trending, Popular, New (matching engine) |
+| volume | number | Total traded volume in sats (matching engine) |
+| liquidity | number | Current liquidity in sats (matching engine) |
+| traderCount | number | Number of unique traders (matching engine) |
+| currentOdds | CurrentOdds | Live odds derived from order book (matching engine) |
 | creatorFeePercent | number | Fee taken by the market creator |
 | baseMarket | string | `"sats"` for base markets, or a Market ID for 2D markets |
 
-**Source:** `market-discovery-and-trading/types.ts` (BaseMarket, YesNoMarket, CategoricalMarket, TwoDimensionalMarket)
+> **Design principle:** Static data (description, outcomes, closing date, resolution) lives in the Condition and comes from the mint. The matching engine only provides real-time trade data (volume, liquidity, odds, trader count) and display metadata (image, tags). Keep the matching engine as thin as possible.
+
+**Source:** `market-discovery-and-trading/types.ts` (BaseMarket), NUT-CTF `Condition Info`
 
 ---
 
 ## Outcome
 
-A possible result within a market (Yes/No or categorical).
+A possible result within a condition. Maps to a NUT-CTF **outcome collection** — a single outcome or an OR-combination of outcomes that share a conditional keyset.
 
 | Field | Type | Description |
 |---|---|---|
-| id | string | Unique identifier |
+| outcome_collection | string | Outcome collection string (e.g. `"YES"`, `"ALICE\|BOB"`) |
+| outcome_collection_id | hex string | 32-byte unique identifier (from NUT-CTF) |
+| keyset_id | string | Conditional keyset ID for this outcome collection |
 | label | string | Display name (e.g. "Yes", "No", "Trump") |
-| odds | number | Current odds (0–100) |
+| odds | number | Current odds (0–100, from matching engine) |
 
-**Source:** `market-discovery-and-trading/types.ts` (Outcome)
+> **Note:** `outcome_collection`, `outcome_collection_id`, and `keyset_id` come from the mint (NUT-CTF). `label` is a display-friendly version of the outcome collection string. `odds` is real-time data from the matching engine.
+
+**Source:** NUT-CTF spec (outcome collections, conditional keysets), `market-discovery-and-trading/types.ts` (Outcome)
 
 ---
 
 ## Position
 
-A user's stake on a specific outcome — shares held, entry price, and current P/L.
+A user's stake on a specific outcome — reconstructed from locally held Cashu conditional tokens and condition data from the mint.
+
+Each Position maps 1:1 to a set of conditional ecash tokens the user holds for a given outcome collection. It is **not stored server-side** — the wallet reconstructs it by combining:
+1. **Condition info** downloaded from the mint (`GET /v1/conditions/{condition_id}`)
+2. **Ecash tokens** held locally in the wallet (conditional proofs signed under the outcome collection's keyset)
 
 | Field | Type | Description |
 |---|---|---|
-| id | string | Unique identifier |
-| marketId | string | Market this position belongs to |
-| marketTitle | string | Market question (denormalized for display) |
+| id | string | Derived identifier (e.g. `condition_id:outcome_collection_id`) |
+| condition_id | hex string | The NUT-CTF condition this position belongs to |
+| outcome_collection_id | hex string | The outcome collection the tokens are locked to |
+| marketTitle | string | Market question (from condition description) |
 | side | `yes` \| `no` | Which side the user holds |
-| outcomeId | string? | Outcome ID (categorical markets) |
 | outcomeLabel | string? | Outcome label (categorical markets) |
-| shares | number | Number of shares held |
-| avgBuyPrice | number | Average entry price |
-| currentPrice | number | Current market price |
+| shares | number | Number of shares (sum of token amounts) |
+| avgBuyPrice | number | Average entry price (tracked locally) |
+| currentPrice | number | Current market price (from matching engine) |
 | currentValueSats | number | Current value in sats |
 | profitLossSats | number | Unrealised P/L in sats |
 | profitLossPercent | number | Unrealised P/L as percentage |
@@ -65,16 +107,17 @@ A user's stake on a specific outcome — shares held, entry price, and current P
 | acquiredDate | string | When the position was opened |
 | mintUrl | string | Mint that issued the conditional tokens |
 
-**Source:** `portfolio/types.ts` (Position)
+**Source:** `portfolio/types.ts` (Position), NUT-CTF conditional tokens
 
 ---
 
 ## Order
 
-A buy or sell order placed on the order book (market or limit).
+A buy or sell order placed on the order book.
 
 | Field | Type | Description |
 |---|---|---|
+| kind | `market` \| `limit` | Order type |
 | price | number | Price level (0–100) |
 | amount | number | Size in sats |
 | total | number | Cumulative amount at this price level |
@@ -194,16 +237,17 @@ A user comment on a market.
 ## Relationships
 
 ```
-Market ──1:N──▸ Outcome
-Market ──1:N──▸ Order       (via OrderBook)
-Market ──1:N──▸ Trade
+Condition ──1:1──▸ Market         (each market wraps one condition)
+Condition ──1:N──▸ Outcome        (outcome collections from partitions)
+Market ──1:N──▸ Order             (via OrderBook, matching engine)
+Market ──1:N──▸ Trade             (matching engine)
 Market ──1:N──▸ Comment
-Outcome ──1:N──▸ Position
-Position ──N:1──▸ Market
-Position ──N:1──▸ Outcome
+Outcome ──1:N──▸ Position         (user holds tokens per outcome collection)
+Position ──N:1──▸ Condition       (via condition_id)
+Position ──N:1──▸ Outcome         (via outcome_collection_id)
 Order ──N:1──▸ Market
 Trade ──N:1──▸ Market
 Fund ──N:1──▸ Mint
-Activity ──N:1──▸ Market    (optional)
-Activity ──N:1──▸ Position  (optional)
+Activity ──N:1──▸ Market          (optional)
+Activity ──N:1──▸ Position        (optional)
 ```
