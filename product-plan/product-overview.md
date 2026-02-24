@@ -49,6 +49,9 @@ First-time onboarding wizard for creating a new wallet or recovering an existing
 ### 7. Market Creation
 Seven-step wizard for creating new prediction markets, starting with oracle announcement check, then market type, basic info, outcomes, fee settings, cost preview, and final review.
 
+### 8. Deposit / Withdraw
+Modal overlay flows for depositing and withdrawing sats via Ecash or Lightning. Features a method chooser bottom sheet, then method-specific full-screen views: Deposit Ecash (Paste/Scan/Request), Deposit Lightning (numpad + CREATE INVOICE), Send Ecash (numpad + SEND), and Pay Lightning (invoice input + QR scan). Includes mint selector with balance display and BTC/fiat currency toggle.
+
 ## Technology Stack
 - **React 19** with **TypeScript** strict mode
 - **Tailwind CSS** for styling (blue/amber/slate color scheme)
@@ -79,10 +82,11 @@ Build this product in milestones:
 1. **Foundation** — Set up design tokens, data model types, routing, and application shell
 2. **Market Discovery & Trading** — Core marketplace with browsing and trading
 3. **Market Creation & Management** — Creator dashboard and market management
-4. **Portfolio** — Personal trading dashboard with positions and activity
+4. **Portfolio** — Personal trading dashboard with positions, funds, and activity
 5. **Market Detail** — Detailed market view with trading panel and charts
 6. **Settings** — User preferences and configuration
 7. **Wallet Setup** — First-time onboarding wizard
 8. **Market Creation** — Seven-step market creation wizard
+9. **Deposit / Withdraw** — Modal overlay flows for depositing and withdrawing sats
 
 Each milestone has a dedicated instruction document in `instructions/incremental/`.

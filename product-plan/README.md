@@ -11,13 +11,13 @@ This folder contains everything needed to implement bitCaster, a Bitcoin-native 
 **Instructions:**
 - `product-overview.md` — Product summary (provide with every implementation)
 - `instructions/one-shot-instructions.md` — All milestones combined for full implementation
-- `instructions/incremental/` — 8 milestone instructions (foundation + 7 sections)
+- `instructions/incremental/` — 9 milestone instructions (foundation + 8 sections)
 
 **Design Assets:**
 - `design-system/` — Colors, fonts, design tokens
 - `event-model/` — Domain events and entity relationships
 - `shell/` — Application shell components (navigation, layout)
-- `sections/` — 7 section component packages with test instructions
+- `sections/` — 8 section component packages with test instructions
 
 ## How to Use This
 
@@ -43,6 +43,7 @@ Build your app milestone by milestone for better control:
 6. `06-settings.md` — User preferences and configuration
 7. `07-wallet-setup.md` — First-time onboarding wizard
 8. `08-market-creation.md` — Seven-step market creation wizard
+9. `09-deposit-withdraw.md` — Deposit/withdraw modal flows
 
 ### Option B: One-Shot
 
@@ -72,11 +73,12 @@ The test instructions are **framework-agnostic** — they describe WHAT to test,
 |---------|-------------|----------------|
 | **Market Discovery & Trading** | Core marketplace with tag navigation, filters, inline trading | MarketDiscovery, TagBar, FilterControls, MarketCard |
 | **Market Creation & Management** | Creator dashboard with stats, analytics, market list | MarketCreationDashboard, StatCard, MarketRow, VolumeChart |
-| **Portfolio** | Personal dashboard with positions, P/L chart, activity feed | Portfolio, PLChart, StatsRow, PositionRow, ActivityFeed |
+| **Portfolio** | Personal dashboard with positions, funds, P/L chart, activity | Portfolio, PLChart, PositionRow, FundRow, ActivityFeed |
 | **Market Detail** | Full market view with trading panel, price charts, activity | MarketDetail, MarketHeader, TradingPanel, PriceChart |
 | **Settings** | User preferences in 4 collapsible categories | Settings (General, Cashu, Nostr, Oracle) |
 | **Wallet Setup** | First-time onboarding wizard | WalletSetupWizard, WelcomeLanding, CreateWallet, RecoverWallet |
 | **Market Creation** | 7-step market creation wizard | MarketCreationWizard, OracleCheck, BasicInfo, Outcomes, etc. |
+| **Deposit / Withdraw** | Modal flows for depositing/withdrawing sats | DepositWithdraw, MethodChooser, MintSelector, Numpad, etc. |
 
 ## Technology Notes
 

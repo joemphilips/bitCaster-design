@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "events": {
+      "DepositReceived": "Bitcoin (sats) deposited into user's wallet",
+      "WithdrawalRequested": "User initiates withdrawal of sats",
+      "WithdrawalCompleted": "Withdrawal finalized and sats sent"
+    },
+    "currentState": {
+      "mode": "Whether user opened Deposit or Withdraw",
+      "currentView": "Current step in the deposit/withdraw flow",
+      "mints": "Available Cashu mints with balances",
+      "selectedMintId": "Currently selected mint",
+      "amountSats": "Amount entered via numpad",
+      "amountFiat": "Fiat equivalent of entered amount",
+      "lightningInput": "Lightning address or invoice text"
+    }
+  },
+  "mode": "deposit",
+  "currentView": "chooser",
+  "mints": [
+    {
+      "id": "mint-001",
+      "name": "bitCaster Mint",
+      "url": "https://mint.bitcaster.app",
+      "balanceSats": 4000
+    },
+    {
+      "id": "mint-002",
+      "name": "28MINT",
+      "url": "https://28mint.cash",
+      "balanceSats": 12500
+    }
+  ],
+  "selectedMintId": "mint-001",
+  "amountSats": 0,
+  "amountFiat": "$0.00",
+  "fiatSymbol": "$",
+  "showFiatPrimary": false,
+  "lightningInput": ""
+}

@@ -20,8 +20,9 @@
       "selectedTimeRange": "Currently selected P/L chart time range",
       "profile": "User profile derived from UserRegistered + UserProfileUpdated events",
       "plChartData": "P/L chart data points for each time range",
-      "stats": "Portfolio statistics computed from positions and trades",
+      "totalBalanceSats": "Total balance in sats across all positions and funds",
       "positions": "Active and closed positions derived from Bought, Sold, and MarketResolved events",
+      "funds": "Base ecash assets (non-position tokens) held by the user",
       "activity": "All activity derived from deposits, withdrawals, trades, payouts, and fee claims",
       "createdMarkets": "Markets created by user from MarketCreated and related events"
     }
@@ -73,17 +74,14 @@
       { "timestamp": "2026-01-22T00:00:00Z", "cumulativePL": 234580 }
     ]
   },
-  "stats": {
-    "positionsValueSats": 492190,
-    "biggestWinSats": 86400,
-    "predictionsCount": 8
-  },
+  "totalBalanceSats": 492190,
   "positions": [
     {
       "id": "pos-001",
       "marketId": "mkt-001",
       "marketTitle": "Will Bitcoin reach $100,000 before end of Q2 2026?",
       "marketImageUrl": "/images/markets/bitcoin-100k.jpg",
+      "mintUrl": "https://mint.bitcaster.io",
       "side": "yes",
       "shares": 150,
       "avgBuyPrice": 620,
@@ -99,6 +97,7 @@
       "marketId": "mkt-003",
       "marketTitle": "Will Apple announce AR glasses at WWDC 2026?",
       "marketImageUrl": "/images/markets/apple-ar-glasses.jpg",
+      "mintUrl": "https://testnut.cashu.space",
       "side": "no",
       "shares": 200,
       "avgBuyPrice": 540,
@@ -114,6 +113,7 @@
       "marketId": "mkt-002",
       "marketTitle": "Who will win the 2026 NBA Championship?",
       "marketImageUrl": "/images/markets/nba-championship.jpg",
+      "mintUrl": "https://mint.bitcaster.io",
       "side": "yes",
       "outcomeId": "celtics",
       "outcomeLabel": "Boston Celtics",
@@ -131,6 +131,7 @@
       "marketId": "mkt-007",
       "marketTitle": "Will NASA successfully land Artemis III on the Moon in 2026?",
       "marketImageUrl": "/images/markets/artemis-moon-landing.jpg",
+      "mintUrl": "https://testnut.cashu.space",
       "side": "no",
       "shares": 300,
       "avgBuyPrice": 680,
@@ -146,6 +147,7 @@
       "marketId": "mkt-resolved-001",
       "marketTitle": "Will Ethereum merge to PoS successfully complete by end of 2025?",
       "marketImageUrl": "/images/markets/eth-merge.jpg",
+      "mintUrl": "https://mint.bitcaster.io",
       "side": "yes",
       "shares": 100,
       "avgBuyPrice": 450,
@@ -162,6 +164,7 @@
       "marketId": "mkt-resolved-002",
       "marketTitle": "Will the Fed raise interest rates in December 2025?",
       "marketImageUrl": "/images/markets/fed-rates.jpg",
+      "mintUrl": "https://mint.bitcaster.io",
       "side": "yes",
       "shares": 250,
       "avgBuyPrice": 380,
@@ -178,6 +181,7 @@
       "marketId": "mkt-006",
       "marketTitle": "Ethereum gas price average in February 2026",
       "marketImageUrl": "/images/markets/eth-gas-price.jpg",
+      "mintUrl": "https://testnut.cashu.space",
       "side": "yes",
       "outcomeId": "10-20",
       "outcomeLabel": "10-20 Gwei",
@@ -195,6 +199,7 @@
       "marketId": "mkt-resolved-003",
       "marketTitle": "Will SpaceX Starship complete a successful orbital flight by November 2025?",
       "marketImageUrl": "/images/markets/starship-orbital.jpg",
+      "mintUrl": "https://mint.bitcaster.io",
       "side": "yes",
       "shares": 180,
       "avgBuyPrice": 520,
@@ -205,6 +210,26 @@
       "status": "closed",
       "closedDate": "2025-11-30T23:59:59Z",
       "acquiredDate": "2025-07-15T11:00:00Z"
+    }
+  ],
+  "funds": [
+    {
+      "id": "fund-001",
+      "unit": "sats",
+      "amount": 125000,
+      "mintUrl": "https://mint.bitcaster.io"
+    },
+    {
+      "id": "fund-002",
+      "unit": "sats",
+      "amount": 48000,
+      "mintUrl": "https://testnut.cashu.space"
+    },
+    {
+      "id": "fund-003",
+      "unit": "usd",
+      "amount": 2500,
+      "mintUrl": "https://mint.bitcaster.io"
     }
   ],
   "activity": [

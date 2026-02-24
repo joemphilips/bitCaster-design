@@ -34,27 +34,28 @@
 
 ## Goal
 
-Implement the Portfolio feature — the personal trading dashboard where users track their positions, P/L, activity history, and created markets.
+Implement the Portfolio feature — the personal trading dashboard where users track their positions, funds, P/L, activity history, and created markets.
 
 ## Overview
 
-The Portfolio page has a conditional entry point: users without a connected wallet see a "Get Started" CTA that leads to Wallet Setup; users with a wallet see their full dashboard. The dashboard shows a profile card with an interactive P/L chart, aggregate stats, a tabbed positions list (Active/Closed) with Sell/Claim actions, a chronological activity feed, and a collapsible section listing the user's created markets.
+The Portfolio page has a conditional entry point: users without a connected wallet see a "Get Started" CTA that leads to Wallet Setup; users with a wallet see their full dashboard. The dashboard shows a profile card with an interactive P/L chart, total balance, separate Positions and Funds tabs, a collapsible activity feed, and a collapsible section listing the user's created markets.
 
 **Key Functionality:**
 - Conditional rendering: no-wallet CTA vs. full dashboard
 - Profile card with avatar upload and interactive P/L chart (1D/1W/1M/ALL time ranges)
-- Stats row: Positions Value, Biggest Win, Predictions count
-- Deposit and withdraw sats actions
-- Tabbed positions list (Active with Sell, Closed with Claim Payout)
-- Activity feed showing deposits, withdrawals, trades, payouts, and creator fees
+- Total balance display (positions + funds)
+- Deposit and withdraw sats actions (opens Deposit/Withdraw modal overlay)
+- Positions tab with Active/Closed sub-tabs (Sell/Claim Payout actions)
+- Funds tab showing base ecash assets per mint (sats and USD)
+- Collapsible activity feed showing deposits, withdrawals, trades, payouts, and creator fees
 - Collapsible "My Markets" section linking to market detail and creator dashboard
 
 ## Recommended Approach: Test-Driven Development
 
-See `product-plan/sections/mypage/tests.md` for detailed test instructions (the `mypage` folder contains the prior design; `portfolio` folder contains the updated design).
+See `product-plan/sections/portfolio/tests.md` for detailed test instructions.
 
 **TDD Workflow:**
-1. Read `tests.md` and write failing tests for ProfileCard, PLChart, PositionRow, ActivityFeed, and the no-wallet gate
+1. Read `tests.md` and write failing tests for ProfileCard, PLChart, PositionRow, FundRow, ActivityFeed, and the no-wallet gate
 2. Implement each component to make the tests pass
 3. Refactor while keeping tests green
 
@@ -70,26 +71,26 @@ Copy from `product-plan/sections/portfolio/components/`:
 - `StatsRow` — Three stat cards (Positions Value, Biggest Win, Predictions)
 - `PositionsList` — Tabbed list of positions (Active / Closed)
 - `PositionRow` — Individual position with market title, shares, value, P/L, and Sell/Claim button
-- `ActivityFeed` — Chronological list of activity items
+- `FundsList` — List of base ecash funds grouped by mint
+- `FundRow` — Individual fund row showing unit (Sats/USD), mint hostname, and amount
+- `ActivityFeed` — Chronological list of activity items (collapsible)
 - `MyMarkets` — Collapsible section listing created markets
 - `CreatedMarketRow` — Individual created market with status, volume, fees
 
 ### Data Layer
 
 Key types (see `product-plan/sections/portfolio/types.ts`):
-- `UserProfile`, `PLChartData`, `PortfolioStats`, `Position`, `ActivityItem`, `CreatedMarket`
+- `UserProfile`, `PLChartData`, `Position`, `Fund`, `ActivityItem`, `CreatedMarket`
 
 API endpoints to implement:
 - `GET /portfolio/profile` — user profile and P/L chart data for default time range
 - `GET /portfolio/pl?range=1D|1W|1M|ALL` — P/L time-series data for chart
-- `GET /portfolio/stats` — Positions Value, Biggest Win, Predictions count
 - `GET /portfolio/positions?tab=active|closed` — list of positions
+- `GET /portfolio/funds` — list of base ecash funds per mint
 - `GET /portfolio/activity` — activity feed items
 - `GET /portfolio/markets` — markets created by the user
 - `POST /portfolio/positions/:id/sell` — sell an active position
 - `POST /portfolio/positions/:id/claim` — claim payout on a closed winning position
-- `POST /portfolio/deposit` — initiate deposit (returns Lightning invoice or on-chain address)
-- `POST /portfolio/withdraw` — initiate withdrawal
 - `POST /portfolio/avatar` — upload new avatar image
 
 ### Callbacks
@@ -101,30 +102,45 @@ Wire up these props on the `Portfolio` component:
 | `onGetStarted` | Navigate to `/setup` (Wallet Setup wizard) |
 | `onAvatarUpload` | Upload avatar image file via `POST /portfolio/avatar` |
 | `onTimeRangeChange` | Fetch P/L data for selected range and update chart |
-| `onDeposit` | Open deposit modal or navigate to deposit flow |
-| `onWithdraw` | Open withdraw modal or navigate to withdraw flow |
+| `onDeposit` | Open Deposit/Withdraw modal in deposit mode |
+| `onWithdraw` | Open Deposit/Withdraw modal in withdraw mode |
 | `onSellPosition` | Call sell API for the position, refresh positions list |
+| `onViewPosition` | Navigate to position detail or market detail page |
 | `onClaimPayout` | Call claim API for the position, refresh positions list |
 | `onClaimCreatorFees` | Call creator fees claim API, refresh My Markets section |
+| `onViewFund` | Navigate to fund detail (mint info page) |
 | `onViewMarket` | Navigate to `/markets/:id` |
+| `onViewActivity` | View activity item details |
 | `onPositionsTabChange` | Fetch positions for selected tab (active/closed) |
 | `onOpenSettings` | Navigate to `/settings` |
+
+### Integration with Deposit/Withdraw
+
+The Portfolio's Deposit and Withdraw buttons trigger the Deposit/Withdraw modal overlay (see Milestone 9):
+- `onDeposit` → opens `DepositWithdraw` component with `mode: 'deposit'`, `currentView: 'chooser'`
+- `onWithdraw` → opens `DepositWithdraw` component with `mode: 'withdraw'`, `currentView: 'chooser'`
+
+After a successful deposit or withdrawal, refresh:
+- Total balance
+- Funds list
+- Activity feed
 
 ### Empty States
 
 - No wallet connected: full-screen "Get Started" CTA (rendered by `Portfolio` component automatically)
 - No active positions: "You don't have any open positions yet"
 - No closed positions: "You don't have any closed positions yet"
+- No funds: "No funds"
 - No activity: "No transaction history yet"
 - No created markets: "You haven't created any markets — go to the Creator dashboard to get started"
 
 ## Files to Reference
 
 - `product-plan/sections/portfolio/README.md`
-- `product-plan/sections/mypage/tests.md`
+- `product-plan/sections/portfolio/tests.md`
 - `product-plan/sections/portfolio/components/`
 - `product-plan/sections/portfolio/types.ts`
-- `product-plan/sections/mypage/sample-data.json`
+- `product-plan/sections/portfolio/sample-data.json`
 
 ## Expected User Flows
 
@@ -138,28 +154,35 @@ Wire up these props on the `Portfolio` component:
 2. User clicks "1W" button — chart fetches weekly data and redraws
 3. User clicks "ALL" — full history renders; P/L amount updates to all-time figure
 
+**View Funds:**
+1. User switches to the Funds tab
+2. Fund rows display with unit icon, mint hostname, and formatted amount
+3. User clicks a fund row — navigates to fund/mint details
+
 **Sell a position:**
-1. User expands Positions section, Active tab is shown by default
+1. User opens Positions tab, Active sub-tab shown by default
 2. User sees an active position with Sell button
 3. User clicks Sell — confirmation dialog appears showing current value
 4. User confirms — position moves from Active to Closed, stats update
 
 **Deposit sats:**
 1. User clicks Deposit button in dashboard header
-2. Deposit modal opens with Lightning invoice and QR code
-3. User pays invoice — activity feed gains a "Deposit" entry, balance updates
+2. Deposit/Withdraw modal opens in deposit mode (method chooser)
+3. User selects method and completes deposit flow
+4. Balance, funds, and activity update
 
 ## Done When
 
 - [ ] Tests written and passing
 - [ ] No-wallet gate renders CTA; authenticated user sees dashboard
 - [ ] P/L chart renders with real data and responds to time range selector
-- [ ] Stats row shows real values
+- [ ] Total balance displayed
 - [ ] Active and Closed positions load from API
+- [ ] Funds tab shows base ecash assets per mint
 - [ ] Sell and Claim Payout actions work end-to-end
-- [ ] Activity feed loads chronologically
+- [ ] Activity feed loads chronologically (collapsible)
 - [ ] My Markets section collapses/expands and links correctly
 - [ ] Avatar upload works
-- [ ] Deposit and withdraw flows initiate correctly
+- [ ] Deposit and withdraw trigger Deposit/Withdraw modal
 - [ ] All empty states display properly
 - [ ] Responsive on mobile (single-column layout, stats stack)

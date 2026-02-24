@@ -61,11 +61,12 @@ Bitcoin-native prediction market platform where anyone can create, trade, and mo
 ### Planned Sections
 1. Market Discovery & Trading — Core marketplace for browsing and trading
 2. Market Creation & Management — Creator dashboard and analytics
-3. Portfolio — Personal trading dashboard with positions and P/L
+3. Portfolio — Personal trading dashboard with positions, funds, and P/L
 4. Market Detail — Comprehensive market view with trading panel
 5. Settings — User preferences (currency, theme, mints, Nostr, oracle)
 6. Wallet Setup — First-time onboarding wizard
 7. Market Creation — 7-step market creation wizard
+8. Deposit / Withdraw — Modal overlay flows for depositing/withdrawing sats
 
 ### Design System
 - Primary: blue, Secondary: amber, Neutral: slate, Accent: #f7931a
@@ -75,7 +76,7 @@ Bitcoin-native prediction market platform where anyone can create, trade, and mo
 ### Implementation Sequence
 Build in milestones:
 1. Foundation — Design tokens, data model, routing, shell
-2-8. Each section in order listed above
+2-9. Each section in order listed above
 
 ---
 
@@ -749,6 +750,96 @@ API endpoints:
 
 ---
 
+## Milestone 9: Deposit / Withdraw
+
+> **Prerequisites:** Milestone 4 (Portfolio) complete
+
+### Goal
+
+Implement modal overlay flows for depositing and withdrawing sats via Ecash or Lightning, triggered from the Portfolio section.
+
+### Overview
+
+The Deposit/Withdraw feature is a modal overlay system accessed from the Portfolio's Deposit and Withdraw buttons. It provides two methods for each direction: Ecash and Lightning. The flow starts with a method chooser bottom sheet, then navigates to method-specific full-screen views.
+
+**Key Functionality:**
+- Method chooser bottom sheet (Ecash vs. Lightning)
+- Deposit Ecash: Paste, Scan QR, or Request token
+- Deposit Lightning: Select mint, enter amount via numpad, create invoice
+- Send Ecash: Select mint, enter amount via numpad, send token
+- Pay Lightning: Select mint, enter/paste/scan Lightning address or invoice
+- Mint selector with balance display
+- Currency toggle (BTC/fiat) on amount displays
+- Responsive: bottom sheet on mobile, centered modal on desktop
+
+### Components
+
+Copy from `product-plan/sections/deposit-withdraw/components/`:
+
+- `DepositWithdraw` — Main router component (switches on `currentView`)
+- `MethodChooser` — Bottom sheet with Ecash / Lightning options
+- `DepositEcash` — Paste, Scan, Request actions
+- `DepositLightning` — Full-screen with mint selector, amount numpad, CREATE INVOICE
+- `SendEcash` — Full-screen with mint selector, amount numpad, SEND
+- `PayLightning` — Full-screen with mint selector, invoice/address input, QR scan
+- `MintSelector` — Dropdown showing selected mint name and balance
+- `AmountDisplay` — Large centered amount with BTC/fiat currency toggle
+- `Numpad` — 3×4 numeric keypad for amount entry
+
+### Data Layer
+
+Key types: `DepositWithdrawMode`, `MethodType`, `DepositWithdrawView`, `MintInfo`, `DepositWithdrawProps`
+
+API endpoints:
+- `GET /wallet/mints` — list available mints with balances
+- `POST /wallet/deposit/ecash/paste` — redeem a pasted Cashu token
+- `POST /wallet/deposit/ecash/request` — generate a token request
+- `POST /wallet/deposit/lightning/invoice` — create a Lightning invoice
+- `POST /wallet/withdraw/ecash/send` — create a Cashu token
+- `POST /wallet/withdraw/lightning/pay` — pay a Lightning invoice/address
+
+### Callbacks
+
+| Callback | What to do |
+|----------|------------|
+| `onSelectMethod` | Navigate to method-specific view |
+| `onNumpadPress` | Update amount state |
+| `onMintChange` | Update selected mint |
+| `onToggleCurrency` | Toggle BTC/fiat display |
+| `onCreateInvoice` | Generate Lightning invoice |
+| `onSendEcash` | Create and display Cashu token |
+| `onPaste` | Read clipboard, process token/invoice |
+| `onScan` | Open QR scanner |
+| `onRequest` | Generate token request |
+| `onScanQR` | Open QR scanner for Lightning |
+| `onLightningInputChange` | Update lightning input text |
+| `onBack` | Navigate back to method chooser |
+| `onClose` | Close modal, return to Portfolio |
+| `onToggleFullscreen` | Toggle fullscreen mode |
+
+### Files to Reference
+- `product-plan/sections/deposit-withdraw/README.md`
+- `product-plan/sections/deposit-withdraw/tests.md`
+- `product-plan/sections/deposit-withdraw/components/`
+- `product-plan/sections/deposit-withdraw/types.ts`
+- `product-plan/sections/deposit-withdraw/sample-data.json`
+
+### Done When
+
+- [ ] Tests written and passing
+- [ ] Method chooser renders for both deposit and withdraw modes
+- [ ] Deposit Ecash actions trigger correct callbacks
+- [ ] Deposit Lightning: numpad + CREATE INVOICE functional
+- [ ] Send Ecash: numpad + SEND functional
+- [ ] Pay Lightning: invoice input + QR scan functional
+- [ ] Mint selector with real balances
+- [ ] Currency toggle works
+- [ ] Modal closes and returns to Portfolio
+- [ ] Balance and activity update after operations
+- [ ] Responsive on mobile/desktop
+
+---
+
 ## Final Verification Checklist
 
 After completing all milestones:
@@ -759,6 +850,8 @@ After completing all milestones:
 - [ ] Market Discovery shows all three market types
 - [ ] Inline trading works on market cards
 - [ ] Portfolio conditional entry (no-wallet CTA vs. dashboard) works
+- [ ] Portfolio Funds tab shows base ecash assets per mint
+- [ ] Deposit/Withdraw modal flows work from Portfolio buttons
 - [ ] Market Detail displays all sections for all market types
 - [ ] Trading panel functional with Buy/Sell and Market/Limit toggles
 - [ ] Charts render with data and all interactive features
