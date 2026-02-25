@@ -13,7 +13,11 @@
       "SetupMintAdded": "User adds a mint URL during setup",
       "SetupMintRemoved": "User removes a mint URL during setup",
       "MintConnectionTested": "Connection test result for a mint URL",
-      "WalletSetupCompleted": "User completes wallet setup and navigates to Portfolio"
+      "WalletSetupCompleted": "User completes wallet setup and navigates to Portfolio",
+      "BackgroundDataLoadStarted": "App begins downloading conditions from hard-coded mint",
+      "BackgroundDataLoadProgress": "Conditions loading progress update",
+      "BackgroundDataLoadCompleted": "All conditions downloaded from mint",
+      "BackgroundDataLoadFailed": "Failed to download conditions from mint"
     },
     "currentState": {
       "currentStep": "Current step in the 5-step wizard (1=Welcome, 2=PWA, 3=Choice, 4=Seed, 5=Mint)",
@@ -22,7 +26,8 @@
       "seedWords": "Generated 12-word seed phrase (create flow)",
       "inputSeedWords": "User-entered seed words (recover flow)",
       "seedSaved": "Whether user confirmed saving seed phrase",
-      "mintConnections": "List of mints with connection test status"
+      "mintConnections": "List of mints with connection test status",
+      "backgroundDataLoad": "Background data loading state from hard-coded mint (VITE_MINT_URL)"
     }
   },
   "currentStep": 1,
@@ -40,5 +45,10 @@
       "url": "http://localhost:3338",
       "status": "connected"
     }
-  ]
+  ],
+  "backgroundDataLoad": {
+    "mintUrl": "http://localhost:3338",
+    "status": "loaded",
+    "conditionsLoaded": 5
+  }
 }

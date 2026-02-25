@@ -50,6 +50,14 @@ Two large card buttons presented side by side (desktop) or stacked (mobile):
 - "Finish Setup" button → creates wallet, saves configuration, navigates to Portfolio
 - "Finish Setup" disabled until at least one mint is successfully connected
 
+## Background Data Loading
+On app launch (step 1), the app begins downloading condition data from the hard-coded mint (`VITE_MINT_URL`) via `GET /v1/conditions`. This happens silently in the background throughout the onboarding flow.
+
+- A subtle loading indicator (small progress text or spinner in the bottom-left corner) shows download status during steps 1–4. Non-blocking — the user can proceed through steps freely.
+- States: "Loading markets..." (with spinner) → "5 markets loaded" (with checkmark) → or "Failed to load markets" (with retry option).
+- By step 5 (Mint Setup), the hard-coded mint should already appear pre-connected with data loaded. If the download is still in progress, the mint card shows loading status.
+- This is a UX optimization — the user never waits for data. Even if the background load fails, the user can still proceed through setup and retry on the Mint Setup step.
+
 ## Step Indicator
 - Shown on steps 3-5 only (steps 1-2 are full-screen standalone)
 - Horizontal step indicator at the top showing progress: Step 1 → Step 2 → Step 3

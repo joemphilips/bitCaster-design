@@ -1,7 +1,9 @@
-import { X } from 'lucide-react'
+import { X, Loader2, Check, AlertCircle } from 'lucide-react'
+import type { BackgroundDataLoad } from '../types'
 
 interface WelcomeLandingProps {
   showTerms: boolean
+  backgroundDataLoad?: BackgroundDataLoad
   onWelcomeNext?: () => void
   onShowTerms?: () => void
   onCloseTerms?: () => void
@@ -9,6 +11,7 @@ interface WelcomeLandingProps {
 
 export function WelcomeLanding({
   showTerms,
+  backgroundDataLoad,
   onWelcomeNext,
   onShowTerms,
   onCloseTerms,
@@ -49,6 +52,32 @@ export function WelcomeLanding({
           </button>
         </p>
       </div>
+
+      {/* Background data loading indicator */}
+      {backgroundDataLoad && backgroundDataLoad.status !== 'idle' && (
+        <div className="fixed bottom-6 left-6 z-40">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 text-xs">
+            {backgroundDataLoad.status === 'loading' && (
+              <>
+                <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                <span className="text-slate-400">Loading markets...</span>
+              </>
+            )}
+            {backgroundDataLoad.status === 'loaded' && (
+              <>
+                <Check className="w-3 h-3 text-emerald-400" strokeWidth={2.5} />
+                <span className="text-slate-400">{backgroundDataLoad.conditionsLoaded} markets loaded</span>
+              </>
+            )}
+            {backgroundDataLoad.status === 'failed' && (
+              <>
+                <AlertCircle className="w-3 h-3 text-amber-400" />
+                <span className="text-slate-400">Failed to load markets</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Terms of Service bottom sheet */}
       {showTerms && (

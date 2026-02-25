@@ -1,11 +1,13 @@
-import { Smartphone, Monitor, ArrowDown } from 'lucide-react'
+import { Smartphone, Monitor, ArrowDown, Loader2, Check, AlertCircle } from 'lucide-react'
+import type { BackgroundDataLoad } from '../types'
 
 interface PwaConfirmationProps {
+  backgroundDataLoad?: BackgroundDataLoad
   onPwaNext?: () => void
   onBack?: () => void
 }
 
-export function PwaConfirmation({ onPwaNext, onBack }: PwaConfirmationProps) {
+export function PwaConfirmation({ backgroundDataLoad, onPwaNext, onBack }: PwaConfirmationProps) {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center px-6 pt-12 pb-8 text-center">
       {/* Illustration — phone + desktop mockup */}
@@ -79,6 +81,32 @@ export function PwaConfirmation({ onPwaNext, onBack }: PwaConfirmationProps) {
       <p className="text-xs text-slate-500 max-w-sm mb-8">
         You can also skip this step and install later from your browser&rsquo;s menu.
       </p>
+
+      {/* Background data loading indicator */}
+      {backgroundDataLoad && backgroundDataLoad.status !== 'idle' && (
+        <div className="fixed bottom-6 left-6 z-40">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 text-xs">
+            {backgroundDataLoad.status === 'loading' && (
+              <>
+                <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                <span className="text-slate-400">Loading markets...</span>
+              </>
+            )}
+            {backgroundDataLoad.status === 'loaded' && (
+              <>
+                <Check className="w-3 h-3 text-emerald-400" strokeWidth={2.5} />
+                <span className="text-slate-400">{backgroundDataLoad.conditionsLoaded} markets loaded</span>
+              </>
+            )}
+            {backgroundDataLoad.status === 'failed' && (
+              <>
+                <AlertCircle className="w-3 h-3 text-amber-400" />
+                <span className="text-slate-400">Failed to load markets</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
       <div className="w-full max-w-sm flex items-center justify-between">

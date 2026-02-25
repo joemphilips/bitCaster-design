@@ -5,6 +5,7 @@ import type {
   SetupChoice,
   SetupStep,
   MintConnectionTest,
+  BackgroundDataLoad,
   WalletSetupProps,
 } from '@/../product/sections/wallet-setup/types'
 
@@ -17,6 +18,9 @@ export function WalletSetupPreview() {
   const [mintConnections, setMintConnections] = useState<MintConnectionTest[]>(
     data.mintConnections as MintConnectionTest[]
   )
+  const [backgroundDataLoad, setBackgroundDataLoad] = useState<BackgroundDataLoad>(
+    data.backgroundDataLoad as BackgroundDataLoad
+  )
 
   const props: WalletSetupProps = {
     currentStep,
@@ -26,6 +30,7 @@ export function WalletSetupPreview() {
     inputSeedWords,
     seedSaved,
     mintConnections,
+    backgroundDataLoad,
     onWelcomeNext: () => {
       console.log('Welcome Next clicked')
       setCurrentStep(2)
@@ -139,6 +144,24 @@ export function WalletSetupPreview() {
                 }`}
               >
                 {step}. {stepLabels[step]}
+              </button>
+            ))}
+
+            <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1" />
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
+              BG Load:
+            </span>
+            {(['loading', 'loaded', 'failed'] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setBackgroundDataLoad((prev) => ({ ...prev, status }))}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                  backgroundDataLoad.status === status
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                }`}
+              >
+                {status}
               </button>
             ))}
 
