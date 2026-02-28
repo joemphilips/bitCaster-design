@@ -154,7 +154,18 @@ export interface CategoricalMarketDetail extends BaseMarketDetail {
   outcomeOrderBooks: Record<string, OrderBook>
 }
 
-export type MarketDetail = YesNoMarketDetail | CategoricalMarketDetail
+// Numeric market detail (NUT-CTF-numeric: HI/LO token pair with proportional payout)
+export interface NumericMarketDetail extends BaseMarketDetail {
+  type: 'numeric'
+  loBound: number       // Lower bound of the outcome range
+  hiBound: number       // Upper bound of the outcome range
+  precision: number     // Decimal places for display
+  unit: string          // Display unit (e.g. "USD", "BTC")
+  currentPrice: number  // Implied price: loBound + (hiPrice / 100) * (hiBound - loBound)
+  attestedValue?: number // Set when resolved — the oracle-attested value
+}
+
+export type MarketDetail = YesNoMarketDetail | CategoricalMarketDetail | NumericMarketDetail
 
 // =============================================================================
 // Trade Side & Order Type
@@ -177,7 +188,7 @@ export interface LimitOrderPreview {
 // =============================================================================
 
 export interface TradeSelection {
-  side: 'yes' | 'no'
+  side: 'yes' | 'no' | 'hi' | 'lo'
   outcomeId?: string // For categorical
   tradeSide?: TradeSide
   orderType?: OrderType
