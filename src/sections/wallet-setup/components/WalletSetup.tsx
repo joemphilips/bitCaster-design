@@ -16,6 +16,8 @@ export function WalletSetup(props: WalletSetupProps) {
     seedWords,
     inputSeedWords,
     seedSaved,
+    seedVerifyPhase,
+    seedVerifyInputs,
     mintConnections,
     backgroundDataLoad,
     onWelcomeNext,
@@ -26,6 +28,9 @@ export function WalletSetup(props: WalletSetupProps) {
     onSeedSavedToggle,
     onSeedWordInput,
     onSeedPhrasePaste,
+    onSeedVerifyInput,
+    onSeedVerifyComplete,
+    onSeedVerifyBack,
     onRecover,
     onAddMint,
     onRemoveMint,
@@ -90,8 +95,13 @@ export function WalletSetup(props: WalletSetupProps) {
           <SeedDisplay
             seedWords={seedWords}
             seedSaved={seedSaved}
+            seedVerifyPhase={seedVerifyPhase}
+            seedVerifyInputs={seedVerifyInputs}
             onSeedSavedToggle={onSeedSavedToggle}
             onContinue={onContinue}
+            onSeedVerifyInput={onSeedVerifyInput}
+            onSeedVerifyComplete={onSeedVerifyComplete}
+            onSeedVerifyBack={onSeedVerifyBack}
           />
         )}
 

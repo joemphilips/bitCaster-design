@@ -4,6 +4,7 @@ import { WalletSetup } from './components/WalletSetup'
 import type {
   SetupChoice,
   SetupStep,
+  SeedVerifyPhase,
   MintConnectionTest,
   BackgroundDataLoad,
   WalletSetupProps,
@@ -14,6 +15,8 @@ export function WalletSetupPreview() {
   const [showTerms, setShowTerms] = useState(data.showTerms)
   const [choice, setChoice] = useState<SetupChoice | null>(data.choice as SetupChoice | null)
   const [seedSaved, setSeedSaved] = useState(data.seedSaved)
+  const [seedVerifyPhase, setSeedVerifyPhase] = useState<SeedVerifyPhase>(data.seedVerifyPhase as SeedVerifyPhase)
+  const [seedVerifyInputs, setSeedVerifyInputs] = useState(data.seedVerifyInputs)
   const [inputSeedWords, setInputSeedWords] = useState<string[]>(data.inputSeedWords)
   const [mintConnections, setMintConnections] = useState<MintConnectionTest[]>(
     data.mintConnections as MintConnectionTest[]
@@ -29,6 +32,8 @@ export function WalletSetupPreview() {
     seedWords: data.seedWords,
     inputSeedWords,
     seedSaved,
+    seedVerifyPhase,
+    seedVerifyInputs,
     mintConnections,
     backgroundDataLoad,
     onWelcomeNext: () => {
@@ -65,13 +70,29 @@ export function WalletSetupPreview() {
       const padded = [...words, ...Array(12).fill('')].slice(0, 12)
       setInputSeedWords(padded)
     },
+    onSeedVerifyInput: (position, word) => {
+      setSeedVerifyInputs((prev) => ({
+        ...prev,
+        [`word${position}`]: word,
+      }))
+    },
+    onSeedVerifyComplete: () => {
+      console.log('Seed verification complete')
+      setSeedVerifyPhase('display')
+      setSeedVerifyInputs({ word3: '', word7: '', word12: '' })
+      setCurrentStep(5)
+    },
+    onSeedVerifyBack: () => {
+      setSeedVerifyPhase('display')
+      setSeedVerifyInputs({ word3: '', word7: '', word12: '' })
+    },
     onRecover: () => {
       console.log('Recover clicked')
       setCurrentStep(5)
     },
     onContinue: () => {
-      console.log('Continue clicked')
-      setCurrentStep(5)
+      console.log('Continue clicked — entering seed verification')
+      setSeedVerifyPhase('verify')
     },
     onBack: () => {
       if (currentStep === 2) {
@@ -80,6 +101,8 @@ export function WalletSetupPreview() {
         setCurrentStep(3)
         setChoice(null)
         setSeedSaved(false)
+        setSeedVerifyPhase('display')
+        setSeedVerifyInputs({ word3: '', word7: '', word12: '' })
       } else if (currentStep === 5) {
         setCurrentStep(4)
       }

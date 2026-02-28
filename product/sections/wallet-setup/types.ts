@@ -4,6 +4,7 @@
 
 export type SetupChoice = 'create' | 'recover'
 export type SetupStep = 1 | 2 | 3 | 4 | 5
+export type SeedVerifyPhase = 'display' | 'verify'
 
 // =============================================================================
 // Mint Connection Types
@@ -53,6 +54,12 @@ export interface WalletSetupProps {
   /** Whether user has confirmed saving their seed phrase */
   seedSaved: boolean
 
+  /** Current phase of the seed creation flow (display or verify) */
+  seedVerifyPhase: SeedVerifyPhase
+
+  /** User inputs for seed phrase verification (words #3, #7, #12) */
+  seedVerifyInputs: { word3: string; word7: string; word12: string }
+
   /** Mint connection tests */
   mintConnections: MintConnectionTest[]
 
@@ -82,6 +89,15 @@ export interface WalletSetupProps {
 
   /** Called when user pastes a full seed phrase */
   onSeedPhrasePaste?: (phrase: string) => void
+
+  /** Called when user enters a word in the seed verification inputs */
+  onSeedVerifyInput?: (position: 3 | 7 | 12, word: string) => void
+
+  /** Called when user completes seed verification successfully */
+  onSeedVerifyComplete?: () => void
+
+  /** Called when user clicks Back from verify sub-step to display sub-step */
+  onSeedVerifyBack?: () => void
 
   /** Called when user clicks Recover */
   onRecover?: () => void

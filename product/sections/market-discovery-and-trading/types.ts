@@ -107,6 +107,12 @@ export interface TradeState {
 }
 
 // =============================================================================
+// Background Data Loading (re-exported from wallet-setup)
+// =============================================================================
+
+export type { BackgroundDataLoad } from '../wallet-setup/types'
+
+// =============================================================================
 // Component Props
 // =============================================================================
 
@@ -159,4 +165,15 @@ export interface MarketDiscoveryProps {
   /** Called when user scrolls to bottom and more markets should be loaded */
   onLoadMore?: () => void
 
+  /** Background data loading state (shown as footer progress bar if still loading after wallet setup) */
+  backgroundDataLoad?: import('../wallet-setup/types').BackgroundDataLoad
+
+  /** ISO timestamp of last successful condition sync */
+  lastUpdatedAt?: string
+
+  /** Triggers re-fetch of conditions from mint */
+  onRefreshConditions?: () => void
+
+  /** True while a refresh is in progress (spins the refresh icon) */
+  isRefreshing?: boolean
 }

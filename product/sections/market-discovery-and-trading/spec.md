@@ -32,5 +32,19 @@ Core marketplace where users browse prediction markets through a single-select t
 - Metrics footer must always be visible when not in trading view overlay mode
 - Infinite scroll loading
 
+## Background Loading Progress Bar
+If the user finishes wallet setup but condition data download is still in progress, a thin progress bar appears fixed to the **page footer** (full-width, bottom of viewport).
+- The bar shows a subtle animated stripe pattern (indeterminate) with text like "Loading market data... (3/10)"
+- Once loading completes, the bar fades out and disappears
+- If loading failed, the bar turns amber and shows "Failed to load market data" with a Retry button
+
+## Refresh Button & Last Updated Timestamp
+Next to the filter controls row (right-aligned, visible whether filters are expanded or collapsed):
+1. **Last updated timestamp** — e.g., "Updated 2 min ago" in subtle text
+2. **Refresh button** — circular `RefreshCw` icon button; clicking triggers `onRefreshConditions` callback which queries the mint for new/updated conditions and loads them into client-side DB
+- These appear in the sticky tag bar area (always visible), right side, next to the filter icon
+- The RefreshCw icon spins while refresh is in progress
+- Timestamp formatted as relative time ("just now", "2 min ago", "1 hour ago")
+
 ## Configuration
 - shell: true

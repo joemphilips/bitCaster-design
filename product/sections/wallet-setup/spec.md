@@ -29,11 +29,21 @@ Two large card buttons presented side by side (desktop) or stacked (mobile):
 ## Step 4: Seed
 
 ### Create New Wallet path
+
+#### Display sub-step
 - Display 12 seed words in a 3×4 grid (3 columns, 4 rows)
 - Each word shown with its index number (1-12)
 - "I have saved my seed phrase" checkbox — must be checked to enable Continue
 - Warning text: "Write down these words in order. You will need them to recover your wallet. Never share your seed phrase."
 - Continue button (disabled until checkbox is checked)
+- Clicking Continue transitions to the **Verify sub-step** (same step 4, second phase)
+
+#### Verify sub-step
+- Three input fields prompting the user to enter word #3, #7, and #12 from their seed phrase
+- Each field labeled "Word #3", "Word #7", "Word #12"
+- Correct entries show a green check icon; incorrect show red highlight + "Incorrect word" message
+- "Verify & Continue" button disabled until all 3 words match
+- Back button returns to the Display sub-step
 
 ### Recover Wallet path
 - 12 numbered input fields for entering seed words
@@ -51,9 +61,9 @@ Two large card buttons presented side by side (desktop) or stacked (mobile):
 - "Finish Setup" disabled until at least one mint is successfully connected
 
 ## Background Data Loading
-On app launch (step 1), the app begins downloading condition data from the hard-coded mint (`VITE_MINT_URL`) via `GET /v1/conditions`. This happens silently in the background throughout the onboarding flow.
+After the user completes Step 2 (PWA Confirmation) and enters Step 3, the app begins downloading condition data from the hard-coded mint (`VITE_MINT_URL`) via `GET /v1/conditions`. This happens silently in the background throughout the remaining onboarding flow.
 
-- A subtle loading indicator (small progress text or spinner in the bottom-left corner) shows download status during steps 1–4. Non-blocking — the user can proceed through steps freely.
+- A subtle loading indicator (small progress text or spinner in the bottom-left corner) shows download status during steps 3–4. Non-blocking — the user can proceed through steps freely.
 - States: "Loading markets..." (with spinner) → "5 markets loaded" (with checkmark) → or "Failed to load markets" (with retry option).
 - By step 5 (Mint Setup), the hard-coded mint should already appear pre-connected with data loaded. If the download is still in progress, the mint card shows loading status.
 - This is a UX optimization — the user never waits for data. Even if the background load fails, the user can still proceed through setup and retry on the Mint Setup step.
