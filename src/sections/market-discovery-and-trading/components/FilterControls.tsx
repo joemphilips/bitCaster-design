@@ -14,7 +14,6 @@ interface FilterControlsProps {
 const MARKET_TYPE_OPTIONS: { value: MarketType; label: string }[] = [
   { value: 'yesno', label: 'Yes/No' },
   { value: 'categorical', label: 'Categorical' },
-  { value: 'twodimensional', label: 'Two-Dimensional' },
 ]
 
 const VOLUME_OPTIONS = [

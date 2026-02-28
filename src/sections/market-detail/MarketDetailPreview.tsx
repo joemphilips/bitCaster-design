@@ -9,18 +9,15 @@ import type {
   LimitOrderPreview,
   TradeSide,
   OrderType,
-  FixedDimension,
   MarketDetail as MarketDetailType,
 } from '@/../product/sections/market-detail/types'
 
-type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket' | 'twoDimensionalMarket' | 'categorical2DMarket'
+type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket'
 
 const marketLabels: Record<MarketKey, string> = {
   yesNoMarket: 'Yes/No Market',
   resolvedYesNoMarket: 'Resolved Market',
   categoricalMarket: 'Categorical Market',
-  twoDimensionalMarket: 'Yes/No 2D Market',
-  categorical2DMarket: 'Categorical 2D Market',
 }
 
 export function MarketDetailPreview() {
@@ -32,7 +29,6 @@ export function MarketDetailPreview() {
   const [chartType, setChartType] = useState<ChartType>('price')
   const [tradeSelection, setTradeSelection] = useState<TradeSelection | null>(null)
   const [tradeAmount, setTradeAmount] = useState<number>(0)
-  const [fixedDimension, setFixedDimension] = useState<FixedDimension | null>(null)
   const [tradeSide, setTradeSide] = useState<TradeSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
   const [limitPrice, setLimitPrice] = useState<number>(6500)
@@ -83,7 +79,6 @@ export function MarketDetailPreview() {
                   setSelectedMarketKey(key)
                   setTradeSelection(null)
                   setTradeAmount(0)
-                  setFixedDimension(null)
                   setTradeSide('buy')
                   setOrderType('market')
                   setLimitPrice(6500)
@@ -180,18 +175,6 @@ export function MarketDetailPreview() {
         onCreatorClick={(creatorId) => {
           console.log('Creator clicked:', creatorId)
           alert(`Navigate to creator profile: ${creatorId}`)
-        }}
-        onBaseMarketClick={(marketId) => {
-          console.log('Base market clicked:', marketId)
-          alert(`Navigate to base market: ${marketId}`)
-        }}
-        onChartCellChange={(cellId) => {
-          console.log('Chart cell changed:', cellId)
-        }}
-        fixedDimension={fixedDimension}
-        onFixDimension={(dim) => {
-          console.log('Fixed dimension changed:', dim)
-          setFixedDimension(dim)
         }}
       />
     </div>

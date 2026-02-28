@@ -1,18 +1,17 @@
 # Market Detail Specification
 
 ## Overview
-The Market Detail page provides a comprehensive view of a single prediction market, enabling users to analyze market data, execute trades, and track activity. Accessed by clicking on any market card from the discovery view, this page serves as the primary trading interface for all market types (Yes/No, Categorical, and 2D composite markets). The trading panel supports both AMM-based market orders (instant execution with price impact) and order book limit orders (placed at a specific price, filled when the market reaches that level).
+The Market Detail page provides a comprehensive view of a single prediction market, enabling users to analyze market data, execute trades, and track activity. Accessed by clicking on any market card from the discovery view, this page serves as the primary trading interface for all market types (Yes/No and Categorical). The trading panel supports both AMM-based market orders (instant execution with price impact) and order book limit orders (placed at a specific price, filled when the market reaches that level).
 
 ## User Flows
 
 ### Entry Points
 - User clicks on a market card (outside of Yes/No buttons) in Market Discovery
-- User clicks on a secondary market from an expanded 2D market list
 - User follows a direct link to a market
 
 ### Trading Flow
 1. User views current odds displayed as a prominent percentage in the chart header
-2. User selects outcome (Yes/No for binary, specific outcome for categorical, cell for 2D)
+2. User selects outcome (Yes/No for binary, specific outcome for categorical)
 3. User enters trade amount in sats
 4. System displays predicted odds after trade, potential payout, and fees
 5. User confirms or cancels trade
@@ -65,7 +64,6 @@ Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
 - Current odds display:
   - **Yes/No markets**: Two large buttons showing Yes % and No %
   - **Categorical markets**: Vertical list of outcomes with odds
-  - **2D markets**: Grid layout matching discovery card, but larger
 - Order amount input with sats denomination
 - Quick amount buttons (100, 500, 1000, 5000 sats)
 - Predicted odds after trade (shows price impact)
@@ -102,7 +100,6 @@ Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
 - **Current percentage** displayed prominently as the section header (replaces "Price Chart" text):
   - Yes/No markets: shows current yes odds (e.g., "67.5%")
   - Categorical markets: shows leading outcome with odds (e.g., "Chiefs 28.5%")
-  - 2D markets: shows the leading cell odds
   - Resolved markets: shows final outcome text (e.g., "Resolved: Yes")
 - Line chart showing price history
 - Timeframe selector: 1H | 24H | 7D | 1 Month | ALL
@@ -114,15 +111,6 @@ Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
   - Tooltip on hover showing username, content preview, and like count
   - Only comments within the visible timeframe are shown
 - For categorical markets: multi-line chart with legend
-- For 2D markets: selector to view individual cell price history
-- **2D Conditional Probability Toggle** (for Yes/No + Yes/No markets with all 4 cell histories):
-  - Toggle buttons: [All] [BTC=Yes] [BTC=No] [ETH=Yes] [ETH=No]
-  - "All" shows the standard cell selector dropdown
-  - Fixing a dimension computes conditional probabilities:
-    - E.g., BTC=Yes → shows P(ETH=Yes|BTC=Yes) and P(ETH=No|BTC=Yes) as two lines
-  - Multi-line chart with legend showing the two conditional probability lines
-  - "Conditional on [label]" subtitle displayed below the current display
-  - Division-by-zero points are skipped gracefully
 
 ### Resolution Details Section
 - Resolution criteria (how the market resolves)
@@ -177,19 +165,6 @@ Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
 - Each outcome has its own Buy Yes/Buy No option
 - Multi-line price chart with color-coded outcomes
 - Current percentage shows leading outcome
-
-### Two-Dimensional (2D) Markets
-- Grid layout in trading panel matching base market structure
-- Shows base market question and secondary question
-- Each cell clickable for trading
-- **Two-tone gradient** for mixed-outcome cells:
-  - Yes/Yes: solid emerald background
-  - Yes/No: diagonal gradient (emerald → rose, 135deg)
-  - No/Yes: diagonal gradient (rose → emerald, 135deg)
-  - No/No: solid red background
-  - Selected state increases gradient intensity and adds a prominent border
-- Price chart has selector for viewing individual cells
-- Displays link back to base market
 
 ## Responsive Behavior
 

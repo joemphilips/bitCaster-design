@@ -9,7 +9,6 @@ import type {
   OrderType,
   YesNoMarketDetail,
   CategoricalMarketDetail,
-  TwoDimensionalMarketDetail,
 } from '@/../product/sections/market-detail/types'
 import { formatBtc } from '@/lib/format'
 
@@ -220,158 +219,6 @@ function CategoricalOutcomes({
   )
 }
 
-function TwoDimensionalOutcomes({
-  market,
-  tradeSelection,
-  onTradeSelect,
-}: {
-  market: TwoDimensionalMarketDetail
-  tradeSelection: TradeSelection | null
-  onTradeSelect?: (selection: TradeSelection) => void
-}) {
-  if (market.compositeOdds) {
-    // Yes/No + Yes/No 2x2 grid
-    const cells = [
-      { id: 'yes-yes', label: 'Yes / Yes', odds: market.compositeOdds.yesYes, style: 'emerald' as const },
-      { id: 'yes-no', label: 'Yes / No', odds: market.compositeOdds.yesNo, style: 'yes-no' as const },
-      { id: 'no-yes', label: 'No / Yes', odds: market.compositeOdds.noYes, style: 'no-yes' as const },
-      { id: 'no-no', label: 'No / No', odds: market.compositeOdds.noNo, style: 'red' as const },
-    ]
-
-    function getCellStyles(cellStyle: 'emerald' | 'yes-no' | 'no-yes' | 'red', isSelected: boolean) {
-      switch (cellStyle) {
-        case 'emerald':
-          return {
-            className: isSelected
-              ? 'border-emerald-500 bg-emerald-500/20'
-              : 'border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 bg-emerald-500/5',
-          }
-        case 'red':
-          return {
-            className: isSelected
-              ? 'border-red-500 bg-red-500/20'
-              : 'border-slate-200 dark:border-slate-700 hover:border-red-500/50 bg-red-500/5',
-          }
-        case 'yes-no':
-          return {
-            className: isSelected
-              ? 'border-emerald-400'
-              : 'border-slate-200 dark:border-slate-700 hover:border-slate-400',
-            background: `linear-gradient(135deg, rgba(16, 185, 129, ${isSelected ? 0.4 : 0.2}) 50%, rgba(244, 63, 94, ${isSelected ? 0.4 : 0.2}) 50%)`,
-          }
-        case 'no-yes':
-          return {
-            className: isSelected
-              ? 'border-rose-400'
-              : 'border-slate-200 dark:border-slate-700 hover:border-slate-400',
-            background: `linear-gradient(135deg, rgba(244, 63, 94, ${isSelected ? 0.4 : 0.2}) 50%, rgba(16, 185, 129, ${isSelected ? 0.4 : 0.2}) 50%)`,
-          }
-      }
-    }
-
-    return (
-      <div>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-          Base: {market.baseMarketTitle}
-          <br />
-          Secondary: {market.secondaryQuestion}
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {cells.map((cell) => {
-            const isSelected = tradeSelection?.cellId === cell.id
-            const styles = getCellStyles(cell.style, isSelected)
-
-            return (
-              <button
-                key={cell.id}
-                onClick={() => onTradeSelect?.({ side: 'yes', cellId: cell.id })}
-                className={`p-3 rounded-xl border-2 transition-all ${styles.className}`}
-                style={styles.background ? { background: styles.background } : undefined}
-              >
-                <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-0.5">
-                  {cell.label}
-                </div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white">
-                  {cell.odds.toFixed(1)}%
-                </div>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-    )
-  }
-
-  return null
-}
-
-function CategoricalTwoDimensionalOutcomes({
-  market,
-  tradeSelection,
-  tradeSide,
-  onTradeSelect,
-}: {
-  market: TwoDimensionalMarketDetail
-  tradeSelection: TradeSelection | null
-  tradeSide: TradeSide
-  onTradeSelect?: (selection: TradeSelection) => void
-}) {
-  if (!market.categoricalCompositeOdds || !market.baseOutcomes) return null
-
-  const isSell = tradeSide === 'sell'
-
-  return (
-    <div>
-      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-        Base: {market.baseMarketTitle}
-        <br />
-        Secondary: {market.secondaryQuestion}
-      </p>
-      <ScrollableContainer className="space-y-2 max-h-72 overflow-y-auto pr-1 scrollbar-hide" groupName="cat2d">
-        {market.baseOutcomes.map((outcome) => {
-          const odds = market.categoricalCompositeOdds![outcome.id]
-          if (!odds) return null
-          const yesSelected = tradeSelection?.cellId === `${outcome.id}-yes`
-          const noSelected = tradeSelection?.cellId === `${outcome.id}-no`
-
-          return (
-            <div
-              key={outcome.id}
-              className="p-3 rounded-xl border border-slate-200 dark:border-slate-700"
-            >
-              <div className="text-sm font-medium text-slate-900 dark:text-white mb-2">
-                {outcome.label}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => onTradeSelect?.({ side: 'yes', cellId: `${outcome.id}-yes` })}
-                  className={`py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
-                    yesSelected
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20'
-                  }`}
-                >
-                  {isSell ? 'Sell' : ''} Yes {odds.yes.toFixed(1)}%
-                </button>
-                <button
-                  onClick={() => onTradeSelect?.({ side: 'no', cellId: `${outcome.id}-no` })}
-                  className={`py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
-                    noSelected
-                      ? 'bg-red-500 text-white'
-                      : 'bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20'
-                  }`}
-                >
-                  {isSell ? 'Sell' : ''} No {odds.no.toFixed(1)}%
-                </button>
-              </div>
-            </div>
-          )
-        })}
-      </ScrollableContainer>
-    </div>
-  )
-}
-
 function BuySellToggle({
   tradeSide,
   onTradeSideChange,
@@ -575,21 +422,6 @@ export function TradingPanel({
           market={market}
           tradeSelection={tradeSelection}
           tradeSide={tradeSide}
-          onTradeSelect={onTradeSelect}
-        />
-      )}
-      {market.type === 'twodimensional' && market.categoricalCompositeOdds && (
-        <CategoricalTwoDimensionalOutcomes
-          market={market}
-          tradeSelection={tradeSelection}
-          tradeSide={tradeSide}
-          onTradeSelect={onTradeSelect}
-        />
-      )}
-      {market.type === 'twodimensional' && !market.categoricalCompositeOdds && (
-        <TwoDimensionalOutcomes
-          market={market}
-          tradeSelection={tradeSelection}
           onTradeSelect={onTradeSelect}
         />
       )}

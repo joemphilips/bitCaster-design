@@ -60,7 +60,7 @@ Create TypeScript interfaces for your core entities:
 
 - See `product-plan/event-model/events.ts` for domain event definitions
 - See `product-plan/event-model/README.md` for event flows and relationships
-- Key entities: User, Market (YesNo/Categorical/2D), Position, Activity, Settings
+- Key entities: User, Market (YesNo/Categorical), Position, Activity, Settings
 
 ### 3. Routing Structure
 

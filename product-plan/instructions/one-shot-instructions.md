@@ -56,7 +56,7 @@ Bitcoin-native prediction market platform where anyone can create, trade, and mo
 - Fee collection system for market creators
 - Automated market resolution and payout
 - Real-time trading with live price discovery
-- Supports Yes/No, Categorical, and 2D composite markets
+- Supports Yes/No and Categorical markets
 
 ### Planned Sections
 1. Market Discovery & Trading — Core marketplace for browsing and trading
@@ -112,7 +112,7 @@ Create TypeScript interfaces for your core entities:
 
 - See `product-plan/event-model/events.ts` for domain event definitions
 - See `product-plan/event-model/README.md` for event flows and relationships
-- Key entities: User, Market (YesNo/Categorical/2D), Position, Activity, Settings
+- Key entities: User, Market (YesNo/Categorical), Position, Activity, Settings
 
 #### 3. Routing Structure
 
@@ -172,14 +172,13 @@ Implement the core marketplace where users browse prediction markets and execute
 
 ### Overview
 
-Users land on a single-page marketplace showing active prediction markets organized by tags. They can filter by market type, volume, or closing date, then trade directly from a market card without navigating away. Markets come in three types: Yes/No, Categorical, and Two-Dimensional composite. New markets append via infinite scroll.
+Users land on a single-page marketplace showing active prediction markets organized by tags. They can filter by market type, volume, or closing date, then trade directly from a market card without navigating away. Markets come in two types: Yes/No and Categorical. New markets append via infinite scroll.
 
 **Key Functionality:**
 - Single-select horizontal tag bar (Trending, Popular, New, Sports, Politics, Crypto, etc.)
 - Collapsible filter row (Market Type, Volume Range, Closing Date)
-- Fixed-height (280px) market cards for all three market types
+- Fixed-height (280px) market cards for both market types
 - Inline trading overlay that transforms the card without changing its size
-- Expandable secondary market list for 2D composite markets ("and..." link)
 - Infinite scroll for loading additional markets
 
 ### Components
@@ -187,13 +186,13 @@ Users land on a single-page marketplace showing active prediction markets organi
 Copy from `product-plan/sections/market-discovery-and-trading/components/`:
 
 - `MarketDiscovery` — Main container with tag bar, filters, and market grid
-- `MarketCard` — Individual market card (YesNo, Categorical, 2D)
+- `MarketCard` — Individual market card (YesNo, Categorical)
 - `FilterControls` — Market type, volume range, and closing date filters
 - `TagBar` — Horizontal tag navigation (single-select)
 
 ### Data Layer
 
-Key types: `YesNoMarket`, `CategoricalMarket`, `TwoDimensionalMarket`, `TradeState`, `FilterState`
+Key types: `YesNoMarket`, `CategoricalMarket`, `TradeState`, `FilterState`
 
 API endpoints:
 - `GET /markets?tag=&type=&minVolume=&maxVolume=&closingBefore=&page=`
@@ -211,9 +210,6 @@ API endpoints:
 | `onBuyOutcomeNo` | Call trade API for a categorical outcome, no side |
 | `onViewMarket` | Navigate to `/markets/:id` |
 | `onLoadMore` | Fetch next page and append |
-| `onBuy2DYesNoCombo` | Call trade API for 2D yes/no combination |
-| `onBuy2DCategoricalCombo` | Call trade API for 2D categorical combination |
-| `onViewSecondaryMarket` | Navigate to secondary market detail page |
 
 ### Files to Reference
 - `product-plan/sections/market-discovery-and-trading/README.md`
@@ -225,14 +221,13 @@ API endpoints:
 ### Done When
 
 - [ ] Tests written and passing
-- [ ] All three market card types render with real data
+- [ ] Both market card types render with real data
 - [ ] Tag bar single-select works and fetches correct markets
 - [ ] Filters apply and combine correctly
 - [ ] Trading overlay opens and closes without resizing the card
 - [ ] Trades execute via API and card odds update
 - [ ] Empty states display for no results and network errors
 - [ ] Infinite scroll loads additional pages
-- [ ] "and..." expands 2D secondary market list
 - [ ] Responsive on mobile
 
 ---
@@ -416,7 +411,6 @@ Two-column layout (desktop): left column has market header, price chart, resolut
 - Market header with image, tags, creator info, metrics, like, and share
 - Trading panel with Buy/Sell toggle, Market/Limit tabs, outcome selection for all market types
 - Price chart with 1H/24H/7D/30D/ALL timeframes, price/volume toggle, and comment bubble overlay
-- 2D conditional probability chart with dimension-fixing toggle
 - Order book (bid/ask visualization)
 - Activity feed and comment section (read-only)
 - Related markets horizontal scroll
@@ -439,7 +433,7 @@ Copy from `product-plan/sections/market-detail/components/`:
 
 ### Data Layer
 
-Key types: `YesNoMarketDetail`, `CategoricalMarketDetail`, `TwoDimensionalMarketDetail`, `TradeSelection`, `TradePreview`, `OrderBook`, `Comment`
+Key types: `YesNoMarketDetail`, `CategoricalMarketDetail`, `TradeSelection`, `TradePreview`, `OrderBook`, `Comment`
 
 API endpoints:
 - `GET /markets/:id`
@@ -471,8 +465,6 @@ API endpoints:
 | `onCommentLike` | Comment like API, update optimistically |
 | `onRelatedMarketClick` | Navigate to `/markets/:id` |
 | `onCreatorClick` | Navigate to creator profile |
-| `onChartCellChange` | Update selected 2D cell for chart |
-| `onFixDimension` | Update conditional probability dimension |
 
 ### Files to Reference
 - `product-plan/sections/market-detail/README.md`
@@ -484,12 +476,11 @@ API endpoints:
 ### Done When
 
 - [ ] Tests written and passing
-- [ ] All three market types load and display correctly
+- [ ] Both market types load and display correctly
 - [ ] Trading panel Buy/Sell toggle and Market/Limit tabs functional
 - [ ] Trade preview recalculates on amount change
 - [ ] Price chart renders with all timeframes and types
 - [ ] Comment bubbles overlay chart at correct positions
-- [ ] 2D conditional probability toggle works
 - [ ] Order book renders
 - [ ] Activity feed paginates via infinite scroll
 - [ ] Resolved market: no trading panel, single column, outcome prominent
@@ -847,7 +838,7 @@ After completing all milestones:
 - [ ] All routes are navigable
 - [ ] App shell is responsive on all viewports
 - [ ] `/setup` and `/creator/new` routes render without app shell
-- [ ] Market Discovery shows all three market types
+- [ ] Market Discovery shows both market types
 - [ ] Inline trading works on market cards
 - [ ] Portfolio conditional entry (no-wallet CTA vs. dashboard) works
 - [ ] Portfolio Funds tab shows base ecash assets per mint

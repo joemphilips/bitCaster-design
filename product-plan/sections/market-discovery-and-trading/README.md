@@ -15,14 +15,12 @@ Core marketplace where users browse prediction markets through a single-select t
 
 ## Design Decisions
 - Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags
-- Three market types: Yes/No, Categorical, Two-Dimensional (2D composite)
-- 2D markets show composite probability grids
-- Markets with secondaryMarkets show expandable "and..." link
+- Two market types: Yes/No and Categorical
 - Fixed card height of 280px for all types
 - Trading overlay covers entire card
 
 ## Data Used
-**Entities:** Market (YesNoMarket, CategoricalMarket, TwoDimensionalMarket), MetaTag, CategoryTag, TradeState, FilterState
+**Entities:** Market (YesNoMarket, CategoricalMarket), MetaTag, CategoryTag, TradeState, FilterState
 **From global model:** Bought, Sold events update market odds and volume
 
 ## Components Provided
@@ -43,6 +41,3 @@ Core marketplace where users browse prediction markets through a single-select t
 | `onBuyOutcomeNo` | Called when user buys No on a categorical outcome |
 | `onViewMarket` | Called when user navigates to market detail |
 | `onLoadMore` | Called for infinite scroll |
-| `onBuy2DYesNoCombo` | Called when user buys a 2D yes/no combo |
-| `onBuy2DCategoricalCombo` | Called when user buys a 2D categorical combo |
-| `onViewSecondaryMarket` | Called when user clicks a secondary market |

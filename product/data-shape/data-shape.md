@@ -46,7 +46,7 @@ A tradeable view of a Condition — combines protocol-level data from the mint w
 |---|---|---|
 | id | string | Display identifier (maps to `condition_id`) |
 | condition | Condition | The underlying NUT-CTF condition (from mint) |
-| type | `yesno` \| `categorical` \| `twodimensional` | UI display type (derived from condition's outcomes) |
+| type | `yesno` \| `categorical` | UI display type (derived from condition's outcomes) |
 | imageUrl | string | Thumbnail image (matching engine metadata) |
 | categoryTags | string[] | Category labels (matching engine metadata) |
 | metaTags | string[] | Meta labels — Trending, Popular, New (matching engine) |
@@ -55,7 +55,6 @@ A tradeable view of a Condition — combines protocol-level data from the mint w
 | traderCount | number | Number of unique traders (matching engine) |
 | currentOdds | CurrentOdds | Live odds derived from order book (matching engine) |
 | creatorFeePercent | number | Fee taken by the market creator |
-| baseMarket | string | `"sats"` for base markets, or a Market ID for 2D markets |
 
 > **Design principle:** Static data (description, outcomes, closing date, resolution) lives in the Condition and comes from the mint. The matching engine only provides real-time trade data (volume, liquidity, odds, trader count) and display metadata (image, tags). Keep the matching engine as thin as possible.
 
@@ -137,7 +136,6 @@ A completed transaction between a buyer and a seller.
 | userDisplayName | string | Anonymised display name |
 | side | `yes` \| `no` | Which side was traded |
 | outcomeId | string? | Outcome ID (categorical markets) |
-| cellId | string? | Cell ID (2D markets) |
 | amount | number | Size in sats |
 | price | number | Execution price (0–100) |
 | timestamp | string | When the trade occurred |

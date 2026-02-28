@@ -1,30 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Users, Droplet, X, ChevronUp, ChevronDown, Heart, ChevronRight } from 'lucide-react'
+import { Users, Droplet, X, ChevronUp, ChevronDown, Heart } from 'lucide-react'
 import type {
   Market,
   YesNoMarket,
   CategoricalMarket,
-  TwoDimensionalMarket,
   Outcome,
 } from '@/../product/sections/market-discovery-and-trading/types'
 import { formatBtc } from '@/lib/format'
 
-interface SecondaryMarketInfo {
-  id: string
-  title: string
-}
-
 interface MarketCardProps {
   market: Market
-  secondaryMarketInfos?: SecondaryMarketInfo[]
   onBuyYes?: (marketId: string, amount: number) => void
   onBuyNo?: (marketId: string, amount: number) => void
   onBuyOutcomeYes?: (marketId: string, outcomeId: string, amount: number) => void
   onBuyOutcomeNo?: (marketId: string, outcomeId: string, amount: number) => void
-  onBuy2DYesNoCombo?: (marketId: string, baseOutcome: 'yes' | 'no', secondaryOutcome: 'yes' | 'no', amount: number) => void
-  onBuy2DCategoricalCombo?: (marketId: string, baseOutcomeId: string, secondaryOutcome: 'yes' | 'no', amount: number) => void
   onViewMarket?: (marketId: string) => void
-  onViewSecondaryMarket?: (baseMarketId: string, secondaryMarketId: string) => void
   onLike?: (marketId: string) => void
 }
 
@@ -32,12 +22,6 @@ interface TradeState {
   side: 'yes' | 'no'
   outcomeId?: string
   outcomeLabel?: string
-  // For 2D markets
-  is2DCombo?: boolean
-  baseOutcome?: 'yes' | 'no'
-  secondaryOutcome?: 'yes' | 'no'
-  baseOutcomeId?: string
-  baseOutcomeLabel?: string
 }
 
 function CategoricalOutcomes({
@@ -150,160 +134,18 @@ function CategoricalOutcomes({
   )
 }
 
-// 2x2 Grid for Yes/No + Yes/No 2D markets
-function TwoDimensionalYesNoGrid({
-  market,
-  onCellClick,
-}: {
-  market: TwoDimensionalMarket
-  onCellClick: (baseOutcome: 'yes' | 'no', secondaryOutcome: 'yes' | 'no') => void
-}) {
-  if (!market.compositeOdds) return null
-
-  const cells = [
-    { base: 'yes' as const, secondary: 'yes' as const, label: 'Yes/Yes', odds: market.compositeOdds.yesYes },
-    { base: 'yes' as const, secondary: 'no' as const, label: 'Yes/No', odds: market.compositeOdds.yesNo },
-    { base: 'no' as const, secondary: 'yes' as const, label: 'No/Yes', odds: market.compositeOdds.noYes },
-    { base: 'no' as const, secondary: 'no' as const, label: 'No/No', odds: market.compositeOdds.noNo },
-  ]
-
-  const [hoveredCell, setHoveredCell] = useState<string | null>(null)
-
-  // Get cell styling based on outcome combination
-  const getCellStyle = (base: 'yes' | 'no', secondary: 'yes' | 'no', isHovered: boolean) => {
-    const intensity = isHovered ? 0.35 : 0.2
-
-    // Yes/Yes: solid green
-    if (base === 'yes' && secondary === 'yes') {
-      return {
-        className: 'bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/40',
-        style: {},
-      }
-    }
-    // No/No: solid red
-    if (base === 'no' && secondary === 'no') {
-      return {
-        className: 'bg-rose-500/15 hover:bg-rose-500/25 border-rose-500/40',
-        style: {},
-      }
-    }
-    // Yes/No: diagonal green/red (green top-left, red bottom-right)
-    if (base === 'yes' && secondary === 'no') {
-      return {
-        className: 'border-slate-300 dark:border-slate-600',
-        style: {
-          background: `linear-gradient(135deg, rgba(16, 185, 129, ${intensity}) 50%, rgba(244, 63, 94, ${intensity}) 50%)`,
-        },
-      }
-    }
-    // No/Yes: diagonal red/green (red top-left, green bottom-right)
-    if (base === 'no' && secondary === 'yes') {
-      return {
-        className: 'border-slate-300 dark:border-slate-600',
-        style: {
-          background: `linear-gradient(135deg, rgba(244, 63, 94, ${intensity}) 50%, rgba(16, 185, 129, ${intensity}) 50%)`,
-        },
-      }
-    }
-    return { className: '', style: {} }
-  }
-
-  return (
-    <div className="flex-1 flex flex-col">
-      <div className="grid grid-cols-2 gap-1.5 flex-1">
-        {cells.map((cell) => {
-          const isHovered = hoveredCell === cell.label
-          const cellStyle = getCellStyle(cell.base, cell.secondary, isHovered)
-
-          return (
-            <button
-              key={cell.label}
-              onClick={(e) => {
-                e.stopPropagation()
-                onCellClick(cell.base, cell.secondary)
-              }}
-              onMouseEnter={() => setHoveredCell(cell.label)}
-              onMouseLeave={() => setHoveredCell(null)}
-              className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-all hover:scale-[1.02] active:scale-[0.98] ${cellStyle.className}`}
-              style={cellStyle.style}
-            >
-              <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400">
-                {cell.label}
-              </span>
-              <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                {cell.odds.toFixed(1)}%
-              </span>
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-// Secondary markets expander component
-function SecondaryMarketsExpander({
-  secondaryMarketInfos,
-  isExpanded,
-  onToggle,
-  onViewSecondary,
-}: {
-  secondaryMarketInfos: SecondaryMarketInfo[]
-  isExpanded: boolean
-  onToggle: (e: React.MouseEvent) => void
-  onViewSecondary: (secondaryId: string, e: React.MouseEvent) => void
-}) {
-  if (!secondaryMarketInfos || secondaryMarketInfos.length === 0) return null
-
-  return (
-    <div className="mt-1">
-      <button
-        onClick={onToggle}
-        className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
-      >
-        <span>and...</span>
-        <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-      </button>
-
-      {isExpanded && (
-        <div className="mt-2 space-y-1 animate-in fade-in-0 slide-in-from-top-2 duration-200">
-          {secondaryMarketInfos.map((info) => (
-            <button
-              key={info.id}
-              onClick={(e) => onViewSecondary(info.id, e)}
-              className="w-full text-left px-3 py-2 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors group/item"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs text-slate-700 dark:text-slate-300 line-clamp-1 flex-1">
-                  {info.title}
-                </span>
-                <ChevronRight className="w-3 h-3 text-blue-500 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
 export function MarketCard({
   market,
-  secondaryMarketInfos,
   onBuyYes,
   onBuyNo,
   onBuyOutcomeYes,
   onBuyOutcomeNo,
-  onBuy2DYesNoCombo,
-  onBuy2DCategoricalCombo,
   onViewMarket,
-  onViewSecondaryMarket,
   onLike,
 }: MarketCardProps) {
   const [isTrading, setIsTrading] = useState(false)
   const [tradeState, setTradeState] = useState<TradeState | null>(null)
   const [amount, setAmount] = useState(1000)
-  const [isSecondaryExpanded, setIsSecondaryExpanded] = useState(false)
 
   const handleCardClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('button')) return
@@ -326,29 +168,6 @@ export function MarketCard({
     setIsTrading(true)
   }
 
-  // Handle 2D Yes/No + Yes/No combo click
-  const handle2DYesNoClick = (baseOutcome: 'yes' | 'no', secondaryOutcome: 'yes' | 'no') => {
-    setTradeState({
-      side: baseOutcome,
-      is2DCombo: true,
-      baseOutcome,
-      secondaryOutcome,
-    })
-    setIsTrading(true)
-  }
-
-  // Handle secondary markets toggle
-  const handleToggleSecondary = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsSecondaryExpanded(!isSecondaryExpanded)
-  }
-
-  // Handle view secondary market
-  const handleViewSecondary = (secondaryId: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    onViewSecondaryMarket?.(market.id, secondaryId)
-  }
-
   const handleConfirmBuy = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!tradeState) return
@@ -364,19 +183,6 @@ export function MarketCard({
         onBuyOutcomeYes?.(market.id, tradeState.outcomeId, amount)
       } else {
         onBuyOutcomeNo?.(market.id, tradeState.outcomeId, amount)
-      }
-    } else if (market.type === 'twodimensional' && tradeState.is2DCombo) {
-      const twoDMarket = market as TwoDimensionalMarket
-      if (twoDMarket.baseMarketType === 'yesno' && twoDMarket.secondaryType === 'yesno') {
-        // Yes/No + Yes/No combo
-        if (tradeState.baseOutcome && tradeState.secondaryOutcome) {
-          onBuy2DYesNoCombo?.(market.id, tradeState.baseOutcome, tradeState.secondaryOutcome, amount)
-        }
-      } else if (twoDMarket.baseMarketType === 'categorical' && twoDMarket.secondaryType === 'yesno') {
-        // Categorical + Yes/No combo
-        if (tradeState.baseOutcomeId && tradeState.secondaryOutcome) {
-          onBuy2DCategoricalCombo?.(market.id, tradeState.baseOutcomeId, tradeState.secondaryOutcome, amount)
-        }
       }
     }
     setIsTrading(false)
@@ -421,20 +227,6 @@ export function MarketCard({
         : 100 - (outcome?.odds || 50)
     }
 
-    if (market.type === 'twodimensional' && tradeState.is2DCombo) {
-      const twoDMarket = market as TwoDimensionalMarket
-      // Yes/No + Yes/No
-      if (twoDMarket.compositeOdds && tradeState.baseOutcome && tradeState.secondaryOutcome) {
-        const key = `${tradeState.baseOutcome}${tradeState.secondaryOutcome.charAt(0).toUpperCase() + tradeState.secondaryOutcome.slice(1)}` as keyof typeof twoDMarket.compositeOdds
-        return twoDMarket.compositeOdds[key]
-      }
-      // Categorical + Yes/No
-      if (twoDMarket.categoricalCompositeOdds && tradeState.baseOutcomeId && tradeState.secondaryOutcome) {
-        const outcomeOdds = twoDMarket.categoricalCompositeOdds[tradeState.baseOutcomeId]
-        return outcomeOdds?.[tradeState.secondaryOutcome] || 50
-      }
-    }
-
     return 50
   }
 
@@ -477,38 +269,6 @@ export function MarketCard({
           onNoClick={(id, label) => handleOutcomeClick(id, label, 'no')}
         />
       )
-    } else if (market.type === 'twodimensional') {
-      const twoDMarket = market as TwoDimensionalMarket
-
-      // Yes/No + Yes/No: 2x2 grid
-      if (twoDMarket.baseMarketType === 'yesno' && twoDMarket.secondaryType === 'yesno') {
-        return (
-          <TwoDimensionalYesNoGrid
-            market={twoDMarket}
-            onCellClick={handle2DYesNoClick}
-          />
-        )
-      }
-
-      // All other 2D markets (Categorical + Yes/No, Categorical + Categorical, etc.): Show Buy button
-      return (
-        <div className="flex-1 flex flex-col justify-center">
-          <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 text-center">
-            <div className="text-xs text-slate-600 dark:text-slate-400 mb-2">
-              Complex 2D Market
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onViewMarket?.(market.id)
-              }}
-              className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-lg font-semibold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
-            >
-              View & Trade
-            </button>
-          </div>
-        </div>
-      )
     }
   }
 
@@ -521,16 +281,6 @@ export function MarketCard({
     let tradeLabel = tradeState.side.toUpperCase()
     if (tradeState.outcomeLabel) {
       tradeLabel = `${tradeState.side.toUpperCase()} on "${tradeState.outcomeLabel}"`
-    }
-    // 2D market labels
-    if (tradeState.is2DCombo) {
-      if (tradeState.baseOutcome && tradeState.secondaryOutcome) {
-        // Yes/No + Yes/No
-        tradeLabel = `${tradeState.baseOutcome.toUpperCase()}/${tradeState.secondaryOutcome.toUpperCase()}`
-      } else if (tradeState.baseOutcomeLabel && tradeState.secondaryOutcome) {
-        // Categorical + Yes/No
-        tradeLabel = `${tradeState.baseOutcomeLabel} + ${tradeState.secondaryOutcome.toUpperCase()}`
-      }
     }
 
     return (
@@ -612,18 +362,10 @@ export function MarketCard({
     )
   }
 
-  // Calculate card height based on secondary markets expansion
-  const secondaryCount = secondaryMarketInfos?.length || 0
-  const expandedHeight = isSecondaryExpanded ? 280 + (secondaryCount * 44) : 280
-
-  // Check if this is a 2D market
-  const is2DMarket = market.type === 'twodimensional'
-  const twoDMarket = is2DMarket ? (market as TwoDimensionalMarket) : null
-
   return (
     <div
       onClick={handleCardClick}
-      style={{ height: `${expandedHeight}px` }}
+      style={{ height: '280px' }}
       className={`group relative bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col ${
         isTrading
           ? 'shadow-2xl ring-2 ring-blue-500'
@@ -641,35 +383,9 @@ export function MarketCard({
         </div>
         {/* Title area */}
         <div className="flex-1 min-w-0">
-          {/* For 2D markets, show base market title and secondary question */}
-          {twoDMarket ? (
-            <>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-1">
-                {twoDMarket.baseMarketTitle}
-              </h3>
-              <div className="text-[10px] text-blue-600 dark:text-blue-400 font-medium mt-0.5">
-                and...
-              </div>
-              <h4 className="text-xs font-medium text-slate-700 dark:text-slate-300 line-clamp-1 mt-0.5">
-                {twoDMarket.secondaryQuestion}
-              </h4>
-            </>
-          ) : (
-            <>
-              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
-                {market.title}
-              </h3>
-              {/* Secondary markets expander - only for non-2D markets */}
-              {secondaryMarketInfos && secondaryMarketInfos.length > 0 && (
-                <SecondaryMarketsExpander
-                  secondaryMarketInfos={secondaryMarketInfos}
-                  isExpanded={isSecondaryExpanded}
-                  onToggle={handleToggleSecondary}
-                  onViewSecondary={handleViewSecondary}
-                />
-              )}
-            </>
-          )}
+          <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
+            {market.title}
+          </h3>
         </div>
       </div>
 

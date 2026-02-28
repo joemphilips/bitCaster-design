@@ -29,7 +29,7 @@ Market creators can monetize their insights by collecting fees from the markets 
 ## Planned Sections
 
 ### 1. Market Discovery & Trading
-Core marketplace where users browse active prediction markets, view odds, and place trades in real-time. Features tag-based navigation, inline trading from market cards, and support for Yes/No, Categorical, and 2D composite markets.
+Core marketplace where users browse active prediction markets, view odds, and place trades in real-time. Features tag-based navigation, inline trading from market cards, and support for Yes/No and Categorical markets.
 
 ### 2. Market Creation & Management
 Tools for users to create new prediction markets via a 5-step wizard, configure parameters, set fees, and manage their markets through a dashboard with analytics.
@@ -38,7 +38,7 @@ Tools for users to create new prediction markets via a 5-step wizard, configure 
 Trading dashboard with positions, P/L chart, deposit/withdraw, activity feed, and created markets. Replaces the earlier "MyPage" concept.
 
 ### 4. Market Detail
-Comprehensive view of a single prediction market with trading panel, price charts with comment overlays, resolution details, activity feed, and related markets. Supports all market types including 2D conditional probability visualization.
+Comprehensive view of a single prediction market with trading panel, price charts with comment overlays, resolution details, activity feed, and related markets. Supports all market types.
 
 ### 5. Settings
 User preferences and configuration organized into 4 collapsible category groups: General (currency, language, theme), Cashu (connected mints, seed backup), Nostr (signer mode, profile, relays), and Oracle (coming soon).

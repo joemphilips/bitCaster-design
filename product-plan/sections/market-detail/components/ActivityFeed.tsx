@@ -62,11 +62,6 @@ function TradeRow({ trade }: { trade: Trade }) {
               ({trade.outcomeId})
             </span>
           )}
-          {trade.cellId && (
-            <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
-              ({trade.cellId.replace('-', '/')})
-            </span>
-          )}
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           {formatBtc(trade.amount)} @ {trade.price.toFixed(1)}%

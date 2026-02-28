@@ -28,37 +28,6 @@ function computeCurrentDisplay(market: MarketDetailProps['market']): string {
     return ''
   }
 
-  if (market.type === 'twodimensional') {
-    if (market.compositeOdds) {
-      const cells = [
-        { label: 'Yes/Yes', odds: market.compositeOdds.yesYes },
-        { label: 'Yes/No', odds: market.compositeOdds.yesNo },
-        { label: 'No/Yes', odds: market.compositeOdds.noYes },
-        { label: 'No/No', odds: market.compositeOdds.noNo },
-      ]
-      const leader = cells.sort((a, b) => b.odds - a.odds)[0]
-      return `${leader.label} ${leader.odds.toFixed(1)}%`
-    }
-    if (market.categoricalCompositeOdds && market.baseOutcomes) {
-      let maxOdds = 0
-      let maxLabel = ''
-      for (const outcome of market.baseOutcomes) {
-        const odds = market.categoricalCompositeOdds[outcome.id]
-        if (odds) {
-          if (odds.yes > maxOdds) {
-            maxOdds = odds.yes
-            maxLabel = `${outcome.label}/Yes`
-          }
-          if (odds.no > maxOdds) {
-            maxOdds = odds.no
-            maxLabel = `${outcome.label}/No`
-          }
-        }
-      }
-      if (maxLabel) return `${maxLabel} ${maxOdds.toFixed(1)}%`
-    }
-  }
-
   return ''
 }
 
@@ -87,8 +56,6 @@ export function MarketDetail({
   onLoadMoreComments,
   onRelatedMarketClick,
   onCreatorClick,
-  onFixDimension,
-  fixedDimension,
   onTradeSideChange,
   onOrderTypeChange,
   onLimitPriceChange,
@@ -99,16 +66,6 @@ export function MarketDetail({
 
   // Get outcome-specific data for categorical markets
   const outcomePriceHistories = market.type === 'categorical' ? market.outcomePriceHistories : undefined
-
-  // Get cell-specific data for 2D markets
-  const cellPriceHistories = market.type === 'twodimensional' ? market.cellPriceHistories : undefined
-
-  // Get 2D market type info for dynamic chart buttons
-  const baseMarketType = market.type === 'twodimensional' ? market.baseMarketType : undefined
-  const secondaryType = market.type === 'twodimensional' ? market.secondaryType : undefined
-  const baseOutcomes = market.type === 'twodimensional' ? market.baseOutcomes : undefined
-  const baseShortLabel = market.type === 'twodimensional' ? market.baseShortLabel : undefined
-  const secondaryShortLabel = market.type === 'twodimensional' ? market.secondaryShortLabel : undefined
 
   // Compute current display for price chart
   const currentDisplay = computeCurrentDisplay(market)
@@ -173,16 +130,8 @@ export function MarketDetail({
               onChartTypeChange={onChartTypeChange}
               outcomePriceHistories={outcomePriceHistories}
               outcomes={outcomes}
-              cellPriceHistories={cellPriceHistories}
               currentDisplay={currentDisplay}
               comments={market.comments}
-              fixedDimension={fixedDimension}
-              onFixDimension={onFixDimension}
-              baseMarketType={baseMarketType}
-              secondaryType={secondaryType}
-              baseShortLabel={baseShortLabel}
-              secondaryShortLabel={secondaryShortLabel}
-              baseOutcomes={baseOutcomes}
             />
 
             {/* Resolution Info (in normal position for open markets) */}
@@ -248,7 +197,6 @@ export function MarketDetail({
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {tradeSelection.side.toUpperCase()}
                   {tradeSelection.outcomeId && ` - ${tradeSelection.outcomeId}`}
-                  {tradeSelection.cellId && ` - ${tradeSelection.cellId.replace('-', '/')}`}
                 </p>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">
                   {tradeAmount > 0 ? formatBtc(tradeAmount) : 'Enter amount'}

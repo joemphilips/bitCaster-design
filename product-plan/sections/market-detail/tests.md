@@ -44,11 +44,7 @@ Test the full market detail page: trading (buy/sell, market/limit), charts, orde
 - Setup: Market with resolution.status === 'resolved', outcome: 'Yes'
 - Expected: RESOLVED badge visible, no trading panel shown, single-column layout, resolution info displayed prominently
 
-### Flow 7: Trade on 2D Market
-- Steps: View 2D market grid → click Yes/Yes cell → enter 1000 sats → confirm
-- Expected: onTradeSelect called with cellId: "yes-yes", trade preview reflects 2D pricing
-
-### Flow 8: Comment via Trade
+### Flow 7: Comment via Trade
 - Steps: Enter trade amount → type comment in textarea (max 280 chars) → confirm trade
 - Expected: Comment text included in onTradeConfirm payload, comment appears in CommentSection after trade
 
@@ -65,12 +61,9 @@ Test the full market detail page: trading (buy/sell, market/limit), charts, orde
 - ActivityFeed shows side color-coded (yes=green, no=red)
 - CommentSection has no direct input field (trade-gated)
 - MarketHeader like button toggles filled/outline state
-- 2D grid cells have correct gradient colors: yes-yes solid emerald, no-no solid red, mixed cells diagonal gradient
 
 ## Edge Cases
 - Very long market titles wrap gracefully in header
-- 2D conditional probability toggle: fixing a dimension shows two conditional lines, "Conditional on [label]" subtitle appears
-- Conditional probability division by zero: data points with zero denominator skipped, chart renders without gaps in line
 - Comment character limit (280): input blocks further typing, character counter shown
 - Quick amount buttons (100, 500, 1000, 5000) correctly set input value
 - Order book with no liquidity displays empty state, not an error

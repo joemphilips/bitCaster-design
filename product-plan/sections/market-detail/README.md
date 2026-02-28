@@ -1,7 +1,7 @@
 # Market Detail
 
 ## Overview
-Comprehensive view of a single prediction market with trading panel, price charts, order book, activity, and comments. Supports Yes/No, Categorical, and 2D composite markets. Trading panel supports Buy/Sell toggle and Market/Limit order types.
+Comprehensive view of a single prediction market with trading panel, price charts, order book, activity, and comments. Supports Yes/No and Categorical markets. Trading panel supports Buy/Sell toggle and Market/Limit order types.
 
 ## User Flows
 - View current odds, price history, market stats
@@ -17,7 +17,7 @@ Comprehensive view of a single prediction market with trading panel, price chart
 - Resolved markets show single-column layout without trading panel
 
 ## Data Used
-**Entities:** MarketDetail (YesNoMarketDetail, CategoricalMarketDetail, TwoDimensionalMarketDetail), TradeSelection, TradePreview, OrderBook, PriceHistory, Trade, Comment, RelatedMarket, ResolutionDetails, MarketCreator
+**Entities:** MarketDetail (YesNoMarketDetail, CategoricalMarketDetail), TradeSelection, TradePreview, OrderBook, PriceHistory, Trade, Comment, RelatedMarket, ResolutionDetails, MarketCreator
 **From global model:** Bought, Sold, CommentPosted, MarketLiked, MarketResolved
 
 ## Components Provided
@@ -50,5 +50,3 @@ Comprehensive view of a single prediction market with trading panel, price chart
 | `onCommentLike` | Like a comment |
 | `onRelatedMarketClick` | Navigate to related market |
 | `onCreatorClick` | View creator profile |
-| `onChartCellChange` | Select cell for 2D chart |
-| `onFixDimension` | Fix dimension for conditional probability |

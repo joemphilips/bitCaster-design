@@ -34,7 +34,7 @@
 
 ## Goal
 
-Implement the Market Detail feature — a comprehensive single-market view with trading panel, price charts, order book, activity feed, comments, and support for all market types including resolved markets and 2D conditional probability visualization.
+Implement the Market Detail feature — a comprehensive single-market view with trading panel, price charts, order book, activity feed, comments, and support for all market types including resolved markets.
 
 ## Overview
 
@@ -44,7 +44,6 @@ The market detail page is a two-column layout (desktop) where the left column co
 - Market header with image, tags, creator info, metrics, like, and share
 - Trading panel with Buy/Sell toggle, Market/Limit order tabs, and outcome selection
 - Price chart with 1H/24H/7D/30D/ALL timeframes, price/volume toggle, and comment bubble overlay
-- 2D conditional probability chart with dimension-fixing toggle
 - Order book (bid/ask visualization)
 - Activity feed (recent trades with infinite scroll)
 - Comment section (read-only; comments posted via trading panel only)
@@ -80,7 +79,7 @@ Copy from `product-plan/sections/market-detail/components/`:
 ### Data Layer
 
 Key types (see `product-plan/sections/market-detail/types.ts`):
-- `YesNoMarketDetail`, `CategoricalMarketDetail`, `TwoDimensionalMarketDetail`
+- `YesNoMarketDetail`, `CategoricalMarketDetail`
 - `TradeSelection`, `TradePreview`, `OrderBook`, `PriceHistory`, `Trade`, `Comment`, `RelatedMarket`, `ResolutionDetails`
 
 API endpoints to implement:
@@ -117,8 +116,6 @@ Wire up these props on the `MarketDetail` component:
 | `onCommentLike` | Call comment like API, update count optimistically |
 | `onRelatedMarketClick` | Navigate to `/markets/:id` for related market |
 | `onCreatorClick` | Navigate to creator profile or portfolio |
-| `onChartCellChange` | Update selected 2D cell for chart display |
-| `onFixDimension` | Update conditional probability dimension for 2D chart |
 
 ### Empty States
 
@@ -154,12 +151,6 @@ Wire up these props on the `MarketDetail` component:
 2. Limit price input appears; user enters target price
 3. User confirms — limit order created, visible in order book
 
-**Conditional probability (2D market):**
-1. User views a 2D (Yes/No x Yes/No) market detail
-2. Chart shows probability grid by default
-3. User clicks "BTC=Yes" dimension toggle — chart shows two conditional probability lines (ETH=Yes|BTC=Yes and ETH=No|BTC=Yes)
-4. User clicks "All" — chart returns to standard view
-
 **Resolved market:**
 1. User navigates to a resolved market
 2. RESOLVED badge visible in header; trading panel not rendered
@@ -169,14 +160,13 @@ Wire up these props on the `MarketDetail` component:
 ## Done When
 
 - [ ] Tests written and passing
-- [ ] Market detail loads for all three market types (Yes/No, Categorical, 2D)
+- [ ] Market detail loads for both market types (Yes/No, Categorical)
 - [ ] Trading panel shows correct outcomes for each type
 - [ ] Buy/Sell toggle and Market/Limit tabs both functional
 - [ ] Trade preview recalculates on amount change
 - [ ] Trade executes and page data refreshes
 - [ ] Price chart renders with timeframe and type toggles
 - [ ] Comment bubbles overlay chart at correct positions
-- [ ] 2D conditional probability toggle works
 - [ ] Order book renders bid/ask depth
 - [ ] Activity feed paginates via infinite scroll
 - [ ] Comments load and comment likes work

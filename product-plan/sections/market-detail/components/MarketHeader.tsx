@@ -108,15 +108,6 @@ export function MarketHeader({
           {market.title}
         </h1>
 
-        {/* 2D Market: Show base market reference */}
-        {market.type === 'twodimensional' && (
-          <p className={`text-sm mb-4 ${market.imageUrl ? 'text-slate-300' : 'text-slate-600 dark:text-slate-400'}`}>
-            Based on: <span className="font-medium">{market.baseMarketTitle}</span>
-            <br />
-            <span className="text-amber-400">+ {market.secondaryQuestion}</span>
-          </p>
-        )}
-
         {/* Meta Row */}
         <div className="flex flex-wrap items-center gap-4 mb-4">
           {/* Time Remaining / Resolved Date */}

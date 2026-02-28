@@ -38,14 +38,13 @@ Implement the Market Discovery & Trading feature — the core marketplace where 
 
 ## Overview
 
-Users land on a single-page marketplace showing active prediction markets organized by tags. They can filter by market type, volume, or closing date, then trade directly from a market card without navigating away. Markets come in three types: Yes/No, Categorical, and Two-Dimensional composite. Clicking outside the trading overlay navigates to the full market detail page. New markets append via infinite scroll as the user reaches the bottom.
+Users land on a single-page marketplace showing active prediction markets organized by tags. They can filter by market type, volume, or closing date, then trade directly from a market card without navigating away. Markets come in two types: Yes/No and Categorical. Clicking outside the trading overlay navigates to the full market detail page. New markets append via infinite scroll as the user reaches the bottom.
 
 **Key Functionality:**
 - Single-select horizontal tag bar (Trending, Popular, New, Sports, Politics, Crypto, etc.)
 - Collapsible filter row (Market Type, Volume Range, Closing Date)
-- Fixed-height (280px) market cards for all three market types
+- Fixed-height (280px) market cards for both market types
 - Inline trading overlay that transforms the card without changing its size
-- Expandable secondary market list for 2D composite markets ("and..." link)
 - Infinite scroll for loading additional markets
 
 ## Recommended Approach: Test-Driven Development
@@ -53,7 +52,7 @@ Users land on a single-page marketplace showing active prediction markets organi
 See `product-plan/sections/market-discovery-and-trading/tests.md` for detailed test instructions.
 
 **TDD Workflow:**
-1. Read `tests.md` and write failing tests for TagBar, FilterControls, MarketCard, TradingOverlay, and SecondaryMarketsList
+1. Read `tests.md` and write failing tests for TagBar, FilterControls, MarketCard, and TradingOverlay
 2. Implement each component to make the tests pass
 3. Refactor while keeping tests green
 
@@ -64,14 +63,14 @@ See `product-plan/sections/market-discovery-and-trading/tests.md` for detailed t
 Copy from `product-plan/sections/market-discovery-and-trading/components/`:
 
 - `MarketDiscovery` — Main container with tag bar, filters, and market grid
-- `MarketCard` — Individual market card handling YesNo, Categorical, and 2D types
+- `MarketCard` — Individual market card handling YesNo and Categorical types
 - `FilterControls` — Market type, volume range, and closing date filters
 - `TagBar` — Horizontal tag navigation (single-select)
 
 ### Data Layer
 
 Key types (see `product-plan/sections/market-discovery-and-trading/types.ts`):
-- `YesNoMarket`, `CategoricalMarket`, `TwoDimensionalMarket`
+- `YesNoMarket`, `CategoricalMarket`
 - `MetaTag`, `CategoryTag`
 - `TradeState`, `FilterState`
 
@@ -95,9 +94,6 @@ Wire up these props on the `MarketDiscovery` component:
 | `onBuyOutcomeNo` | Call trade API for a categorical outcome, side no |
 | `onViewMarket` | Navigate to `/markets/:id` |
 | `onLoadMore` | Fetch next page and append to list |
-| `onBuy2DYesNoCombo` | Call trade API for a 2D yes/no combination |
-| `onBuy2DCategoricalCombo` | Call trade API for a 2D categorical combination |
-| `onViewSecondaryMarket` | Navigate to secondary market detail page |
 
 ### Empty States
 
@@ -126,11 +122,6 @@ Wire up these props on the `MarketDiscovery` component:
 2. User scrolls to preferred outcome, clicks "Yes" next to it — overlay opens with that outcome pre-selected
 3. User confirms trade
 
-**Browse 2D markets:**
-1. User sees 2D card with base and secondary questions and probability grid
-2. User clicks a cell (e.g., Yes/Yes) — trading overlay opens for that combination
-3. User clicks "and..." link — card expands to show list of secondary markets; clicking one navigates to its detail
-
 **Infinite scroll:**
 1. User scrolls to bottom of market grid
 2. Loading indicator appears, next page fetches
@@ -139,12 +130,11 @@ Wire up these props on the `MarketDiscovery` component:
 ## Done When
 
 - [ ] Tests written and passing
-- [ ] All three market card types render with real data
+- [ ] Both market card types render with real data
 - [ ] Tag bar single-select works and fetches correct markets
 - [ ] Filters apply and combine correctly
 - [ ] Trading overlay opens and closes without resizing the card
 - [ ] Trades execute via API and card odds reflect the new state
 - [ ] Empty states display for no results and network errors
 - [ ] Infinite scroll loads additional pages
-- [ ] "and..." expands 2D secondary market list
 - [ ] Responsive on mobile (tag bar scrolls horizontally, cards stack to single column)
