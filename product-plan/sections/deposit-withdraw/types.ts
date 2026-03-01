@@ -55,7 +55,7 @@ export interface DepositWithdrawProps {
   /** Fiat equivalent of the entered amount */
   amountFiat: string
 
-  /** Fiat currency symbol (e.g., "$", "\u00a5") */
+  /** Fiat currency symbol (e.g., "$", "\\u00a5") */
   fiatSymbol: string
 
   /** Whether to show fiat or sats as the primary display */

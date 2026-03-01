@@ -1,44 +1,41 @@
 # Wallet Setup
 
 ## Overview
-First-time onboarding wizard for creating a new wallet or recovering from seed phrase. 5-step flow: Welcome Landing → PWA Confirmation → Choice (Create/Recover) → Seed → Mint Setup.
+5-step onboarding wizard for wallet creation or recovery. This section runs without the application shell (`shell: false`) and uses its own full-screen layouts.
 
-## User Flows
-- Step 1: Welcome page with Terms of Service link
-- Step 2: PWA install confirmation with platform-specific instructions
-- Step 3: Choose Create New or Recover Wallet
-- Step 4a (Create): View 12-word seed phrase, confirm saved
-- Step 4b (Recover): Enter 12 seed words with BIP-39 validation
-- Step 5: Configure mint connections, finish setup
+Accessed from the Portfolio "Get Started" CTA (when no wallet exists) or from Settings.
 
-## Data Used
-**Entities:** WalletSetupProps (SetupStep, SetupChoice, MintConnectionTest)
+## Steps
+1. **Welcome Landing** — Logo, welcome message, Terms of Service link, Next button
+2. **PWA Confirmation** — Device illustrations, install instructions, skip option
+3. **Choice** — Two large cards: Create New Wallet / Recover Wallet
+4. **Seed** — Create path: display 12 words then verify #3, #7, #12. Recover path: enter 12 words with BIP-39 validation
+5. **Mint Setup** — Default mint pre-filled, connection test, add additional mints, Finish Setup
 
-## Components Provided
-- `WalletSetup` — Main wizard container
-- `WelcomeLanding` — Welcome page with logo and ToS
-- `PwaConfirmation` — PWA install instructions
-- `ChoiceCards` — Create/Recover selection
-- `SeedDisplay` — 3×4 seed word grid (create flow)
-- `SeedInput` — 12 input fields (recover flow)
-- `MintSetup` — Mint URL configuration
-- `StepIndicator` — Progress indicator (steps 3-5)
+## Components
+- `WalletSetup` — Root component for the entire flow
+- `WelcomeLanding` — Step 1 full-screen page
+- `PwaConfirmation` — Step 2 PWA install guidance
+- `ChoiceCards` — Step 3 create/recover selection
+- `SeedDisplay` — Step 4 seed phrase display (3x4 grid)
+- `SeedInput` — Step 4 recover flow (12 input fields)
+- `MintSetup` — Step 5 mint connection management
+- `StepIndicator` — Horizontal progress bar (steps 3-5 only)
 
-## Callback Props
+## Key Callbacks
+- `onWelcomeNext` — Advance from welcome landing
+- `onChoiceSelect` — User picks create or recover
+- `onSeedSavedToggle` — Checkbox for confirming seed saved
+- `onSeedVerifyInput` — Word entry during verification (positions 3, 7, 12)
+- `onSeedVerifyComplete` — All verification words correct
+- `onSeedWordInput` — Individual word entry in recover flow
+- `onSeedPhrasePaste` — Paste detection for full 12-word phrase
+- `onRecover` — Submit recovered seed
+- `onAddMint` / `onRemoveMint` — Manage mint connections
+- `onFinishSetup` — Complete onboarding, navigate to Portfolio
 
-| Callback | Description |
-|----------|-------------|
-| `onWelcomeNext` | Advance from welcome |
-| `onShowTerms` | Open ToS popup |
-| `onCloseTerms` | Close ToS popup |
-| `onPwaNext` | Advance from PWA step |
-| `onChoiceSelect` | Select create/recover |
-| `onSeedSavedToggle` | Confirm seed saved |
-| `onSeedWordInput` | Enter seed word |
-| `onSeedPhrasePaste` | Paste full phrase |
-| `onRecover` | Submit recovery |
-| `onAddMint` | Add mint URL |
-| `onRemoveMint` | Remove mint |
-| `onContinue` | Continue (step 4→5) |
-| `onBack` | Go back |
-| `onFinishSetup` | Complete setup |
+## Background Data Loading
+After step 2, the app silently begins downloading condition data from the hard-coded mint via `GET /v1/conditions`. A subtle progress indicator appears in the bottom-left during steps 3-4. States: "Loading markets..." → "5 markets loaded" → or "Failed to load markets" with retry.
+
+## Configuration
+- shell: false

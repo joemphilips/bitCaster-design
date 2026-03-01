@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Loader2, AlertCircle, RotateCcw } from 'lucide-react'
 import { TagBar } from './TagBar'
 import { FilterControls } from './FilterControls'
 import { MarketCard } from './MarketCard'
@@ -21,6 +22,10 @@ export function MarketDiscovery({
   onBuyOutcomeNo,
   onViewMarket,
   onLoadMore,
+  backgroundDataLoad,
+  lastUpdatedAt,
+  onRefreshConditions,
+  isRefreshing,
 }: MarketDiscoveryProps) {
   const observerTarget = useRef<HTMLDivElement>(null)
   const [filtersVisible, setFiltersVisible] = useState(false)
@@ -69,8 +74,11 @@ export function MarketDiscovery({
             selectedTag={selectedTag}
             filtersVisible={filtersVisible}
             activeFilterCount={activeFilterCount}
+            lastUpdatedAt={lastUpdatedAt}
+            isRefreshing={isRefreshing}
             onTagSelect={onTagSelect}
             onToggleFilters={() => setFiltersVisible(!filtersVisible)}
+            onRefreshConditions={onRefreshConditions}
           />
         </div>
       </div>
@@ -132,6 +140,39 @@ export function MarketDiscovery({
           )}
         </div>
       </div>
+
+      {/* Background Data Loading Progress Bar */}
+      {backgroundDataLoad && backgroundDataLoad.status === 'loading' && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <div className="h-1 w-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div className="h-full w-full bg-blue-500 dark:bg-blue-400 animate-[stripe_1s_linear_infinite] bg-[length:20px_20px] bg-[linear-gradient(45deg,rgba(255,255,255,0.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.15)_75%,transparent_75%,transparent)]" />
+          </div>
+          <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 py-2 flex items-center gap-2">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500 dark:text-blue-400" />
+            <span className="text-xs text-slate-500 dark:text-slate-400">
+              Loading market data... ({backgroundDataLoad.conditionsLoaded} loaded)
+            </span>
+          </div>
+        </div>
+      )}
+
+      {backgroundDataLoad && backgroundDataLoad.status === 'failed' && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <div className="bg-amber-50 dark:bg-amber-950/50 border-t border-amber-200 dark:border-amber-800/50 px-4 py-2 flex items-center gap-2">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+            <span className="text-xs text-amber-700 dark:text-amber-300">
+              Failed to load market data
+            </span>
+            <button
+              onClick={() => onRefreshConditions?.()}
+              className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-colors"
+            >
+              <RotateCcw className="w-3 h-3" />
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

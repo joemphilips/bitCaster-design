@@ -1,5 +1,5 @@
 import type { PLChartData, PLTimeSelector } from '../types'
-import { formatBtc } from '../../../lib/format'
+import { formatBtc } from './format'
 
 const TIME_RANGES: PLTimeSelector[] = ['1D', '1W', '1M', 'ALL']
 

@@ -1,130 +1,134 @@
-# Test Instructions: Wallet Setup
+# Wallet Setup — Test Plan
 
-These test-writing instructions are **framework-agnostic**. Adapt them to your testing setup.
+> These tests are framework-agnostic. They describe expected behavior in terms of user actions, visible UI elements, and callback invocations. Adapt to your testing framework (Playwright, Testing Library, Cypress, etc.).
 
-## Overview
-Test the 5-step onboarding wizard: Welcome Landing, PWA Confirmation, Wallet Choice, Seed Phrase (create or recover), and Mint Setup.
+---
 
 ## User Flow Tests
 
-### Flow 1: Complete Create New Wallet Flow
-**Success Path:**
-- Steps:
-  1. Welcome step → click "Get Started"
-  2. PWA step → click "Continue"
-  3. Choice step → click "Create New Wallet"
-  4. Seed Phrase step → view 12 words → check "I have saved my seed phrase" → click "Continue"
-  5. Mint Setup step → verify default mint connected → click "Finish Setup"
-- Expected: onFinishSetup called, user navigated to main app
+### Flow 1 — Create New Wallet (Success)
+1. Render `WalletSetup` at `currentStep: 1`.
+2. Verify "Welcome to bitCaster" heading and "Next" button are visible.
+3. Click "Next" → `onWelcomeNext` fires.
+4. Advance to `currentStep: 2`. Verify "Install PWA" heading. Click "Next" → `onPwaNext` fires.
+5. Advance to `currentStep: 3`. Verify two choice cards: "Create New Wallet" and "Recover Wallet".
+6. Click "Create New Wallet" → `onChoiceSelect('create')` fires.
+7. Advance to `currentStep: 4`, `seedVerifyPhase: 'display'`. Verify 12 seed words in a 3x4 grid with indices 1-12.
+8. Verify "Continue" button is disabled. Check "I have saved my seed phrase" → `onSeedSavedToggle(true)` fires.
+9. With `seedSaved: true`, verify "Continue" button is enabled. Click it → `onContinue` fires.
+10. Switch to `seedVerifyPhase: 'verify'`. Verify three input fields labeled "Word #3", "Word #7", "Word #12".
+11. Enter correct words → each shows green check icon.
+12. `onSeedVerifyComplete` fires after all three match. Advance to step 5.
+13. At `currentStep: 5`, verify default mint URL is shown with connection status.
+14. Click "Finish Setup" → `onFinishSetup` fires.
 
-### Flow 2: Complete Recover Wallet Flow
-**Success Path:**
-- Steps:
-  1. Welcome step → "Get Started"
-  2. PWA step → "Continue"
-  3. Choice step → click "Recover Wallet"
-  4. Recovery step → enter all 12 valid BIP-39 words → click "Recover"
-  5. Mint Setup step → "Finish Setup"
-- Expected: onRecover called with the 12 words array, flow completes, onFinishSetup called
+### Flow 1 — Create New Wallet (Failure: Incorrect Verification Word)
+1. At `seedVerifyPhase: 'verify'`, enter an incorrect word for position #3.
+2. Verify the field shows red highlight and "Incorrect word" error message.
+3. Verify "Verify & Continue" button remains disabled.
 
-**Failure Path:**
-- Steps: Enter 11 valid words + 1 invalid word (e.g., "zzzzzzz")
-- Expected: Invalid word highlighted red, error message shown, "Recover" button disabled
+### Flow 2 — Recover Wallet (Success)
+1. At `currentStep: 3`, click "Recover Wallet" → `onChoiceSelect('recover')` fires.
+2. At `currentStep: 4` with `choice: 'recover'`, verify 12 numbered input fields.
+3. Enter 12 valid BIP-39 words. Verify "Recover" button becomes enabled.
+4. Click "Recover" → `onRecover` fires.
+5. Advance to step 5 (Mint Setup). Click "Finish Setup" → `onFinishSetup` fires.
 
-### Flow 3: View Terms of Service
-**Success Path:**
-- Steps: On Welcome step → click "Terms of Service" hyperlink
-- Expected: onShowTerms called, bottom sheet/modal opens with ToS content
+### Flow 2 — Recover Wallet (Failure: Invalid BIP-39 Word)
+1. Enter an invalid word (e.g., "xyzzy") into field #1.
+2. Verify the field is highlighted in red with an error message.
+3. Verify "Recover" button remains disabled.
 
-### Flow 4: Paste Seed Phrase
-**Success Path:**
-- Steps: On Recovery step → paste "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12" into first input field
-- Expected: All 12 input fields auto-fill with respective words, onSeedPhrasePaste called
-
-### Flow 5: Mint Connection Test
-**Success Path:**
-- Steps: On Mint Setup step → observe default mint "http://localhost:3338" auto-connecting
-- Expected: Status shows connecting animation → transitions to "connected" with green indicator
-
-**Failure Path:**
-- Steps: Add custom mint URL "https://bad.mint.example" → submit
-- Expected: Status shows "failed" with red indicator and error message "Connection refused"
-
-### Flow 6: Add Additional Mint on Mint Setup Step
-**Success Path:**
-- Steps: On Mint Setup step → click "Add Mint" → enter "https://mint.minibits.cash/Bitcoin" → submit
-- Expected: New mint row appears, connection test runs, status eventually shows connected
-
-### Flow 7: Back Navigation Preserves State
-**Success Path:**
-- Steps: Navigate to Seed Phrase step (step 4) → click "Back" to Choice step → click "Back" to PWA step
-- Expected: Returns to PWA step, all previously entered state in later steps is preserved
+---
 
 ## Empty State Tests
-- Welcome step (step 1) has no "Back" button
-- Step indicator (dots or numbers) only shown on steps 3-5, not on Welcome or PWA steps
-- Mint Setup with zero connected mints → "Finish Setup" button disabled with tooltip explaining requirement
 
-## Component Tests
-- StepIndicator shows correct active step (steps 3-5 only)
-- SeedPhraseGrid shows 12 numbered cells in a grid layout
-- SeedPhraseGrid (create mode) shows words, checkbox starts unchecked, Continue disabled until checked
-- SeedPhraseGrid (recover mode) shows 12 empty inputs, Recover button disabled until all valid
-- WordInput highlights red on blur with invalid BIP-39 word
-- MintRow shows URL, connection status indicator, and remove button for non-default mints
-- "Finish Setup" enabled only when at least one mint has status "connected"
+- **Mint connection list with no additional mints**: At step 5, only the default mint URL (from `VITE_MINT_URL`) is shown. "Add Another Mint" button is visible. No remove button on the default mint.
+
+---
+
+## Component Interaction Tests
+
+- **Step indicator visibility**: Step indicator is hidden on steps 1 and 2. It is visible on steps 3, 4, and 5, showing labels "Choice", "Seed", "Mint Setup".
+- **Step indicator state**: Current step is highlighted (blue), completed steps show checkmark (green), future steps are grey.
+- **Background data loading**: When `backgroundDataLoad.status` is `'loading'`, a progress indicator shows "Loading markets..." with a spinner. When `status` is `'loaded'` with `conditionsLoaded: 5`, it shows "5 markets loaded" with a checkmark.
+- **Back navigation**: At step 4, clicking Back → `onBack` fires. At step 5, clicking Back → `onBack` fires.
+- **Seed phrase paste**: Pasting a 12-word phrase into any input field on the recover screen triggers `onSeedPhrasePaste` with the full phrase, auto-filling all 12 fields.
+- **Terms of Service**: Clicking "Terms of Service" on step 1 triggers `onShowTerms`. When `showTerms: true`, a popup is visible. Closing it triggers `onCloseTerms`.
+
+---
 
 ## Edge Cases
-- Seed phrase checkbox must be explicitly checked before Continue is enabled in create flow
-- All 12 words must be non-empty and valid BIP-39 to enable Recover button
-- Pasting a seed phrase with extra spaces between words still parses correctly
-- Pasting fewer than 12 words fills only available fields, leaves rest empty
-- Back navigation from step 5 (Mint Setup) returns to step 4 (Seed/Recovery) with seed still visible
-- PWA step: if already installed as PWA, step may auto-advance or show confirmation message
 
-## Accessibility
-- All step inputs keyboard navigable; Tab moves between word fields in order
-- Seed phrase grid: word count progress announced to screen reader (e.g., "6 of 12 words entered")
-- "Finish Setup" button aria-disabled with descriptive message when no mint connected
-- Bottom sheet ToS dismissible with Escape key and has focus trap while open
-- Back button has aria-label "Go back to previous step"
+- **Finish Setup disabled**: At step 5, "Finish Setup" is disabled if no mint has `status: 'connected'`.
+- **Connection test in progress**: A mint with `status: 'connecting'` shows a loading spinner, not a success or error state.
+- **Connection test failure**: A mint with `status: 'failed'` shows the `errorMessage` and a red indicator.
+- **Seed verify back**: At `seedVerifyPhase: 'verify'`, clicking Back triggers `onSeedVerifyBack` and returns to `seedVerifyPhase: 'display'`.
+
+---
+
+## Accessibility Checks
+
+- All input fields have associated labels (e.g., "Word #3", "Word #7", "Word #12").
+- "Continue", "Recover", and "Finish Setup" buttons have descriptive accessible names.
+- Checkbox "I have saved my seed phrase" is keyboard-focusable and toggleable with Space/Enter.
+- Step indicator uses `aria-current="step"` on the active step.
+- Error messages on seed word inputs are announced via `aria-live="polite"`.
+
+---
 
 ## Sample Test Data
+
 ```typescript
-const mockValidSeedWords = [
-  "abandon", "ability", "able", "about", "above",
-  "absent", "absorb", "abstract", "absurd", "abuse",
-  "access", "accident"
-];
+import type {
+  WalletSetupProps,
+  MintConnectionTest,
+  BackgroundDataLoad,
+} from './types'
 
-const mockInvalidSeedWords = [
-  "abandon", "ability", "able", "about", "above",
-  "absent", "absorb", "abstract", "absurd", "abuse",
-  "access", "zzzzzzz"  // invalid BIP-39 word
-];
+const defaultMintConnection: MintConnectionTest = {
+  url: 'https://mint.bitcaster.app',
+  status: 'connected',
+}
 
-const mockMintConnections = [
-  { url: "http://localhost:3338", status: "connected" as const, isDefault: true }
-];
+const backgroundDataLoading: BackgroundDataLoad = {
+  mintUrl: 'https://mint.bitcaster.app',
+  status: 'loading',
+  conditionsLoaded: 0,
+}
 
-const mockFailedMint = {
-  url: "https://bad.mint.example",
-  status: "failed" as const,
-  errorMessage: "Connection refused",
-  isDefault: false
-};
+const backgroundDataLoaded: BackgroundDataLoad = {
+  mintUrl: 'https://mint.bitcaster.app',
+  status: 'loaded',
+  conditionsLoaded: 5,
+}
 
-const mockConnectingMint = {
-  url: "https://mint.minibits.cash/Bitcoin",
-  status: "connecting" as const,
-  isDefault: false
-};
+const sampleCreateFlowProps: WalletSetupProps = {
+  currentStep: 4,
+  showTerms: false,
+  choice: 'create',
+  seedWords: [
+    'abandon', 'ability', 'able', 'about', 'above', 'absent',
+    'absorb', 'abstract', 'absurd', 'abuse', 'access', 'accident',
+  ],
+  inputSeedWords: [],
+  seedSaved: false,
+  seedVerifyPhase: 'display',
+  seedVerifyInputs: { word3: '', word7: '', word12: '' },
+  mintConnections: [defaultMintConnection],
+  backgroundDataLoad: backgroundDataLoaded,
+}
 
-const mockWizardState = {
-  currentStep: 1 as const,
-  createMode: true,
-  seedWords: mockValidSeedWords,
-  seedConfirmed: false,
-  mints: mockMintConnections
-};
+const sampleRecoverFlowProps: WalletSetupProps = {
+  currentStep: 4,
+  showTerms: false,
+  choice: 'recover',
+  seedWords: [],
+  inputSeedWords: Array(12).fill(''),
+  seedSaved: false,
+  seedVerifyPhase: 'display',
+  seedVerifyInputs: { word3: '', word7: '', word12: '' },
+  mintConnections: [defaultMintConnection],
+  backgroundDataLoad: backgroundDataLoading,
+}
 ```

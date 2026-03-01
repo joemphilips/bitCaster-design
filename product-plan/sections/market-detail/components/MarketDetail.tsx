@@ -1,4 +1,5 @@
 import type { MarketDetailProps } from '../types'
+import { formatBtc } from './format'
 import { MarketHeader } from './MarketHeader'
 import { TradingPanel } from './TradingPanel'
 import { PriceChart } from './PriceChart'
@@ -7,15 +8,20 @@ import { ActivityFeed } from './ActivityFeed'
 import { RelatedMarkets } from './RelatedMarkets'
 import { CommentSection } from './CommentSection'
 
-function formatBtc(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
+function formatNumericPrice(value: number, unit: string): string {
+  if (unit === 'USD') return `$${value.toLocaleString()}`
+  return `${value.toLocaleString()} ${unit}`
 }
 
 function computeCurrentDisplay(market: MarketDetailProps['market']): string {
   const isResolved = market.resolution.status === 'resolved'
+
+  if (market.type === 'numeric') {
+    if (isResolved && market.attestedValue != null) {
+      return `Resolved: ${formatNumericPrice(market.attestedValue, market.unit)}`
+    }
+    return formatNumericPrice(market.currentPrice, market.unit)
+  }
 
   if (isResolved && market.resolution.finalOutcome) {
     return `Resolved: ${market.resolution.finalOutcome}`
@@ -44,6 +50,10 @@ export function MarketDetail({
   tradeSelection,
   tradeAmount,
   tradePreview,
+  tradeSide,
+  orderType,
+  limitOrderPreview,
+  limitPrice,
   onTimeframeChange,
   onChartTypeChange,
   onTradeSelect,
@@ -58,6 +68,10 @@ export function MarketDetail({
   onLoadMoreComments,
   onRelatedMarketClick,
   onCreatorClick,
+  onTradeSideChange,
+  onOrderTypeChange,
+  onLimitPriceChange,
+  userHoldings,
 }: MarketDetailProps) {
   // Get outcomes for categorical markets
   const outcomes = market.type === 'categorical' ? market.outcomes : undefined
@@ -102,11 +116,19 @@ export function MarketDetail({
                   tradeSelection={tradeSelection}
                   tradeAmount={tradeAmount}
                   tradePreview={tradePreview}
+                  tradeSide={tradeSide}
+                  orderType={orderType}
+                  limitOrderPreview={limitOrderPreview}
+                  limitPrice={limitPrice}
                   onTradeSelect={onTradeSelect}
                   onTradeClear={onTradeClear}
                   onAmountChange={onAmountChange}
                   onTradeConfirm={onTradeConfirm}
                   onCommentPost={onCommentPost}
+                  onTradeSideChange={onTradeSideChange}
+                  onOrderTypeChange={onOrderTypeChange}
+                  onLimitPriceChange={onLimitPriceChange}
+                  userHoldings={userHoldings}
                 />
               </div>
             )}
@@ -122,6 +144,7 @@ export function MarketDetail({
               outcomes={outcomes}
               currentDisplay={currentDisplay}
               comments={market.comments}
+              unit={market.type === 'numeric' ? market.unit : undefined}
             />
 
             {/* Resolution Info (in normal position for open markets) */}
@@ -158,11 +181,19 @@ export function MarketDetail({
                   tradeSelection={tradeSelection}
                   tradeAmount={tradeAmount}
                   tradePreview={tradePreview}
+                  tradeSide={tradeSide}
+                  orderType={orderType}
+                  limitOrderPreview={limitOrderPreview}
+                  limitPrice={limitPrice}
                   onTradeSelect={onTradeSelect}
                   onTradeClear={onTradeClear}
                   onAmountChange={onAmountChange}
                   onTradeConfirm={onTradeConfirm}
                   onCommentPost={onCommentPost}
+                  onTradeSideChange={onTradeSideChange}
+                  onOrderTypeChange={onOrderTypeChange}
+                  onLimitPriceChange={onLimitPriceChange}
+                  userHoldings={userHoldings}
                 />
               </div>
             </div>

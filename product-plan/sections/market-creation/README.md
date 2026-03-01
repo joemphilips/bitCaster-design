@@ -1,54 +1,40 @@
 # Market Creation Wizard
 
 ## Overview
-7-step wizard for creating new prediction markets. Starts with oracle configuration, then guides through market type, basic info, outcomes, fees, cost preview, and final review with description.
+7-step wizard for creating new prediction markets. Accessed from the "Create Market" / "Add Market" button on the Market Creation & Management dashboard. This section runs without the application shell (`shell: false`) and uses its own full-screen layouts.
 
-## User Flows
-- Step 1: Oracle Check — choose existing oracle announcement or become oracle
-- Step 2: Get Started — select Yes/No or Categorical outcome type
-- Step 3: Basic Info — thumbnail, title, categories, closing date, answer URLs
-- Step 4: Outcomes — define outcomes with labels, thumbnails, probabilities
-- Step 5: Market Settings — configure sell/buy/win fees
-- Step 6: Market Preview — review estimated cost and worst-case loss
-- Step 7: Review & Create — write description, review summary, submit
+## Steps
+1. **Oracle Check** (full-screen, no step indicator) — Choose existing oracle announcement or become an oracle
+2. **Get Started** (indicator: 1/6) — Select market outcome type: Yes/No or Categorical
+3. **Basic Info** (indicator: 2/6) — Upload thumbnail, enter title, select category tags, set closing date, add answer URLs
+4. **Outcomes** (indicator: 3/6) — Define outcomes with labels, thumbnails, probabilities (skip for Yes/No)
+5. **Market Settings** (indicator: 4/6) — Configure sell/buy/win fee percentages
+6. **Market Preview** (indicator: 5/6) — Review estimated initial cost and worst-case loss
+7. **Review & Create** (indicator: 6/6) — Write description with optional AI generation, review summary, submit
 
-## Data Used
-**Entities:** WizardDraft, OracleAnnouncement, WizardStepOracleCheck, WizardStepGetStarted, WizardStepBasicInfo, WizardStepOutcomes, WizardStepMarketSettings, WizardStepMarketPreview, WizardStepReviewAndCreate
+## Components
+- `MarketCreationWizard` — Root component managing wizard state and step transitions
+- `OracleCheck` — Step 1: Oracle selection gate
+- `GetStarted` — Step 2: Outcome type selection
+- `BasicInfo` — Step 3: Title, tags, dates, URLs, thumbnail upload
+- `OutcomesStep` — Step 4: Outcome definition (categorical only)
+- `MarketSettings` — Step 5: Fee configuration
+- `MarketPreviewStep` — Step 6: Cost preview and confirmation
+- `ReviewAndCreate` — Step 7: Description editor and final submission
+- `StepIndicator` — 6-step progress bar (visible on steps 2-7 only)
 
-## Components Provided
-- `MarketCreationWizard` — Main wizard container
-- `OracleCheck` — Oracle configuration (full-screen gate)
-- `GetStarted` — Market type selection
-- `BasicInfo` — Market details form
-- `OutcomesStep` — Outcome definition
-- `MarketSettings` — Fee configuration
-- `MarketPreviewStep` — Cost/risk preview
-- `ReviewAndCreate` — Description + final review
-- `StepIndicator` — 6-step progress (steps 2-7)
+## Step Indicator
+- Visible on steps 2-7 (step 1 is a full-screen gate)
+- Completed steps: green checkmark
+- Active step: blue circle with step number
+- Future steps: grey circle with step number
+- Not clickable (navigation via back/next buttons only)
 
-## Callback Props
+## Navigation
+- Step 1: Forward only (or exit to Settings)
+- Steps 3-7: Back button available
+- Forward via "Next" or "Continue" buttons
+- Final step: "Create Market" green primary button
 
-| Callback | Description |
-|----------|-------------|
-| `onOracleChoiceSelect` | Select oracle check path |
-| `onAnnouncementSelect` | Select oracle announcement |
-| `onExit` | Exit wizard |
-| `onNext` | Advance to next step |
-| `onBack` | Go to previous step |
-| `onOutcomeTypeSelect` | Select market type |
-| `onTitleChange` | Update title |
-| `onCategoryTagsChange` | Update categories |
-| `onClosingDateChange` | Update closing date |
-| `onAnswerUrlsChange` | Update answer URLs |
-| `onThumbnailUpload` | Upload thumbnail |
-| `onAddOutcome` | Add outcome |
-| `onRemoveOutcome` | Remove outcome |
-| `onOutcomeLabelChange` | Update outcome label |
-| `onOutcomeProbabilityChange` | Update probability |
-| `onSellFeeChange` | Update sell fee |
-| `onBuyFeeChange` | Update buy fee |
-| `onWinFeeChange` | Update win fee |
-| `onCalculatePreview` | Calculate cost preview |
-| `onConfirmPreview` | Confirm preview |
-| `onDescriptionChange` | Update description |
-| `onCreateMarket` | Submit market |
+## Configuration
+- shell: false

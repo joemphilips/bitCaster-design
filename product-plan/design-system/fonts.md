@@ -2,7 +2,7 @@
 
 ## Google Fonts Import
 
-Add to your HTML `<head>`:
+Add to your HTML `<head>` or CSS:
 
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,19 +12,15 @@ Add to your HTML `<head>`:
 
 ## Font Usage
 
-- **Headings:** Inter (600-700 weight)
-- **Body text:** Inter (400-500 weight)
-- **Code/technical/balance:** JetBrains Mono (400-500 weight)
+- **Headings:** Inter (weight 600-700)
+- **Body text:** Inter (weight 400-500)
+- **Code/technical/amounts:** JetBrains Mono (weight 400-500) — used for sats balances, prices, order book values
 
 ## Tailwind Config
 
 ```js
-module.exports = {
-  theme: {
-    fontFamily: {
-      sans: ['Inter', 'sans-serif'],
-      mono: ['JetBrains Mono', 'monospace'],
-    },
-  },
+fontFamily: {
+  sans: ['Inter', 'sans-serif'],
+  mono: ['JetBrains Mono', 'monospace'],
 }
 ```

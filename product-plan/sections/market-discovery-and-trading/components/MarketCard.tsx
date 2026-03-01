@@ -4,15 +4,10 @@ import type {
   Market,
   YesNoMarket,
   CategoricalMarket,
+  NumericMarket,
   Outcome,
 } from '../types'
-
-function formatBtc(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
-}
+import { formatBtc } from './format'
 
 interface MarketCardProps {
   market: Market
@@ -274,6 +269,41 @@ export function MarketCard({
           onYesClick={(id, label) => handleOutcomeClick(id, label, 'yes')}
           onNoClick={(id, label) => handleOutcomeClick(id, label, 'no')}
         />
+      )
+    } else if (market.type === 'numeric') {
+      const numericMarket = market as NumericMarket
+      const formatPrice = (value: number) => {
+        if (numericMarket.unit === 'USD') return `$${value.toLocaleString()}`
+        return `${value.toLocaleString()} ${numericMarket.unit}`
+      }
+      return (
+        <div className="flex-1 flex flex-col justify-end">
+          {/* Current implied price */}
+          <div className="flex flex-col items-center justify-center py-2 flex-1">
+            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {formatPrice(numericMarket.currentPrice)}
+            </span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Range: {formatPrice(numericMarket.loBound)} – {formatPrice(numericMarket.hiBound)}
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="grid grid-cols-2 gap-2 flex-shrink-0">
+            <button
+              onClick={(e) => handleYesNoClick(e, 'yes')}
+              className="py-2.5 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white rounded-lg font-semibold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
+            >
+              Buy UP
+            </button>
+            <button
+              onClick={(e) => handleYesNoClick(e, 'no')}
+              className="py-2.5 bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600 text-white rounded-lg font-semibold text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
+            >
+              Buy DOWN
+            </button>
+          </div>
+        </div>
       )
     }
   }

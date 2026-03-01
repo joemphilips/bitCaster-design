@@ -1,6 +1,6 @@
 import type { Fund } from '../types'
 import { Coins, DollarSign } from 'lucide-react'
-import { formatBtc } from '../../../lib/format'
+import { formatBtc } from './format'
 
 interface FundRowProps {
   fund: Fund

@@ -46,76 +46,84 @@ Configure your styling system with these tokens:
 - See `product-plan/design-system/tailwind-colors.md` for Tailwind configuration
 - See `product-plan/design-system/fonts.md` for Google Fonts setup
 
-Key values:
-- Primary: Tailwind blue
-- Secondary: Tailwind amber
-- Neutral: Tailwind slate
-- Accent: Bitcoin orange `#f7931a`
-- Background: `#0a0a0a`
-- Fonts: Inter (heading/body), JetBrains Mono (mono)
+Key design decisions:
+- Primary color: **blue** (buttons, links, active states)
+- Secondary color: **amber** (tags, highlights, bitcoin-related, notification badges)
+- Neutral color: **slate** (backgrounds, text, borders)
+- Default theme: **dark** (slate-900/950 backgrounds)
+- Heading & body font: **Inter**
+- Monospace font: **JetBrains Mono** (used for sats amounts, prices, order book)
 
 ### 2. Data Model Types
 
-Create TypeScript interfaces for your core entities:
+Create TypeScript interfaces for your core entities. See `product-plan/data-model/` for:
+- `data-shape.md` — Full entity definitions with field descriptions
+- Each section's `types.ts` for component-level interfaces
 
-- See `product-plan/event-model/events.ts` for domain event definitions
-- See `product-plan/event-model/README.md` for event flows and relationships
-- Key entities: User, Market (YesNo/Categorical), Position, Activity, Settings
+Key entities to define: Condition, Market, Outcome, Position, Order, Trade, Fund, Activity, Mint, Oracle, Comment
 
 ### 3. Routing Structure
 
-Create placeholder routes for each section:
+Create routes for each section:
 
-- `/` or `/markets` — Market Discovery & Trading (default home)
-- `/markets/:id` — Market Detail
-- `/portfolio` — Portfolio
-- `/creator` — Market Creation & Management
-- `/creator/new` — Market Creation Wizard
-- `/settings` — Settings
-- `/setup` — Wallet Setup (first-time only)
+| Route | Section | Shell |
+|-------|---------|-------|
+| `/setup` | Wallet Setup | No |
+| `/` or `/markets` | Market Discovery & Trading | Yes |
+| `/markets/:id` | Market Detail | Yes |
+| `/portfolio` | Portfolio | Yes |
+| `/deposit` | Deposit (modal overlay) | No |
+| `/withdraw` | Withdraw (modal overlay) | No |
+| `/settings` | Settings | Yes |
+| `/creator` | Market Creation & Management | Yes |
+| `/creator/new` | Market Creation Wizard | No |
 
 ### 4. Application Shell
 
 Copy the shell components from `product-plan/shell/components/` to your project:
 
-- `AppShell.tsx` — Main layout wrapper
-- `MainNav.tsx` — Top navigation with logo, Markets link, search, notification bell
-- `UserMenu.tsx` — User dropdown with avatar, name, balance, menu items
+- `AppShell.tsx` — Main layout wrapper with top navigation bar and mobile bottom navigation
+- `MainNav.tsx` — Navigation component with Markets link and search
+- `UserMenu.tsx` — User dropdown menu with avatar, balance, and menu items
 
 **Wire Up Navigation:**
 
-- Markets (TrendingUp icon) → `/markets`
-- Search → inline search or `/markets?q=...`
-- Notifications (Bell icon) → notification feed (with unread badge)
-- Creator (Sparkles icon, via User Menu) → `/creator`
-- Portfolio (Wallet icon, via User Menu) → `/portfolio`
-- Settings (Gear icon, via User Menu) → `/settings`
-- Logout → clear session
+- **Markets** (TrendingUp icon) → `/markets` (default home view)
+- **Search** → inline search input (desktop) / search interface (mobile)
+- **Notifications** → Bell icon with unread badge (bitcoin orange `#f7931a`)
+- **User Menu dropdown:**
+  - CreatorPage (Sparkles icon) → `/creator`
+  - Portfolio (Wallet icon) → `/portfolio`
+  - Settings (Gear icon) → `/settings`
+  - Logout
 
-**Mobile Navigation:**
-Bottom bar with 5 items: Markets, Search, Notifications, Creator, User (→ Portfolio)
+**Mobile Bottom Navigation (< 768px):**
+1. Markets (TrendingUp icon)
+2. Search (Search icon)
+3. Notifications (Bell icon with badge)
+4. Creator (Sparkles icon)
+5. User (avatar → Portfolio)
 
-**User Menu:**
-- User avatar, name, balance in sats
-- CreatorPage, Portfolio, Settings, Logout options
-
-**Brand Motto:**
-Background image from `product/brand_motto.png` at subtle opacity
+**Brand Motto Background:**
+- Static background image: `product/brand_motto.png`
+- Fixed positioning, subtle opacity
 
 ## Files to Reference
 
 - `product-plan/design-system/` — Design tokens
-- `product-plan/event-model/` — Event definitions and flows
+- `product-plan/data-model/` — Type definitions (data-shape.md)
 - `product-plan/shell/README.md` — Shell design intent
 - `product-plan/shell/components/` — Shell React components
 
 ## Done When
 
-- [ ] Design tokens are configured (colors, fonts, spacing)
-- [ ] Data model types are defined
+- [ ] Design tokens are configured (colors, fonts, dark theme)
+- [ ] Data model types are defined for all core entities
 - [ ] Routes exist for all sections (can be placeholder pages)
-- [ ] Shell renders with navigation
-- [ ] Navigation links to correct routes
-- [ ] User menu shows user info
-- [ ] Notification badge works
-- [ ] Responsive on mobile (bottom nav bar)
+- [ ] Shell renders with top navigation bar
+- [ ] Markets link navigates to discovery page
+- [ ] User menu dropdown shows CreatorPage, Portfolio, Settings, Logout
+- [ ] Mobile bottom navigation bar with 5 items
+- [ ] Notification bell with unread badge
+- [ ] Brand motto background image displayed
+- [ ] Responsive on mobile

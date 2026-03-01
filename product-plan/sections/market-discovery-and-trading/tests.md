@@ -1,100 +1,197 @@
-# Test Instructions: Market Discovery & Trading
+# Market Discovery & Trading — Test Plan
 
-These test-writing instructions are **framework-agnostic**. Adapt them to your testing setup.
+> These tests are framework-agnostic. They describe expected behavior in terms of user actions, visible UI elements, and callback invocations. Adapt to your testing framework (Playwright, Testing Library, Cypress, etc.).
 
-## Overview
-Test the core marketplace: browsing markets, tag filtering, search, and quick trading from market cards.
+---
 
 ## User Flow Tests
 
-### Flow 1: Browse Markets by Tag
-**Success Path:**
-- Setup: Multiple markets with different meta/category tags
-- Steps: Navigate to Markets page → see Trending tag pre-selected → click "Sports" tag
-- Expected: Only sports markets shown, Trending tag deselected, Sports tag highlighted
+### Flow 1 — Browse Trending Markets
+1. Render `MarketDiscovery` with `selectedTag` set to the "trending" meta tag ID.
+2. Verify the "Trending" tag is visually selected (highlighted).
+3. Verify market cards are displayed for all markets in the `markets` array.
+4. Verify each card shows title, odds/price, and metrics footer (volume, liquidity, traders, likes).
 
-### Flow 2: Quick Trade on Yes/No Market
-**Success Path:**
-- Setup: Yes/No market with currentOdds {yes: 67.5, no: 32.5}
-- Steps: Click "Buy Yes" on card → card transforms to trade view → enter 1000 sats → click "BUY"
-- Expected: onBuyYes called with (marketId, 1000), card returns to normal state
+### Flow 2 — Switch Tags
+1. Click a different tag (e.g., "Sports").
+2. Verify `onTagSelect` is called with the "Sports" tag ID.
+3. Verify only the clicked tag is selected (single-select behavior -- previous tag deselects).
 
-**Failure Path:**
-- Setup: Trade amount is 0 or negative
-- Expected: BUY button disabled
+### Flow 3 — Quick Trade on Yes/No Market
+1. Locate a Yes/No market card. Verify "Buy Yes" and "Buy No" buttons are visible.
+2. Click "Buy Yes" → card transforms to trading overlay covering the entire card.
+3. Verify trading overlay shows: predicted odds, amount input, and "BUY" button.
+4. Enter amount 500 → verify amount displays as 500.
+5. Click "BUY" → `onBuyYes` fires with `(marketId, 500)`.
 
-### Flow 3: Quick Trade on Categorical Market
-**Success Path:**
-- Steps: Scroll through outcomes, click "Yes" on "LA Lakers" → enter amount → confirm
-- Expected: onBuyOutcomeYes called with (marketId, "lakers", amount)
+### Flow 4 — Quick Trade on Categorical Market
+1. Locate a Categorical market card. Verify outcomes are listed vertically with Yes/No buttons per outcome.
+2. Scroll through outcomes if list is longer than card height.
+3. Click "Yes" on a specific outcome → card transforms to trading overlay.
+4. Enter amount and click "BUY" → `onBuyOutcomeYes` fires with `(marketId, outcomeId, amount)`.
 
-### Flow 4: Navigate to Market Detail
-- Steps: Click anywhere on market card except Yes/No buttons
-- Expected: onViewMarket called with marketId
+### Flow 5 — Numeric Market Card Click
+1. Locate a Numeric market card. Verify it shows the current implied price (e.g., "$112,500") and range text.
+2. Verify no "Buy Yes" / "Buy No" buttons are present on the card.
+3. Click anywhere on the card → `onViewMarket` fires with the market ID.
 
-### Flow 5: Apply Filters
-- Steps: Click filter icon → select "Yes/No" market type → set volume range
-- Expected: Market list filters in real-time
+### Flow 6 — Filter by Market Type
+1. Open filter controls (click filter icon in tag bar).
+2. Select "Categorical" from the Market Type dropdown.
+3. Verify `onMarketTypeChange` is called with `['categorical']`.
+4. With filtered data, verify only categorical market cards are displayed.
+
+### Failure — Trade with 0 Amount
+1. Open a Yes/No market trading overlay.
+2. Leave amount at 0.
+3. Verify the "BUY" button is disabled.
+
+---
 
 ## Empty State Tests
-- No markets match current filters → "No markets found" message with "Clear filters" link
-- No markets at all → helpful empty state with guidance
 
-## Component Tests
-- MarketCard renders title, odds, volume, like count correctly
-- TagBar shows only one tag selected at a time
-- FilterControls toggle visibility with filter icon
-- Trading overlay covers entire card at same card size
+- **No markets match filter**: When `markets` array is empty after filtering, display "No markets found" message.
+- **No markets at all**: When `markets` is empty with no filters applied, display an appropriate empty state.
+
+---
+
+## Component Interaction Tests
+
+- **Like button**: Clicking the like button on a market card toggles `isLiked` state. The `likeCount` increments when liked, decrements when unliked.
+- **Refresh button**: Clicking the refresh icon triggers `onRefreshConditions`. While `isRefreshing` is `true`, the RefreshCw icon has a spinning animation.
+- **Last updated timestamp**: When `lastUpdatedAt` is set, displays relative time (e.g., "Updated 2 min ago").
+- **Background loading progress bar**: When `backgroundDataLoad.status` is `'loading'`, a thin progress bar appears at the bottom of the viewport. When `status` is `'loaded'`, the bar fades out. When `status` is `'failed'`, the bar turns amber with "Failed to load market data" and a Retry button.
+- **Cancel trading overlay**: Clicking the X button on the trading overlay returns the card to its normal state.
+- **Card size consistency**: All market cards (Yes/No, Categorical) maintain the same fixed height regardless of content or trading mode.
+- **Infinite scroll**: Scrolling to the bottom triggers `onLoadMore`.
+
+---
 
 ## Edge Cases
-- Very long market titles truncate properly
-- Markets with 0 volume display correctly
-- Infinite scroll triggers onLoadMore at bottom
-## Accessibility
-- All interactive elements keyboard accessible
-- Trading overlay dismissible with Escape
-- Screen reader announces tag selection changes
+
+- **Search query**: Typing in the search box triggers `onSearch` with the query string.
+- **Volume range filter**: Adjusting volume range triggers `onVolumeRangeChange` with `{ min, max }`.
+- **Closing date filter**: Adjusting closing date slider triggers `onClosingDateChange` with days value.
+- **Tag bar overflow**: When there are more tags than fit horizontally, the tag bar scrolls.
+- **Market card without image**: Card renders gracefully without an image (fallback or placeholder).
+
+---
+
+## Accessibility Checks
+
+- Tag bar items are keyboard-navigable and announce selected state via `aria-selected`.
+- Market cards have descriptive `aria-label` including market title.
+- Trading overlay traps focus within the overlay and can be dismissed with Escape.
+- "BUY" button has accessible name including the side (e.g., "Buy Yes for market X").
+- Filter controls are labeled and keyboard-accessible.
+- Like button announces toggle state ("Liked" / "Not liked").
+- Refresh button has `aria-label="Refresh market data"`.
+
+---
 
 ## Sample Test Data
+
 ```typescript
-const mockYesNoMarket = {
-  id: "mkt-001",
-  type: "yesno",
-  title: "Will Bitcoin reach $100K?",
-  currentOdds: { yes: 67.5, no: 32.5 },
-  volume: 2847500,
-  liquidity: 450000,
-  traderCount: 1823,
-  likeCount: 342,
+import type {
+  MarketDiscoveryProps,
+  MetaTag,
+  CategoryTag,
+  YesNoMarket,
+  CategoricalMarket,
+  NumericMarket,
+} from './types'
+import type { BackgroundDataLoad } from '../wallet-setup/types'
+
+const metaTags: MetaTag[] = [
+  { id: 'trending', label: 'Trending', description: 'Most active markets' },
+  { id: 'popular', label: 'Popular', description: 'Highest volume' },
+  { id: 'new', label: 'New', description: 'Recently created' },
+]
+
+const categoryTags: CategoryTag[] = [
+  { id: 'sports', label: 'Sports', marketCount: 12 },
+  { id: 'politics', label: 'Politics', marketCount: 8 },
+  { id: 'crypto', label: 'Crypto', marketCount: 15 },
+]
+
+const sampleYesNoMarket: YesNoMarket = {
+  id: 'mkt-1',
+  type: 'yesno',
+  title: 'Will Bitcoin reach $200k by end of 2026?',
+  imageUrl: '/images/btc.png',
+  categoryTags: ['crypto'],
+  metaTags: ['trending'],
+  volume: 50000,
+  liquidity: 25000,
+  traderCount: 42,
+  closingDate: '2026-12-31T23:59:59Z',
+  createdDate: '2026-01-15T10:00:00Z',
+  activeSince: '2026-01-15T10:00:00Z',
+  creatorFeePercent: 0.5,
+  likeCount: 18,
   isLiked: false,
-  closingDate: "2026-06-30T23:59:59Z"
-};
+  currentOdds: { yes: 67.5, no: 32.5 },
+}
 
-const mockCategoricalMarket = {
-  id: "mkt-002",
-  type: "categorical",
-  title: "Which team will win the NBA Finals?",
-  outcomes: [
-    { id: "lakers", label: "LA Lakers", odds: 28.5 },
-    { id: "celtics", label: "Boston Celtics", odds: 34.1 },
-    { id: "warriors", label: "Golden State Warriors", odds: 19.7 },
-    { id: "other", label: "Other", odds: 17.7 }
-  ],
-  volume: 1203400,
-  liquidity: 200000,
-  traderCount: 641,
-  likeCount: 89,
+const sampleCategoricalMarket: CategoricalMarket = {
+  id: 'mkt-2',
+  type: 'categorical',
+  title: 'Who will win the 2026 World Series?',
+  imageUrl: '/images/baseball.png',
+  categoryTags: ['sports'],
+  metaTags: ['popular'],
+  volume: 120000,
+  liquidity: 60000,
+  traderCount: 87,
+  closingDate: '2026-10-31T23:59:59Z',
+  createdDate: '2026-03-01T10:00:00Z',
+  activeSince: '2026-03-01T10:00:00Z',
+  creatorFeePercent: 1.0,
+  likeCount: 34,
   isLiked: true,
-  closingDate: "2026-06-15T23:59:59Z"
-};
+  outcomes: [
+    { id: 'o1', label: 'Yankees', odds: 28.5 },
+    { id: 'o2', label: 'Dodgers', odds: 22.0 },
+    { id: 'o3', label: 'Astros', odds: 15.5 },
+  ],
+}
 
-const mockTags = [
-  { id: "trending", label: "Trending", isSelected: true },
-  { id: "sports", label: "Sports", isSelected: false },
-  { id: "crypto", label: "Crypto", isSelected: false },
-  { id: "politics", label: "Politics", isSelected: false },
-  { id: "entertainment", label: "Entertainment", isSelected: false }
-];
+const sampleNumericMarket: NumericMarket = {
+  id: 'mkt-3',
+  type: 'numeric',
+  title: 'BTC price at halving?',
+  imageUrl: '/images/btc-price.png',
+  categoryTags: ['crypto'],
+  metaTags: ['trending'],
+  volume: 200000,
+  liquidity: 100000,
+  traderCount: 156,
+  closingDate: '2028-04-01T00:00:00Z',
+  createdDate: '2026-02-01T10:00:00Z',
+  activeSince: '2026-02-01T10:00:00Z',
+  creatorFeePercent: 0.5,
+  likeCount: 72,
+  isLiked: false,
+  loBound: 0,
+  hiBound: 200000,
+  precision: 0,
+  unit: 'USD',
+  currentPrice: 112500,
+}
 
-const mockEmptyMarkets: typeof mockYesNoMarket[] = [];
+const backgroundDataLoad: BackgroundDataLoad = {
+  mintUrl: 'https://mint.bitcaster.app',
+  status: 'loaded',
+  conditionsLoaded: 5,
+}
+
+const sampleProps: MarketDiscoveryProps = {
+  metaTags,
+  categoryTags,
+  markets: [sampleYesNoMarket, sampleCategoricalMarket, sampleNumericMarket],
+  selectedTag: 'trending',
+  backgroundDataLoad,
+  lastUpdatedAt: '2026-03-01T09:58:00Z',
+  isRefreshing: false,
+}
 ```

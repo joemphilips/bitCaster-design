@@ -1,15 +1,9 @@
 import type { MarketCreationProps, ActiveTab } from '../types'
+import { formatBtc } from './format'
 import { StatCard } from './StatCard'
 import { MarketRow } from './MarketRow'
 import { VolumeChart } from './VolumeChart'
 import { Pagination } from './Pagination'
-
-function formatBtc(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
-}
 
 export function MarketCreationDashboard({
   dashboardStats,

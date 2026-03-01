@@ -62,14 +62,24 @@ export interface CategoricalMarket extends BaseMarket {
   outcomes: Outcome[]
 }
 
+// Numeric market type (NUT-CTF-numeric: HI/LO token pair with proportional payout)
+export interface NumericMarket extends BaseMarket {
+  type: 'numeric'
+  loBound: number    // Lower bound of the outcome range
+  hiBound: number    // Upper bound of the outcome range
+  precision: number  // Decimal places for display
+  unit: string       // Display unit (e.g. "USD", "BTC")
+  currentPrice: number // Implied price derived from HI token order book
+}
+
 // Union type for all market types
-export type Market = YesNoMarket | CategoricalMarket
+export type Market = YesNoMarket | CategoricalMarket | NumericMarket
 
 // =============================================================================
 // Filter Types
 // =============================================================================
 
-export type MarketType = 'yesno' | 'categorical'
+export type MarketType = 'yesno' | 'categorical' | 'numeric'
 
 export interface VolumeRange {
   min?: number
@@ -95,6 +105,12 @@ export interface TradeState {
   amount: number
   predictedOdds: number
 }
+
+// =============================================================================
+// Background Data Loading (re-exported from wallet-setup)
+// =============================================================================
+
+export type { BackgroundDataLoad } from '../wallet-setup/types'
 
 // =============================================================================
 // Component Props
@@ -149,4 +165,15 @@ export interface MarketDiscoveryProps {
   /** Called when user scrolls to bottom and more markets should be loaded */
   onLoadMore?: () => void
 
+  /** Background data loading state (shown as footer progress bar if still loading after wallet setup) */
+  backgroundDataLoad?: import('../wallet-setup/types').BackgroundDataLoad
+
+  /** ISO timestamp of last successful condition sync */
+  lastUpdatedAt?: string
+
+  /** Triggers re-fetch of conditions from mint */
+  onRefreshConditions?: () => void
+
+  /** True while a refresh is in progress (spins the refresh icon) */
+  isRefreshing?: boolean
 }

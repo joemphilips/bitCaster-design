@@ -1,36 +1,38 @@
 # Market Creation & Management
 
 ## Overview
-Dashboard for market creators to manage their prediction markets. Includes tabbed views: Overview (stats + market list), Analytics (volume charts), and Add Market (CTA to creation wizard).
+Creator dashboard for managing prediction markets. Markets go live immediately after creation with no approval gate. Features dashboard stats, paginated market list, volume analytics, and a CTA to create new markets via the market-creation wizard.
 
-## User Flows
-- View dashboard stats (active/resolved counts, volumes, fees)
-- Browse paginated market list with status, volume, fees earned
-- Analyze volume charts (aggregate or per-market, daily/weekly/monthly)
-- Create new markets via 5-step wizard
-- Cancel markets, claim fees
+If the oracle does not attest an outcome in time, the market is refunded.
 
-## Data Used
-**Entities:** DashboardStats, CreatorMarket, VolumeChartData, MarketVolumeData, WizardDraft, PaginationState
-**From global model:** MarketCreated, MarketResolved, MarketRefunded, CreatorFeeClaimed
+## Components
+- `MarketCreationDashboard` — Root component with tab layout
+- `StatCard` — Individual stat display (active, resolved, refunded counts; volume; fees)
+- `MarketRow` — Market list row with thumbnail, title, status badge, volume, end date, fees, "View Details" action
+- `VolumeChart` — Time-series volume chart with aggregate/per-market toggle and time scale selector
+- `Pagination` — Page navigation for market list
 
-## Components Provided
-- `MarketCreationDashboard` — Main tabbed container
-- `MarketRow` — Individual market list item
-- `StatCard` — Dashboard stat display
-- `VolumeChart` — Time-series volume chart
-- `Pagination` — Page navigation
+## Tabs
+- **Overview** — Dashboard stats and paginated market list
+- **Analytics** — Volume charts with time scale selector (daily/weekly/monthly)
+- **Add Market** — Styled as a filled CTA button (not a standard tab), navigates to market-creation wizard
 
-## Callback Props
+## Dashboard Stats
+- Active markets count
+- Resolved markets count
+- Refunded markets count
+- Total volume (sats)
+- Total fees earned / claimed / unclaimed (sats)
 
-| Callback | Description |
-|----------|-------------|
-| `onViewDetails` | Navigate to market detail page |
-| `onTabChange` | Switch between Overview/Analytics tabs |
-| `onCreateMarket` | Submit new market |
-| `onCancelMarket` | Cancel a market |
-| `onClaimFees` | Claim creator fees |
-| `onSaveDraft` | Save wizard draft |
-| `onTimeScaleChange` | Change chart time scale |
-| `onChartModeChange` | Toggle aggregate/per-market |
-| `onPageChange` | Navigate pages |
+## Market List
+- Paginated rows showing: thumbnail, title, description, status badge (active/resolved/refunded), volume, end date, fees earned, "View Details" action
+- Resolved markets with unclaimed fees show "Claim Fees" button
+- Refunded markets show "Refunded" badge and refunded amount
+
+## Volume Analytics
+- Aggregate mode: combined volume across all markets
+- Per-market mode: individual market volume breakdown
+- Time scales: daily, weekly, monthly
+
+## Configuration
+- shell: true

@@ -15,6 +15,8 @@ interface PriceChartProps {
   currentDisplay?: string
   // Comments to display as bubbles on the chart
   comments?: Comment[]
+  // Unit for numeric markets (e.g. "USD") — changes Y-axis labels
+  unit?: string
 }
 
 const TIMEFRAMES: ChartTimeframe[] = ['1h', '24h', '7d', '30d', 'all']
@@ -46,6 +48,7 @@ export function PriceChart({
   outcomes,
   currentDisplay,
   comments,
+  unit,
 }: PriceChartProps) {
   const [hoveredCommentId, setHoveredCommentId] = useState<string | null>(null)
 
@@ -186,9 +189,21 @@ export function PriceChart({
 
         {/* Y-Axis Labels */}
         <div className="absolute inset-y-0 left-2 flex flex-col justify-between py-2 text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-          <span>{maxPrice.toFixed(0)}{chartType === 'price' ? '%' : ''}</span>
-          <span>{((maxPrice + minPrice) / 2).toFixed(0)}{chartType === 'price' ? '%' : ''}</span>
-          <span>{minPrice.toFixed(0)}{chartType === 'price' ? '%' : ''}</span>
+          {(() => {
+            const formatLabel = (value: number) => {
+              if (chartType !== 'price') return value.toFixed(0)
+              if (unit === 'USD') return `$${value.toLocaleString()}`
+              if (unit) return `${value.toLocaleString()} ${unit}`
+              return `${value.toFixed(0)}%`
+            }
+            return (
+              <>
+                <span>{formatLabel(maxPrice)}</span>
+                <span>{formatLabel((maxPrice + minPrice) / 2)}</span>
+                <span>{formatLabel(minPrice)}</span>
+              </>
+            )
+          })()}
         </div>
 
         {/* Comment Bubbles (only on price chart) */}

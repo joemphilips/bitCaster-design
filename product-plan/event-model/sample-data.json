@@ -1,106 +1,33 @@
 [
   {
-    "type": "UserRegistered",
-    "payload": {
-      "userId": "user_123",
-      "registeredDate": "2025-02-01T10:00:00Z"
-    }
-  },
-  {
     "type": "DepositReceived",
-    "payload": {
-      "userId": "user_123",
-      "amountSats": 100000,
-      "lightningInvoice": "lnbc1000000n1p0example",
-      "date": "2025-02-01T10:15:00Z"
-    }
-  },
-  {
-    "type": "MarketCreated",
-    "payload": {
-      "marketId": "market_456",
-      "creatorId": "user_789",
-      "title": "Will Bitcoin reach $100k by end of 2025?",
-      "description": "This market resolves YES if BTC/USD closes above $100,000 on December 31, 2025",
-      "type": "yesno",
-      "outcomes": [
-        { "id": "yes", "label": "Yes" },
-        { "id": "no", "label": "No" }
-      ],
-      "closingDate": "2025-12-31T23:59:59Z",
-      "creatorFeePercent": 2.0,
-      "initialLiquiditySats": 50000,
-      "categoryTags": ["cryptocurrency", "bitcoin", "price-prediction"],
-      "date": "2025-02-02T14:30:00Z"
-    }
+    "userId": "usr-a1b2c3d4",
+    "amountSats": 500000,
+    "txId": "a1b2c3d4e5f6789012345678901234567890abcd",
+    "timestamp": "2025-08-15T09:35:00Z"
   },
   {
     "type": "Bought",
-    "payload": {
-      "tradeId": "trade_001",
-      "userId": "user_123",
-      "marketId": "market_456",
-      "outcomeId": "yes",
-      "side": "yes",
-      "amountSats": 25000,
-      "price": 65.5,
-      "shares": 381.67,
-      "date": "2025-02-03T09:30:00Z"
-    }
-  },
-  {
-    "type": "Bought",
-    "payload": {
-      "tradeId": "trade_002",
-      "userId": "user_234",
-      "marketId": "market_456",
-      "outcomeId": "no",
-      "side": "no",
-      "amountSats": 20000,
-      "price": 34.5,
-      "shares": 579.71,
-      "date": "2025-02-04T11:45:00Z"
-    }
-  },
-  {
-    "type": "Sold",
-    "payload": {
-      "tradeId": "trade_003",
-      "userId": "user_123",
-      "marketId": "market_456",
-      "outcomeId": "yes",
-      "side": "yes",
-      "amountSats": 18500,
-      "price": 72.3,
-      "shares": 255.87,
-      "date": "2025-02-10T16:20:00Z"
-    }
+    "userId": "usr-a1b2c3d4",
+    "marketId": "mkt-001",
+    "outcomeId": "yes",
+    "side": "yes",
+    "amountSats": 93000,
+    "shares": 150,
+    "price": 62.0,
+    "timestamp": "2025-12-10T14:22:00Z"
   },
   {
     "type": "MarketResolved",
-    "payload": {
-      "marketId": "market_456",
-      "winningOutcomeId": "yes",
-      "resolvedDate": "2026-01-02T00:00:00Z"
-    }
+    "marketId": "mkt-resolved-001",
+    "winningOutcome": "yes",
+    "timestamp": "2025-12-31T23:59:59Z"
   },
   {
     "type": "PayoutClaimed",
-    "payload": {
-      "userId": "user_123",
-      "marketId": "market_456",
-      "positionId": "position_user123_market456",
-      "amountSats": 42300,
-      "date": "2026-01-02T08:30:00Z"
-    }
-  },
-  {
-    "type": "CreatorFeeClaimed",
-    "payload": {
-      "userId": "user_789",
-      "marketId": "market_456",
-      "amountSats": 3150,
-      "date": "2026-01-03T10:00:00Z"
-    }
+    "userId": "usr-a1b2c3d4",
+    "marketId": "mkt-resolved-001",
+    "amountSats": 100000,
+    "timestamp": "2025-12-31T23:59:59Z"
   }
 ]

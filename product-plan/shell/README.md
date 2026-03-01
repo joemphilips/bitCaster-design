@@ -1,31 +1,28 @@
 # Application Shell
 
 ## Overview
-The bitCaster shell uses a streamlined top navigation pattern optimized for a Bitcoin-native prediction market platform. The design features a single top bar with logo, Markets link, search, notification bell, and user menu.
-
-## Components
-
-- `AppShell.tsx` — Main layout wrapper with top navigation bar and content area
-- `MainNav.tsx` — Top navigation with logo, Markets link, search box, notification bell
-- `UserMenu.tsx` — User dropdown with avatar, name, balance, and menu items (Creator, Portfolio, Settings, Logout)
-
-## Responsive Behavior
-
-### Desktop
-- Horizontal top bar with all elements visible
-- Logo, Markets link, search box, notification bell, user menu
-
-### Mobile (< 768px)
-- Simplified top header with logo
-- Bottom navigation bar with 5 items: Markets, Search, Notifications, Creator, User
+The bitCaster shell uses a streamlined top navigation pattern optimized for a Bitcoin-native prediction market platform. Dark theme with a static brand motto image as background.
 
 ## Navigation Structure
-- **Markets** (TrendingUp icon) — Market Discovery & Trading (default home)
-- **Search** — Inline search for markets
-- **Notifications** — Bell icon with unread badge (bitcoin orange)
-- **Creator** (Sparkles icon) — Market creation tools (via User Menu on desktop)
-- **Portfolio** (Wallet icon) — Trading dashboard (via User Menu on desktop)
-- **Settings** (Gear icon) — User preferences (via User Menu on desktop)
+- **Markets** (TrendingUp icon) → Market Discovery & Trading (default home view)
+- **Search** — inline input on desktop, full interface on mobile
+- **Notifications** — Bell icon with unread badge (bitcoin orange #f7931a)
+- **User Menu** — dropdown with CreatorPage, Portfolio, Settings, Logout
 
-## Brand Motto
-Background image displays "FINANCE WANTS TO BE FREE | FAKE MUST BE EXPENSIVE" at subtle opacity.
+## Desktop Layout
+Single horizontal nav bar: Logo → Markets link → Search box → Notification bell → User menu
+
+## Mobile Layout (< 768px)
+- Top: simplified logo
+- Bottom: fixed navigation bar with 5 items: Markets, Search, Notifications, Creator, User
+
+## Components Provided
+- `AppShell.tsx` — Main layout wrapper
+- `MainNav.tsx` — Navigation component
+- `UserMenu.tsx` — User menu dropdown
+
+## Design Notes
+- Default dark theme (slate-900/950 backgrounds)
+- Blue primary, amber secondary, slate neutral
+- Inter font for text, JetBrains Mono for amounts
+- Brand motto PNG as fixed background

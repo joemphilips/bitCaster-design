@@ -1,7 +1,6 @@
 export { Portfolio } from './Portfolio'
 export { ProfileCard } from './ProfileCard'
 export { PLChart } from './PLChart'
-export { StatsRow } from './StatsRow'
 export { PositionRow } from './PositionRow'
 export { PositionsList } from './PositionsList'
 export { FundRow } from './FundRow'

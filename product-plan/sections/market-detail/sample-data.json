@@ -2,6 +2,7 @@
   "yesNoMarket": {
     "id": "market-btc-100k",
     "type": "yesno",
+    "baseUnit": "sats",
     "title": "Will Bitcoin reach $100,000 by December 31, 2025?",
     "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
     "categoryTags": [
@@ -242,6 +243,7 @@
   "categoricalMarket": {
     "id": "market-superbowl-winner",
     "type": "categorical",
+    "baseUnit": "sats",
     "title": "Who will win Super Bowl LIX?",
     "imageUrl": "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800",
     "categoryTags": [
@@ -472,6 +474,7 @@
   "resolvedYesNoMarket": {
     "id": "market-btc-50k",
     "type": "yesno",
+    "baseUnit": "sats",
     "title": "Did Bitcoin reach $50,000 by January 15, 2025?",
     "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
     "categoryTags": [
@@ -753,48 +756,16 @@
     },
     "orderBook": {
       "bids": [
-        {
-          "price": 56,
-          "amount": 12000,
-          "total": 12000
-        },
-        {
-          "price": 55,
-          "amount": 18000,
-          "total": 30000
-        },
-        {
-          "price": 54,
-          "amount": 25000,
-          "total": 55000
-        },
-        {
-          "price": 53,
-          "amount": 15000,
-          "total": 70000
-        }
+        { "price": 56, "amount": 12000, "total": 12000 },
+        { "price": 55, "amount": 18000, "total": 30000 },
+        { "price": 54, "amount": 25000, "total": 55000 },
+        { "price": 53, "amount": 15000, "total": 70000 }
       ],
       "asks": [
-        {
-          "price": 57,
-          "amount": 10000,
-          "total": 10000
-        },
-        {
-          "price": 58,
-          "amount": 14000,
-          "total": 24000
-        },
-        {
-          "price": 59,
-          "amount": 20000,
-          "total": 44000
-        },
-        {
-          "price": 60,
-          "amount": 12000,
-          "total": 56000
-        }
+        { "price": 57, "amount": 10000, "total": 10000 },
+        { "price": 58, "amount": 14000, "total": 24000 },
+        { "price": 59, "amount": 20000, "total": 44000 },
+        { "price": 60, "amount": 12000, "total": 56000 }
       ],
       "spread": 1
     },
@@ -825,24 +796,6 @@
         "amount": 8500,
         "price": 55.50,
         "timestamp": "2026-02-27T13:10:00Z"
-      },
-      {
-        "id": "trade-n4",
-        "userId": "user-n4",
-        "userDisplayName": "hedge_fund_42",
-        "side": "lo",
-        "amount": 15000,
-        "price": 44.00,
-        "timestamp": "2026-02-27T11:30:00Z"
-      },
-      {
-        "id": "trade-n5",
-        "userId": "user-n5",
-        "userDisplayName": "stack_sats",
-        "side": "hi",
-        "amount": 2100,
-        "price": 56.00,
-        "timestamp": "2026-02-27T09:55:00Z"
       }
     ],
     "comments": [
@@ -863,25 +816,13 @@
         "timestamp": "2026-02-26T18:30:00Z",
         "likeCount": 21,
         "isLiked": true
-      },
-      {
-        "id": "comment-n3",
-        "userId": "user-n8",
-        "userDisplayName": "DegenTrader",
-        "content": "Buying higher here. The range is 0-200K so there's still a lot of upside in this contract.",
-        "timestamp": "2026-02-26T10:15:00Z",
-        "likeCount": 15,
-        "isLiked": false
       }
     ],
     "relatedMarkets": [
       {
         "id": "rel-n1",
         "title": "Will Bitcoin reach $150,000 by end of 2026?",
-        "currentOdds": {
-          "yes": 28.5,
-          "no": 71.5
-        },
+        "currentOdds": { "yes": 28.5, "no": 71.5 },
         "volume": 1890000,
         "closingDate": "2026-12-31T23:59:59Z"
       },
@@ -889,16 +830,6 @@
         "id": "rel-n2",
         "title": "Ethereum price at end of 2026?",
         "volume": 2340000,
-        "closingDate": "2026-12-31T23:59:59Z"
-      },
-      {
-        "id": "rel-n3",
-        "title": "Will the Fed cut rates in H2 2026?",
-        "currentOdds": {
-          "yes": 62.3,
-          "no": 37.7
-        },
-        "volume": 980000,
         "closingDate": "2026-12-31T23:59:59Z"
       }
     ]
@@ -916,6 +847,14 @@
     "predictedOdds": 68.2,
     "priceImpact": 0.7,
     "potentialPayout": 1481,
+    "creatorFee": 5,
+    "platformFee": 0,
+    "totalCost": 1000
+  },
+  "limitOrderPreviewExample": {
+    "limitPrice": 65,
+    "amount": 1000,
+    "sharesIfFilled": 1538,
     "creatorFee": 5,
     "platformFee": 0,
     "totalCost": 1000

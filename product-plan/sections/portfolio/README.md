@@ -1,50 +1,40 @@
 # Portfolio
 
 ## Overview
-Personal trading dashboard with positions, funds, P/L chart, activity feed, and created markets. Features conditional entry: shows "Get Started" CTA if no wallet, full dashboard if wallet ready.
+Personal trading dashboard with positions, P/L chart, activity feed, funds, and created markets. Features a profile card with interactive P/L chart and quick-access deposit/withdraw buttons.
 
-## User Flows
-- View profile card with avatar, name, joined date, view count
-- View interactive P/L chart with 1D/1W/1M/ALL selectors
-- View total balance across positions and funds
-- Deposit/withdraw sats (opens Deposit/Withdraw modal)
-- Browse Positions tab (Active/Closed sub-tabs) with Sell/Claim actions
-- Browse Funds tab showing base ecash assets per mint
-- View collapsible activity feed (deposits, withdrawals, trades, payouts, fees)
-- Browse collapsible "My Markets" section
+## Components
+- `Portfolio` — Root component, conditionally renders dashboard or "Get Started" CTA
+- `ProfileCard` — Avatar (clickable for upload), display name, joined date, view count, P/L chart
+- `PLChart` — Interactive P/L line chart with 1D/1W/1M/ALL time range selectors
+- `PositionsList` — Tabbed list (Active / Closed) of market positions
+- `PositionRow` — Individual position with market info, side, shares, P/L, Sell/Claim actions
+- `FundsList` — Base ecash fund balances per mint
+- `FundRow` — Individual fund with unit, amount, mint URL
+- `ActivityFeed` — Chronological feed of deposits, withdrawals, trades, payouts, creator fees
+- `MyMarkets` — Collapsible section listing user-created markets with fee management
+- `CreatedMarketRow` — Market row with status badge, volume, fees earned, Claim Fees action
 
-## Data Used
-**Entities:** UserProfile, PLChartData, Position, Fund, ActivityItem, CreatedMarket
-**From global model:** DepositReceived, WithdrawalRequested, Bought, Sold, PayoutClaimed, CreatorFeeClaimed
+## Conditional Entry
+- `walletState: 'none'` → Centered "Get Started" CTA that navigates to wallet-setup
+- `walletState: 'ready'` → Full portfolio dashboard
 
-## Components Provided
-- `Portfolio` — Main container with conditional rendering
-- `ProfileCard` — User info + P/L chart
-- `PLChart` — Interactive P/L chart
-- `StatsRow` — Three stat cards
-- `PositionsList` — Tabbed positions list (Active/Closed)
-- `PositionRow` — Individual position
-- `FundsList` — List of base ecash funds
-- `FundRow` — Individual fund row (sats/USD per mint)
-- `ActivityFeed` — Chronological activity
-- `MyMarkets` — Collapsible created markets
-- `CreatedMarketRow` — Individual created market
+## Layout
+- **Desktop**: Two-column profile card (left: profile info, right: P/L chart)
+- **Mobile**: Stacked vertically (profile info on top, chart below)
 
-## Callback Props
+### Stats Row
+Three stat cards: Positions Value | Biggest Win | Predictions count
 
-| Callback | Description |
-|----------|-------------|
-| `onGetStarted` | Navigate to wallet setup |
-| `onAvatarUpload` | Upload avatar image |
-| `onTimeRangeChange` | Select P/L time range |
-| `onDeposit` | Open deposit flow (→ Deposit/Withdraw modal) |
-| `onWithdraw` | Open withdraw flow (→ Deposit/Withdraw modal) |
-| `onSellPosition` | Sell a position |
-| `onClaimPayout` | Claim winning payout |
-| `onClaimCreatorFees` | Claim creator fees |
-| `onViewPosition` | View position details |
-| `onViewFund` | View fund details |
-| `onViewMarket` | View created market |
-| `onViewActivity` | View activity item details |
-| `onPositionsTabChange` | Switch Active/Closed |
-| `onOpenSettings` | Open settings |
+### Action Buttons
+Side-by-side "Deposit" (primary) and "Withdraw" (secondary) buttons below stats.
+
+### Tabs
+- **Positions** — Active / Closed sub-tabs with Sell and Claim actions
+- **Activity** — Chronological feed with type icons, descriptions, amounts, statuses
+
+### My Markets (Collapsible)
+Lists created markets with title, image, status badge, volume, fees earned. "Claim Fees" button on resolved markets with unclaimed fees.
+
+## Configuration
+- shell: true

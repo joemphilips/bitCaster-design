@@ -26,6 +26,8 @@
       "seedWords": "Generated 12-word seed phrase (create flow)",
       "inputSeedWords": "User-entered seed words (recover flow)",
       "seedSaved": "Whether user confirmed saving seed phrase",
+      "seedVerifyPhase": "Current phase of seed creation flow: display or verify",
+      "seedVerifyInputs": "User inputs for seed phrase verification (words #3, #7, #12)",
       "mintConnections": "List of mints with connection test status",
       "backgroundDataLoad": "Background data loading state from hard-coded mint (VITE_MINT_URL)"
     }
@@ -40,6 +42,8 @@
   ],
   "inputSeedWords": ["", "", "", "", "", "", "", "", "", "", "", ""],
   "seedSaved": false,
+  "seedVerifyPhase": "display",
+  "seedVerifyInputs": { "word3": "", "word7": "", "word12": "" },
   "mintConnections": [
     {
       "url": "http://localhost:3338",

@@ -1,5 +1,5 @@
 import type { Position } from '../types'
-import { formatBtc } from '../../../lib/format'
+import { formatBtc } from './format'
 
 interface PositionRowProps {
   position: Position
@@ -11,6 +11,7 @@ interface PositionRowProps {
 export function PositionRow({ position, onSell, onClaim, onView }: PositionRowProps) {
   const isPositive = position.profitLossSats >= 0
   const isWinner = position.status === 'closed' && position.profitLossSats > 0
+  const mintHostname = new URL(position.mintUrl).hostname
 
   return (
     <button
@@ -47,6 +48,9 @@ export function PositionRow({ position, onSell, onClaim, onView }: PositionRowPr
           )}
           <span className="text-xs text-slate-400 dark:text-slate-500">
             {position.shares} shares
+          </span>
+          <span className="text-xs font-mono text-slate-400 dark:text-slate-500">
+            {mintHostname}
           </span>
         </div>
       </div>

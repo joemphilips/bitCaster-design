@@ -1,178 +1,148 @@
-# Test Instructions: Settings
+# Settings — Test Plan
 
-These test-writing instructions are **framework-agnostic**. Adapt them to your testing setup.
+> These tests are framework-agnostic. They describe expected behavior in terms of user actions, visible UI elements, and callback invocations. Adapt to your testing framework (Playwright, Testing Library, Cypress, etc.).
 
-## Overview
-Test the 4 collapsible settings categories: General, Cashu, Nostr, and Oracle. Each category is an accordion group; only one expands at a time.
+---
 
 ## User Flow Tests
 
-### Flow 1: Toggle Category Groups (Accordion)
-**Success Path:**
-- Setup: General category open by default
-- Steps: Click "Cashu Settings" header
-- Expected: General collapses, Cashu expands; only one group is open at a time
+### Flow 1 — Change Base Currency
+1. Render `Settings` with `activeCategory: 'general'`.
+2. Verify General Settings section is expanded.
+3. Verify Base Currency segmented control shows BTC, USD, JPY with current selection highlighted.
+4. Click "USD" → `onBaseCurrencyChange('USD')` fires.
 
-### Flow 2: Change Base Currency
-**Success Path:**
-- Steps: Expand General → click "USD" in currency selector
-- Expected: onBaseCurrencyChange('USD') called, USD option highlighted
+### Flow 2 — Add Mint
+1. Expand Cashu section → `onCategoryToggle('cashu')` fires.
+2. Verify the connected mints list is visible with the default mint showing a "Default" badge.
+3. Click "Add Mint" → an input field for a new mint URL appears.
+4. Enter a mint URL (e.g., "https://mint2.example.com").
+5. Connection test runs automatically (shows connecting indicator).
+6. On success, `onAddMint` fires with the URL.
 
-### Flow 3: Change Theme
-**Success Path:**
-- Steps: Expand General → select "Light" theme
-- Expected: onThemeChange('light') called, theme updates immediately across the UI
+### Flow 3 — Connect Nostr via NIP-07
+1. Expand Nostr section → `onCategoryToggle('nostr')` fires.
+2. Verify Signer Mode options: None, NIP-07 Extension, Private Key (nsec).
+3. Select "NIP-07 Extension" → `onSignerModeChange('nip07')` fires.
+4. Profile fetch begins (`profileFetchStatus: 'fetching'`).
+5. When `profileFetchStatus: 'found'`, verify profile preview shows avatar, display name, NIP-05 with verification badge.
 
-### Flow 4: Add Mint
-**Success Path:**
-- Steps: Expand Cashu → click "Add Mint" → enter valid URL "https://mint.example.com" → submit
-- Expected: onAddMint called with URL, connection test runs automatically, status transitions connecting → connected
+### Flow 4 — View Seed Phrase
+1. Expand Cashu section.
+2. Click "View Seed Phrase" → a confirmation dialog appears warning about security.
+3. Confirm → `onViewSeedPhrase` fires.
+4. Verify 12 seed words are displayed in a secure view.
 
-**Failure Path:**
-- Steps: Enter malformed URL "not-a-url" → submit
-- Expected: URL validation error shown, onAddMint not called
-
-### Flow 5: Remove Non-Default Mint
-**Success Path:**
-- Steps: Expand Cashu → click delete icon on a non-default mint
-- Expected: onRemoveMint called with mint URL, mint removed from list
-
-**Failure Path:**
-- Setup: Default mint row
-- Expected: No delete icon visible, mint cannot be removed
-
-### Flow 6: View Seed Phrase
-**Success Path:**
-- Steps: Expand Cashu → click "View Seed Phrase" → confirm security warning dialog
-- Expected: onViewSeedPhrase called, seed phrase revealed
-
-**Failure Path:**
-- Steps: Dismiss security dialog without confirming
-- Expected: Seed phrase not shown, onViewSeedPhrase not called
-
-### Flow 7: Configure NIP-07 Nostr Signer
-**Success Path:**
-- Steps: Expand Nostr → select "NIP-07 Extension" from signer dropdown
-- Expected: onSignerModeChange('nip07') called, profile fetches and preview displays npub, name, avatar
-
-**Failure Path:**
-- Setup: No NIP-07 extension installed in browser
-- Expected: Error message "No NIP-07 extension detected", signer mode not changed
-
-### Flow 8: Enter nsec Private Key
-**Success Path:**
-- Steps: Expand Nostr → select "Private Key (nsec)" → enter valid nsec value in password field
-- Expected: onNsecSubmit called, profile derived and previewed, field shows dots (password mode)
-
-**Failure Path:**
-- Steps: Enter invalid string "notansec"
-- Expected: Validation error "Invalid nsec key", onNsecSubmit not called
-
-### Flow 9: Toggle nsec Visibility
-- Steps: Click show/hide eye icon on nsec input
-- Expected: Field toggles between type="password" and type="text"
-
-### Flow 10: Manage Relays
-**Success Path:**
-- Steps: Expand Nostr → click "Add Relay" → enter "wss://relay.damus.io" → submit
-- Expected: onAddRelay called, relay appears in list with connection status
-
-**Failure Path:**
-- Steps: Enter non-WSS URL "http://relay.example.com"
-- Expected: Validation error "Relay URL must start with wss://", onAddRelay not called
+---
 
 ## Empty State Tests
-- No additional mints → only default mint shown with "Default" badge, no delete button
-- No Nostr profile loaded → placeholder avatar, "Not connected" label shown in Nostr section
-- No relays added → "No relays configured" message with "Add Relay" CTA
 
-## Component Tests
-- Accordion: only one category open at a time, chevron rotates on open/close
-- CurrencySelector: BTC and USD options rendered, active one highlighted
-- MintRow: shows URL, connection status dot (green=connected, yellow=connecting, red=failed), Default badge if applicable
-- SignerSelector: none, nip07, nsec options; nsec shows password input when selected
-- RelayRow: shows URL, connection status, remove button
-- NostrProfilePreview: shows avatar (or initials), npub (truncated), display name, NIP-05 badge if verified
-- Oracle category: visually disabled with "Coming Soon" badge, all controls non-interactive
+- **No additional mints**: Only the default mint is shown. "Add Mint" button is visible below it.
+- **No Nostr profile (not-found)**: When `profileFetchStatus: 'not-found'`, a placeholder message reads "Profile not found on connected relays".
+- **No relays**: Relay list is empty with only the "Add Relay" button visible.
+
+---
+
+## Component Interaction Tests
+
+- **Accordion behavior**: Expanding "Cashu" collapses "General" (previously expanded). Only one category is expanded at a time.
+- **Oracle section disabled**: The Oracle section has "Coming Soon" amber badge. The entire section is visually muted (reduced opacity, disabled pointer events). No interactive controls are rendered.
+- **Default mint protection**: The default mint has a "Default" badge and no remove/delete button. It cannot be removed.
+- **Nostr nsec input visibility**: The nsec input field is only visible when `signerMode` is `'nsec'`. It is hidden for `'none'` and `'nip07'`.
+- **Profile preview fields**: When profile is found, verify avatar image, display name text, NIP-05 identifier, verification badge (checkmark if `nip05verified` is true), and bio text.
+- **Theme change**: Clicking "Light", "Dark", or "System" → `onThemeChange` fires with the selected value.
+- **Language change**: Clicking "English" or "Japanese" → `onLanguageChange` fires with `'en'` or `'ja'`.
+- **Remove mint**: Clicking delete on a non-default mint → `onRemoveMint` fires with the mint URL.
+- **Add relay**: Clicking "Add Relay" → input field appears. Entering a wss:// URL and confirming → `onAddRelay` fires.
+- **Remove relay**: Clicking delete on a relay → `onRemoveRelay` fires with the relay URL.
+- **nsec submit**: Entering a valid nsec and submitting → `onNsecSubmit` fires with the nsec string.
+
+---
 
 ## Edge Cases
-- Oracle settings section is entirely non-interactive with "Coming Soon" overlay
-- NIP-05 verification badge shown only when profile has verified nip05 field
-- Relay connection status updates in real time (connecting animation while attempting)
-- Very long mint URL truncates in display but stored in full
-- App version displayed in General section (read-only)
-- Language selector currently shows only "English (en)" with others grayed as coming soon
 
-## Accessibility
-- Accordion headers are buttons with aria-expanded reflecting state
-- Category group content regions have aria-hidden when collapsed
-- Password input for nsec has matching label, show/hide button has aria-label
-- Error messages linked to their inputs via aria-describedby
-- Delete buttons have aria-label including the mint URL or relay URL
+- **Invalid mint URL**: Entering an invalid URL for "Add Mint" shows a connection test failure.
+- **Mint connection error**: A mint with `connectionStatus: 'error'` shows a red indicator.
+- **NIP-05 not verified**: Profile preview shows NIP-05 without the verification badge when `nip05verified` is false.
+- **Relay connection status**: Each relay shows its connection status (connected = green, disconnected = grey).
+- **Category toggle idempotent**: Clicking an already-expanded category header collapses it (all categories closed).
+
+---
+
+## Accessibility Checks
+
+- Category group headers use `role="button"` with `aria-expanded` attribute.
+- Segmented controls use `role="radiogroup"` with individual `role="radio"` and `aria-checked`.
+- nsec input has `type="password"` with a show/hide toggle that has `aria-label="Show password"` / `aria-label="Hide password"`.
+- "View Seed Phrase" confirmation dialog is modal with proper focus trap.
+- Mint and relay list items have descriptive labels including connection status.
+- "Coming Soon" badge on Oracle section is announced by screen readers.
+- Remove buttons have `aria-label="Remove [item name]"`.
+
+---
 
 ## Sample Test Data
+
 ```typescript
-const mockSettings = {
+import type {
+  SettingsProps,
+  SettingsState,
+  MintConfig,
+  NostrProfile,
+  RelayConfig,
+} from './types'
+
+const defaultMint: MintConfig = {
+  url: 'https://mint.bitcaster.app',
+  isDefault: true,
+  connectionStatus: 'connected',
+  addedDate: '2026-01-01T00:00:00Z',
+}
+
+const additionalMint: MintConfig = {
+  url: 'https://mint2.example.com',
+  isDefault: false,
+  connectionStatus: 'connected',
+  addedDate: '2026-02-15T10:00:00Z',
+}
+
+const sampleNostrProfile: NostrProfile = {
+  pubkey: 'npub1abc123...',
+  displayName: 'SatoshiFan',
+  avatar: '/avatars/satoshi.png',
+  nip05: 'satoshi@bitcaster.app',
+  nip05verified: true,
+  bio: 'Bitcoin maximalist and prediction market enthusiast.',
+}
+
+const sampleRelays: RelayConfig[] = [
+  { url: 'wss://relay.damus.io', connectionStatus: 'connected' },
+  { url: 'wss://relay.nostr.info', connectionStatus: 'disconnected' },
+]
+
+const sampleSettings: SettingsState = {
   general: {
-    baseCurrency: "BTC" as const,
-    language: "en",
-    theme: "dark" as const,
-    appVersion: "0.1.0"
+    baseCurrency: 'BTC',
+    language: 'en',
+    theme: 'dark',
+    appVersion: '0.1.0',
   },
   cashu: {
-    mints: [
-      {
-        url: "http://localhost:3338",
-        isDefault: true,
-        connectionStatus: "connected" as const,
-        alias: "Local Dev Mint"
-      },
-      {
-        url: "https://mint.minibits.cash/Bitcoin",
-        isDefault: false,
-        connectionStatus: "connected" as const,
-        alias: "Minibits"
-      }
-    ]
+    mints: [defaultMint, additionalMint],
   },
   nostr: {
-    signerMode: "none" as const,
-    profile: null,
-    profileFetchStatus: "idle" as const,
-    relays: []
+    signerMode: 'nip07',
+    profile: sampleNostrProfile,
+    profileFetchStatus: 'found',
+    relays: sampleRelays,
   },
   oracle: {
-    comingSoon: true
-  }
-};
+    comingSoon: true,
+  },
+}
 
-const mockSettingsWithNostr = {
-  ...mockSettings,
-  nostr: {
-    signerMode: "nip07" as const,
-    profile: {
-      npub: "npub1abc123...",
-      displayName: "SatoshiTrader",
-      avatarUrl: "https://example.com/avatar.png",
-      nip05: "trader@example.com",
-      nip05Verified: true
-    },
-    profileFetchStatus: "success" as const,
-    relays: [
-      { url: "wss://relay.damus.io", connectionStatus: "connected" as const },
-      { url: "wss://nos.lol", connectionStatus: "connecting" as const }
-    ]
-  }
-};
-
-const mockSingleDefaultMint = {
-  mints: [
-    {
-      url: "http://localhost:3338",
-      isDefault: true,
-      connectionStatus: "connected" as const,
-      alias: "Local Dev Mint"
-    }
-  ]
-};
+const sampleProps: SettingsProps = {
+  activeCategory: 'general',
+  settings: sampleSettings,
+}
 ```

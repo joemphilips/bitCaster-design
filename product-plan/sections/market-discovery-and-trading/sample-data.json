@@ -1,7 +1,8 @@
 {
   "_meta": {
     "events": {
-      "MarketCreated": "User creates a new prediction market with question, outcomes, resolution date, fee structure, and parameters (market is immediately active)",
+      "MarketCreated": "User creates a new prediction market with question, outcomes, resolution date, fee structure, and parameters",
+      "MarketRefunded": "Oracle did not attest in time, all participants refunded",
       "Bought": "User buys shares/positions in a market outcome, updating volume, odds, and trader count",
       "Sold": "User sells shares/positions in a market outcome, updating volume, odds, and trader count",
       "LiquidityDeposited": "Liquidity provider adds funds to a market, improving market depth and trading"
@@ -9,7 +10,9 @@
     "currentState": {
       "markets": "Active markets currently accepting trades, with real-time metrics reflecting all Bought, Sold, and LiquidityDeposited events",
       "tags": "Pre-defined category tags for filtering markets by topic",
-      "metaTags": "Dynamic tags like Trending, Popular, and New based on market activity"
+      "metaTags": "Dynamic tags like Trending, Popular, and New based on market activity",
+      "lastUpdatedAt": "ISO timestamp of last successful condition sync from mint",
+      "isRefreshing": "Whether a condition refresh is currently in progress"
     },
     "eventFlows": [
       "MarketCreated event creates a new market that is immediately active and visible in discovery",
@@ -72,6 +75,8 @@
       "marketCount": 178
     }
   ],
+  "lastUpdatedAt": "2026-02-28T10:25:00Z",
+  "isRefreshing": false,
   "markets": [
     {
       "id": "mkt-001",

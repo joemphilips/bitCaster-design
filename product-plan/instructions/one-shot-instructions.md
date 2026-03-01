@@ -1,6 +1,4 @@
-# bitCaster — One-Shot Implementation Instructions
-
-This document contains all 8 milestones for implementing bitCaster. Complete them in order.
+# bitCaster — Complete Implementation Instructions
 
 ---
 
@@ -33,64 +31,98 @@ This document contains all 8 milestones for implementing bitCaster. Complete the
 
 ## Test-Driven Development
 
-For every milestone, follow this TDD workflow:
+Each section includes a `tests.md` file with detailed test-writing instructions. These are **framework-agnostic** — adapt them to your testing setup.
 
-1. Read `tests.md` in the corresponding section folder
-2. Write failing tests before writing any implementation code
-3. Implement the minimum code to make tests pass
+**For each section:**
+1. Read `product-plan/sections/[section-id]/tests.md`
+2. Write failing tests for key user flows (success and failure paths)
+3. Implement the feature to make tests pass
 4. Refactor while keeping tests green
-
-Test instructions are framework-agnostic. Adapt them to your chosen test runner (Vitest, Jest, Playwright, Cypress, etc.).
 
 ---
 
 ## Product Overview
 
-### bitCaster
+### Summary
 
-Bitcoin-native prediction market platform where anyone can create, trade, and monetize markets. All markets denominated in sats.
+bitCaster is an open-source Cashu wallet with prediction market superpowers. It combines a full-featured ecash wallet — send, receive, and manage sats privately via Lightning — with a Bitcoin-native prediction market where users trade outcomes using Cashu conditional tokens (CTF). No accounts, no KYC, no bridging — just sats.
 
 ### Key Features
-- Bitcoin-only deposits with sat denomination
-- Open market creation for any user
-- Fee collection system for market creators
-- Automated market resolution and payout
-- Real-time trading with live price discovery
-- Supports Yes/No and Categorical markets
+- Cashu ecash wallet — send, receive, and manage sats with full privacy
+- Lightning deposit and withdrawal — no accounts, no bridging, no gas
+- Prediction market trading — buy and sell outcome shares on a central limit order book
+- Real-time price discovery — live odds, order book depth, and price charts via SignalR
+- Portfolio tracking — positions, P/L charts, activity history, and fund management
+- Open market creation — propose markets via Nostr + DLC oracle announcements (later phase)
+- Seed phrase backup — recover wallet and positions from a BIP-39 mnemonic
+- Multi-mint support — connect to any NUT-CTF compatible Cashu mint
+- Brand motto: "FINANCE WANTS TO BE FREE | FAKE MUST BE EXPENSIVE"
 
 ### Planned Sections
-1. Market Discovery & Trading — Core marketplace for browsing and trading
-2. Market Creation & Management — Creator dashboard and analytics
-3. Portfolio — Personal trading dashboard with positions, funds, and P/L
-4. Market Detail — Comprehensive market view with trading panel
-5. Settings — User preferences (currency, theme, mints, Nostr, oracle)
-6. Wallet Setup — First-time onboarding wizard
-7. Market Creation — 7-step market creation wizard
-8. Deposit / Withdraw — Modal overlay flows for depositing/withdrawing sats
+
+1. **Wallet Setup** — First-time onboarding wizard for wallet creation or recovery
+2. **Market Discovery & Trading** — Core marketplace where users browse and trade prediction markets (default home view)
+3. **Market Detail** — Detailed trading view with order book, charts, and trade panel
+4. **Portfolio** — Positions, funds, P/L chart, activity feed, and created markets
+5. **Deposit / Withdraw** — Fund the wallet or cash out via Ecash or Lightning
+6. **Settings** — User preferences (currency, theme, connected mints, Nostr, seed backup)
+7. **Market Creation & Management** — Creator dashboard for managing and creating markets (later phase)
+8. **Market Creation** — 7-step wizard for creating new prediction markets (later phase)
+
+### Data Model
+
+Core entities:
+- **Condition** — A prediction question registered on a NUT-CTF compliant mint
+- **Market** — A tradeable view combining protocol data from the mint with real-time trade data
+- **Outcome** — A possible result within a condition (maps to NUT-CTF outcome collection)
+- **Position** — A user's stake on a specific outcome (reconstructed from local ecash tokens)
+- **Order** — A buy or sell order on the order book
+- **Trade** — A completed transaction between a buyer and a seller
+- **Fund** — Base ecash balance held in the wallet (not locked to any market)
+- **Activity** — Ledger entry for deposits, withdrawals, buys, sells, and payouts
+- **Mint** — A connected Cashu mint
+- **Oracle** — A DLC oracle that announces events via Nostr
+- **Comment** — A user comment on a market
 
 ### Design System
-- Primary: blue, Secondary: amber, Neutral: slate, Accent: #f7931a
-- Fonts: Inter (heading/body), JetBrains Mono (mono)
-- Dark theme, background #0a0a0a
+
+**Colors:**
+- Primary: `blue`
+- Secondary: `amber`
+- Neutral: `slate`
+
+**Typography:**
+- Heading: Inter
+- Body: Inter
+- Mono: JetBrains Mono
 
 ### Implementation Sequence
-Build in milestones:
-1. Foundation — Design tokens, data model, routing, shell
-2-9. Each section in order listed above
+
+Build this product in milestones:
+
+1. **Foundation** — Set up design tokens, data model types, routing, and application shell
+2. **Wallet Setup** — First-time onboarding wizard (5-step flow)
+3. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, and quick trading
+4. **Market Detail** — Comprehensive trading view with charts and order book
+5. **Portfolio** — Trading dashboard with positions, P/L, and activity feed
+6. **Deposit / Withdraw** — Modal flows for Ecash and Lightning deposit/withdrawal
+7. **Settings** — User preferences and configuration
+8. **Market Creation & Management** — Creator dashboard (later phase)
+9. **Market Creation** — 7-step market creation wizard (later phase)
+
+Each milestone has a dedicated instruction document in `product-plan/instructions/`.
 
 ---
 
-## Milestone 1: Foundation
+# Milestone 1: Foundation
 
-> **Prerequisites:** None
-
-### Goal
+## Goal
 
 Set up the foundational elements: design tokens, data model types, routing structure, and application shell.
 
-### What to Implement
+## What to Implement
 
-#### 1. Design Tokens
+### 1. Design Tokens
 
 Configure your styling system with these tokens:
 
@@ -98,758 +130,618 @@ Configure your styling system with these tokens:
 - See `product-plan/design-system/tailwind-colors.md` for Tailwind configuration
 - See `product-plan/design-system/fonts.md` for Google Fonts setup
 
-Key values:
-- Primary: Tailwind blue
-- Secondary: Tailwind amber
-- Neutral: Tailwind slate
-- Accent: Bitcoin orange `#f7931a`
-- Background: `#0a0a0a`
-- Fonts: Inter (heading/body), JetBrains Mono (mono)
+Key design decisions:
+- Primary color: **blue** (buttons, links, active states)
+- Secondary color: **amber** (tags, highlights, bitcoin-related, notification badges)
+- Neutral color: **slate** (backgrounds, text, borders)
+- Default theme: **dark** (slate-900/950 backgrounds)
+- Heading & body font: **Inter**
+- Monospace font: **JetBrains Mono** (used for sats amounts, prices, order book)
 
-#### 2. Data Model Types
+### 2. Data Model Types
 
-Create TypeScript interfaces for your core entities:
+Create TypeScript interfaces for your core entities. See `product-plan/data-model/` for:
+- `data-shape.md` — Full entity definitions with field descriptions
+- Each section's `types.ts` for component-level interfaces
 
-- See `product-plan/event-model/events.ts` for domain event definitions
-- See `product-plan/event-model/README.md` for event flows and relationships
-- Key entities: User, Market (YesNo/Categorical), Position, Activity, Settings
+Key entities to define: Condition, Market, Outcome, Position, Order, Trade, Fund, Activity, Mint, Oracle, Comment
 
-#### 3. Routing Structure
+### 3. Routing Structure
 
-Create placeholder routes for each section:
+Create routes for each section:
 
-- `/` or `/markets` — Market Discovery & Trading (default home)
-- `/markets/:id` — Market Detail
-- `/portfolio` — Portfolio
-- `/creator` — Market Creation & Management
-- `/creator/new` — Market Creation Wizard (no shell)
-- `/settings` — Settings
-- `/setup` — Wallet Setup (no shell, first-time only)
+| Route | Section | Shell |
+|-------|---------|-------|
+| `/setup` | Wallet Setup | No |
+| `/` or `/markets` | Market Discovery & Trading | Yes |
+| `/markets/:id` | Market Detail | Yes |
+| `/portfolio` | Portfolio | Yes |
+| `/deposit` | Deposit (modal overlay) | No |
+| `/withdraw` | Withdraw (modal overlay) | No |
+| `/settings` | Settings | Yes |
+| `/creator` | Market Creation & Management | Yes |
+| `/creator/new` | Market Creation Wizard | No |
 
-#### 4. Application Shell
+### 4. Application Shell
 
 Copy the shell components from `product-plan/shell/components/` to your project:
 
-- `AppShell.tsx` — Main layout wrapper
-- `MainNav.tsx` — Top navigation with logo, Markets link, search, notification bell
-- `UserMenu.tsx` — User dropdown with avatar, name, balance, menu items
+- `AppShell.tsx` — Main layout wrapper with top navigation bar and mobile bottom navigation
+- `MainNav.tsx` — Navigation component with Markets link and search
+- `UserMenu.tsx` — User dropdown menu with avatar, balance, and menu items
 
 **Wire Up Navigation:**
-- Markets (TrendingUp icon) → `/markets`
-- Search → inline search or `/markets?q=...`
-- Notifications (Bell icon) → notification feed (with unread badge)
-- Creator (Sparkles icon, via User Menu) → `/creator`
-- Portfolio (Wallet icon, via User Menu) → `/portfolio`
-- Settings (Gear icon, via User Menu) → `/settings`
-- Logout → clear session
 
-**Mobile Navigation:**
-Bottom bar with 5 items: Markets, Search, Notifications, Creator, User (→ Portfolio)
+- **Markets** (TrendingUp icon) → `/markets` (default home view)
+- **Search** → inline search input (desktop) / search interface (mobile)
+- **Notifications** → Bell icon with unread badge (bitcoin orange `#f7931a`)
+- **User Menu dropdown:**
+  - CreatorPage (Sparkles icon) → `/creator`
+  - Portfolio (Wallet icon) → `/portfolio`
+  - Settings (Gear icon) → `/settings`
+  - Logout
 
-**Brand Motto:**
-Background image from `product/brand_motto.png` at subtle opacity
+**Mobile Bottom Navigation (< 768px):**
+1. Markets (TrendingUp icon)
+2. Search (Search icon)
+3. Notifications (Bell icon with badge)
+4. Creator (Sparkles icon)
+5. User (avatar → Portfolio)
 
-### Done When
+**Brand Motto Background:**
+- Static background image: `product/brand_motto.png`
+- Fixed positioning, subtle opacity
 
-- [ ] Design tokens are configured (colors, fonts, spacing)
-- [ ] Data model types are defined
+## Files to Reference
+
+- `product-plan/design-system/` — Design tokens
+- `product-plan/data-model/` — Type definitions (data-shape.md)
+- `product-plan/shell/README.md` — Shell design intent
+- `product-plan/shell/components/` — Shell React components
+
+## Done When
+
+- [ ] Design tokens are configured (colors, fonts, dark theme)
+- [ ] Data model types are defined for all core entities
 - [ ] Routes exist for all sections (can be placeholder pages)
-- [ ] Shell renders with navigation
-- [ ] Navigation links to correct routes
-- [ ] User menu shows user info
-- [ ] Notification badge works
-- [ ] Responsive on mobile (bottom nav bar)
-
----
-
-## Milestone 2: Market Discovery & Trading
-
-> **Prerequisites:** Milestone 1 complete
-
-### Goal
-
-Implement the core marketplace where users browse prediction markets and execute quick trades.
-
-### Overview
-
-Users land on a single-page marketplace showing active prediction markets organized by tags. They can filter by market type, volume, or closing date, then trade directly from a market card without navigating away. Markets come in two types: Yes/No and Categorical. New markets append via infinite scroll.
-
-**Key Functionality:**
-- Single-select horizontal tag bar (Trending, Popular, New, Sports, Politics, Crypto, etc.)
-- Collapsible filter row (Market Type, Volume Range, Closing Date)
-- Fixed-height (280px) market cards for both market types
-- Inline trading overlay that transforms the card without changing its size
-- Infinite scroll for loading additional markets
-
-### Components
-
-Copy from `product-plan/sections/market-discovery-and-trading/components/`:
-
-- `MarketDiscovery` — Main container with tag bar, filters, and market grid
-- `MarketCard` — Individual market card (YesNo, Categorical)
-- `FilterControls` — Market type, volume range, and closing date filters
-- `TagBar` — Horizontal tag navigation (single-select)
-
-### Data Layer
-
-Key types: `YesNoMarket`, `CategoricalMarket`, `TradeState`, `FilterState`
-
-API endpoints:
-- `GET /markets?tag=&type=&minVolume=&maxVolume=&closingBefore=&page=`
-- `POST /markets/:id/trade`
-
-### Callbacks
-
-| Callback | What to do |
-|----------|------------|
-| `onSearch` | Filter markets by query string |
-| `onTagSelect` | Fetch markets filtered by tag |
-| `onBuyYes` | Call trade API with `side: "yes"` |
-| `onBuyNo` | Call trade API with `side: "no"` |
-| `onBuyOutcomeYes` | Call trade API for a categorical outcome, yes side |
-| `onBuyOutcomeNo` | Call trade API for a categorical outcome, no side |
-| `onViewMarket` | Navigate to `/markets/:id` |
-| `onLoadMore` | Fetch next page and append |
-
-### Files to Reference
-- `product-plan/sections/market-discovery-and-trading/README.md`
-- `product-plan/sections/market-discovery-and-trading/tests.md`
-- `product-plan/sections/market-discovery-and-trading/components/`
-- `product-plan/sections/market-discovery-and-trading/types.ts`
-- `product-plan/sections/market-discovery-and-trading/sample-data.json`
-
-### Done When
-
-- [ ] Tests written and passing
-- [ ] Both market card types render with real data
-- [ ] Tag bar single-select works and fetches correct markets
-- [ ] Filters apply and combine correctly
-- [ ] Trading overlay opens and closes without resizing the card
-- [ ] Trades execute via API and card odds update
-- [ ] Empty states display for no results and network errors
-- [ ] Infinite scroll loads additional pages
+- [ ] Shell renders with top navigation bar
+- [ ] Markets link navigates to discovery page
+- [ ] User menu dropdown shows CreatorPage, Portfolio, Settings, Logout
+- [ ] Mobile bottom navigation bar with 5 items
+- [ ] Notification bell with unread badge
+- [ ] Brand motto background image displayed
 - [ ] Responsive on mobile
 
 ---
 
-## Milestone 3: Market Creation & Management
+# Milestone 2: Wallet Setup
 
-> **Prerequisites:** Milestone 1 complete
+## Goal
+Implement the Wallet Setup section — first-time onboarding wizard for creating a new wallet or recovering from a seed phrase.
 
-### Goal
-
-Implement the creator dashboard for monitoring, analyzing, and managing prediction markets.
-
-### Overview
-
-Authenticated market creators see a tabbed dashboard with aggregate stats, a paginated market list, and volume analytics. They can cancel markets, claim creator fees, and launch the Market Creation Wizard.
+## Overview
+A 5-step flow that guides new users through wallet creation or recovery. This is the entry point for all new users and must complete before any other section is accessible. No application shell is shown during setup.
 
 **Key Functionality:**
-- Dashboard stats: active/resolved counts, total volume, total fees earned
-- Paginated market list with status, volume, fees, and actions
-- Volume chart with daily/weekly/monthly time scale and aggregate vs. per-market toggle
-- Cancel market and claim fees actions
-- "Add Market" CTA navigating to `/creator/new`
+- Welcome landing with Terms of Service popup
+- PWA installation confirmation
+- Choice between creating a new wallet or recovering an existing one
+- Seed phrase display (3x4 grid) with verification (words #3, #7, #12)
+- Seed phrase recovery with 12-word input and BIP-39 validation
+- Mint connection setup with connection testing
+- Background data loading from hard-coded mint during steps 3-5
+
+## Recommended Approach: Test-Driven Development
+See `product-plan/sections/wallet-setup/tests.md` for detailed test-writing instructions.
+
+## What to Implement
 
 ### Components
-
-Copy from `product-plan/sections/market-creation-and-management/components/`:
-
-- `MarketCreationDashboard` — Main tabbed container
-- `MarketRow` — Individual market list item
-- `StatCard` — Single stat display
-- `VolumeChart` — Time-series volume chart
-- `Pagination` — Page navigation
-
-### Data Layer
-
-Key types: `DashboardStats`, `CreatorMarket`, `VolumeChartData`, `PaginationState`
-
-API endpoints:
-- `GET /creator/stats`
-- `GET /creator/markets?page=&limit=`
-- `GET /creator/analytics?timeScale=&mode=`
-- `POST /creator/markets/:id/cancel`
-- `POST /creator/markets/:id/claim-fees`
-
-### Callbacks
-
-| Callback | What to do |
-|----------|------------|
-| `onViewDetails` | Navigate to `/markets/:id` |
-| `onTabChange` | Switch between tabs |
-| `onCreateMarket` | Navigate to `/creator/new` |
-| `onCancelMarket` | Confirmation dialog, then cancel API |
-| `onClaimFees` | Call claim-fees API |
-| `onSaveDraft` | Persist wizard draft |
-| `onTimeScaleChange` | Fetch analytics with updated time scale |
-| `onChartModeChange` | Fetch analytics with updated mode |
-| `onPageChange` | Fetch selected page |
-
-### Files to Reference
-- `product-plan/sections/market-creation-and-management/README.md`
-- `product-plan/sections/market-creation-and-management/tests.md`
-- `product-plan/sections/market-creation-and-management/components/`
-- `product-plan/sections/market-creation-and-management/types.ts`
-- `product-plan/sections/market-creation-and-management/sample-data.json`
-
-### Done When
-
-- [ ] Tests written and passing
-- [ ] Stats load with real data
-- [ ] Market list paginates correctly
-- [ ] Volume chart responds to time scale and mode toggles
-- [ ] Cancel and claim fees flows work end-to-end
-- [ ] "Add Market" navigates to wizard
-- [ ] Empty state for creators with no markets
-- [ ] Responsive on mobile
-
----
-
-## Milestone 4: Portfolio
-
-> **Prerequisites:** Milestone 1 complete
-
-### Goal
-
-Implement the personal trading dashboard where users track positions, P/L, activity history, and created markets.
-
-### Overview
-
-Conditional entry: no-wallet users see a "Get Started" CTA; wallet users see the full dashboard with profile card, P/L chart, stats, positions, activity feed, and created markets list.
-
-**Key Functionality:**
-- Conditional rendering: no-wallet CTA vs. full dashboard
-- Profile card with avatar upload and interactive P/L chart (1D/1W/1M/ALL)
-- Stats row: Positions Value, Biggest Win, Predictions count
-- Deposit and withdraw sats
-- Tabbed positions list (Active with Sell, Closed with Claim Payout)
-- Chronological activity feed
-- Collapsible "My Markets" section
-
-### Components
-
-Copy from `product-plan/sections/portfolio/components/`:
-
-- `Portfolio` — Main container with conditional rendering
-- `ProfileCard` — User info plus P/L chart
-- `PLChart` — Interactive P/L chart
-- `StatsRow` — Three stat cards
-- `PositionsList` — Tabbed positions list
-- `PositionRow` — Individual position
-- `ActivityFeed` — Chronological activity
-- `MyMarkets` — Collapsible created markets
-- `CreatedMarketRow` — Individual created market
-
-### Data Layer
-
-Key types: `UserProfile`, `PLChartData`, `PortfolioStats`, `Position`, `ActivityItem`, `CreatedMarket`
-
-API endpoints:
-- `GET /portfolio/profile`
-- `GET /portfolio/pl?range=1D|1W|1M|ALL`
-- `GET /portfolio/stats`
-- `GET /portfolio/positions?tab=active|closed`
-- `GET /portfolio/activity`
-- `GET /portfolio/markets`
-- `POST /portfolio/positions/:id/sell`
-- `POST /portfolio/positions/:id/claim`
-- `POST /portfolio/deposit`
-- `POST /portfolio/withdraw`
-- `POST /portfolio/avatar`
-
-### Callbacks
-
-| Callback | What to do |
-|----------|------------|
-| `onGetStarted` | Navigate to `/setup` |
-| `onAvatarUpload` | Upload avatar via API |
-| `onTimeRangeChange` | Fetch P/L for selected range |
-| `onDeposit` | Open deposit flow |
-| `onWithdraw` | Open withdraw flow |
-| `onSellPosition` | Call sell API, refresh list |
-| `onClaimPayout` | Call claim API, refresh list |
-| `onClaimCreatorFees` | Claim creator fees API |
-| `onViewMarket` | Navigate to `/markets/:id` |
-| `onPositionsTabChange` | Fetch positions for tab |
-| `onOpenSettings` | Navigate to `/settings` |
-
-### Files to Reference
-- `product-plan/sections/portfolio/README.md`
-- `product-plan/sections/mypage/tests.md`
-- `product-plan/sections/portfolio/components/`
-- `product-plan/sections/portfolio/types.ts`
-- `product-plan/sections/mypage/sample-data.json`
-
-### Done When
-
-- [ ] Tests written and passing
-- [ ] No-wallet gate renders CTA; wallet users see dashboard
-- [ ] P/L chart responds to time range selector
-- [ ] Active and Closed positions load from API
-- [ ] Sell and Claim Payout actions work end-to-end
-- [ ] Activity feed loads chronologically
-- [ ] My Markets collapses/expands and links correctly
-- [ ] All empty states display properly
-- [ ] Responsive on mobile
-
----
-
-## Milestone 5: Market Detail
-
-> **Prerequisites:** Milestone 1 complete
-
-### Goal
-
-Implement a comprehensive single-market view with trading panel, price charts, order book, activity feed, comments, and support for all market types including resolved markets.
-
-### Overview
-
-Two-column layout (desktop): left column has market header, price chart, resolution info, order book, activity, related markets, and comments. Right column is a sticky trading panel. Trading panel supports Buy/Sell toggle and Market/Limit order types. Resolved markets use single-column layout with no trading panel.
-
-**Key Functionality:**
-- Market header with image, tags, creator info, metrics, like, and share
-- Trading panel with Buy/Sell toggle, Market/Limit tabs, outcome selection for all market types
-- Price chart with 1H/24H/7D/30D/ALL timeframes, price/volume toggle, and comment bubble overlay
-- Order book (bid/ask visualization)
-- Activity feed and comment section (read-only)
-- Related markets horizontal scroll
-- Resolved market state: single-column, no trading panel
-
-### Components
-
-Copy from `product-plan/sections/market-detail/components/`:
-
-- `MarketDetail` — Main two-column layout
-- `MarketHeader` — Title, image, tags, creator, metrics
-- `MarketStats` — Key market metrics
-- `TradingPanel` — Buy/Sell toggle, Market/Limit tabs, outcome selection, trade form
-- `PriceChart` — Line chart with timeframe and type toggles
-- `OrderBookSection` — Bid/ask depth visualization
-- `ActivityFeed` — Recent trades with infinite scroll
-- `CommentSection` — Comment list with likes
-- `RelatedMarkets` — Horizontal scrollable related market cards
-- `ResolutionInfo` — Resolution criteria, source, date, and status
-
-### Data Layer
-
-Key types: `YesNoMarketDetail`, `CategoricalMarketDetail`, `TradeSelection`, `TradePreview`, `OrderBook`, `Comment`
-
-API endpoints:
-- `GET /markets/:id`
-- `GET /markets/:id/price-history?timeframe=`
-- `GET /markets/:id/order-book`
-- `GET /markets/:id/trades?page=`
-- `GET /markets/:id/comments?page=`
-- `GET /markets/:id/related`
-- `POST /markets/:id/trade`
-- `POST /markets/:id/like`
-- `POST /markets/:id/comments/:commentId/like`
-- `POST /markets/:id/trade-preview`
-
-### Callbacks
-
-| Callback | What to do |
-|----------|------------|
-| `onTimeframeChange` | Fetch price history for timeframe |
-| `onChartTypeChange` | Toggle price vs. volume chart |
-| `onTradeSelect` | Set selected outcome in state |
-| `onTradeClear` | Clear selected outcome |
-| `onAmountChange` | Update amount, call trade-preview API |
-| `onTradeConfirm` | Execute trade, post comment if entered |
-| `onTradeSideChange` | Toggle Buy/Sell |
-| `onOrderTypeChange` | Toggle Market/Limit |
-| `onLimitPriceChange` | Update limit price in state |
-| `onLikeToggle` | Like API, update optimistically |
-| `onShare` | Copy URL or open share sheet |
-| `onCommentLike` | Comment like API, update optimistically |
-| `onRelatedMarketClick` | Navigate to `/markets/:id` |
-| `onCreatorClick` | Navigate to creator profile |
-
-### Files to Reference
-- `product-plan/sections/market-detail/README.md`
-- `product-plan/sections/market-detail/tests.md`
-- `product-plan/sections/market-detail/components/`
-- `product-plan/sections/market-detail/types.ts`
-- `product-plan/sections/market-detail/sample-data.json`
-
-### Done When
-
-- [ ] Tests written and passing
-- [ ] Both market types load and display correctly
-- [ ] Trading panel Buy/Sell toggle and Market/Limit tabs functional
-- [ ] Trade preview recalculates on amount change
-- [ ] Price chart renders with all timeframes and types
-- [ ] Comment bubbles overlay chart at correct positions
-- [ ] Order book renders
-- [ ] Activity feed paginates via infinite scroll
-- [ ] Resolved market: no trading panel, single column, outcome prominent
-- [ ] Mobile sticky Trade button opens full-screen modal
-
----
-
-## Milestone 6: Settings
-
-> **Prerequisites:** Milestone 1 complete
-
-### Goal
-
-Implement user preferences organized into 4 collapsible category groups: General, Cashu, Nostr, and Oracle.
-
-### Overview
-
-Four accordion-style sections for configuring currency, language, theme, connected Cashu mints and seed backup, Nostr signer and relays, and a placeholder Oracle section.
-
-**Key Functionality:**
-- 4 collapsible category groups
-- Base currency (BTC / USD / JPY), language (English / Japanese), theme (Light / Dark / System)
-- Mint management: add URL, remove, view connection status
-- Seed phrase backup view (authentication gated)
-- Nostr signer mode (None / NIP-07 / nsec), profile display, relay management
-
-### Components
-
-Copy from `product-plan/sections/settings/components/`:
-
-- `Settings` — Main settings page with 4 collapsible categories
-
-### Data Layer
-
-Key types: `SettingsState`, `GeneralSettings`, `CashuSettings`, `NostrSettings`, `OracleSettings`, `MintConfig`, `NostrProfile`, `RelayConfig`
-
-API endpoints:
-- `GET /settings`
-- `PUT /settings/general`
-- `GET /settings/cashu/mints`, `POST /settings/cashu/mints`, `DELETE /settings/cashu/mints/:mintUrl`
-- `GET /settings/cashu/seed-phrase`
-- `PUT /settings/nostr/signer`, `GET /settings/nostr/profile`
-- `GET /settings/nostr/relays`, `POST /settings/nostr/relays`, `DELETE /settings/nostr/relays/:relayUrl`
-
-### Callbacks
-
-| Callback | What to do |
-|----------|------------|
-| `onCategoryToggle` | Toggle collapsed/expanded state |
-| `onBaseCurrencyChange` | Save and apply currency preference |
-| `onLanguageChange` | Save and apply language |
-| `onThemeChange` | Apply theme to document root and persist |
-| `onAddMint` | Validate URL, call add API, refresh list |
-| `onRemoveMint` | Confirm removal, call delete API |
-| `onViewSeedPhrase` | Auth gate, then display phrase in modal |
-| `onSignerModeChange` | Update local state; show/hide nsec input |
-| `onNsecSubmit` | Validate nsec, save signer, fetch profile |
-| `onAddRelay` | Validate WebSocket URL, add relay |
-| `onRemoveRelay` | Remove relay |
-
-### Files to Reference
-- `product-plan/sections/settings/README.md`
-- `product-plan/sections/settings/components/`
-- `product-plan/sections/settings/types.ts`
-- `product-plan/sections/settings/sample-data.json`
-
-### Done When
-
-- [ ] All four accordion groups toggle correctly
-- [ ] General settings persist and apply immediately (theme applies in real time)
-- [ ] Mint list loads; add and remove work end-to-end
-- [ ] Seed phrase view gated behind authentication
-- [ ] Nostr signer mode switches; nsec input appears only in nsec mode
-- [ ] Relay list loads; add and remove work
-- [ ] Oracle section shows "Coming soon" placeholder
-- [ ] Empty states for no mints or relays
-- [ ] Responsive on mobile
-
----
-
-## Milestone 7: Wallet Setup
-
-> **Prerequisites:** Milestone 1 complete
-
-### Goal
-
-Implement a first-time onboarding wizard rendered without the app shell for creating or recovering a Cashu wallet.
-
-### Overview
-
-5-step full-screen wizard (no nav shell) shown only when no wallet exists. Steps: Welcome → PWA confirmation → Create or Recover → Seed phrase display or input → Mint configuration.
-
-**Key Functionality:**
-- No app shell on `/setup` route
-- Step 1: Welcome with Terms of Service link
-- Step 2: PWA install confirmation (platform-specific)
-- Step 3: Choose Create New or Recover Wallet
-- Step 4a (Create): 3x4 seed phrase grid; checkbox required before Next
-- Step 4b (Recover): 12 word input fields with BIP-39 validation; paste support
-- Step 5: Mint URL configuration; finish and redirect to `/markets`
-
-### Components
-
 Copy from `product-plan/sections/wallet-setup/components/`:
-
-- `WalletSetup` — Main wizard container
-- `WelcomeLanding` — Welcome page with logo and ToS
-- `PwaConfirmation` — PWA install instructions
-- `ChoiceCards` — Create/Recover selection
-- `SeedDisplay` — 3x4 seed word grid
-- `SeedInput` — 12 input fields with paste support
-- `MintSetup` — Mint URL configuration
-- `StepIndicator` — Progress indicator (steps 3–5)
+- `WalletSetup.tsx` — Main orchestrator component
+- `WelcomeLanding.tsx` — Step 1: Welcome page
+- `PwaConfirmation.tsx` — Step 2: PWA install confirmation
+- `ChoiceCards.tsx` — Step 3: Create/Recover choice
+- `SeedDisplay.tsx` — Step 4 (create): Seed phrase display
+- `SeedInput.tsx` — Step 4 (recover): Seed phrase input
+- `MintSetup.tsx` — Step 5: Mint connection setup
+- `StepIndicator.tsx` — Progress indicator (steps 3-5)
 
 ### Data Layer
-
-Key types: `SetupStep`, `SetupChoice`, `MintConnectionTest`
-
-API endpoints:
-- `POST /wallet/create` — generate seed, store wallet, return words
-- `POST /wallet/recover` — derive wallet from phrase
-- `POST /wallet/mints/test` — test mint connectivity
-- `POST /wallet/mints` — save mint configuration
-- `POST /wallet/complete` — mark setup complete
+Key types: `SetupStep`, `SetupChoice`, `SeedVerifyPhase`, `MintConnectionTest`, `BackgroundDataLoad`
 
 ### Callbacks
+- `onWelcomeNext` — Advance from welcome
+- `onShowTerms` / `onCloseTerms` — Terms of Service popup
+- `onPwaNext` — Advance from PWA step
+- `onChoiceSelect` — Create/Recover selection
+- `onSeedSavedToggle` — Seed phrase saved confirmation
+- `onSeedVerifyInput` — Verification word input
+- `onSeedVerifyComplete` — Verification success → advance
+- `onSeedWordInput` / `onSeedPhrasePaste` — Recovery input
+- `onRecover` — Trigger recovery
+- `onAddMint` / `onRemoveMint` — Mint management
+- `onFinishSetup` — Complete setup → navigate to Portfolio
 
-| Callback | What to do |
-|----------|------------|
-| `onWelcomeNext` | Advance to Step 2 |
-| `onShowTerms` | Open ToS |
-| `onCloseTerms` | Close ToS |
-| `onPwaNext` | Advance to Step 3 |
-| `onChoiceSelect` | Record choice, advance to Step 4 |
-| `onSeedSavedToggle` | Toggle seed confirmation checkbox |
-| `onSeedWordInput` | Update individual word |
-| `onSeedPhrasePaste` | Parse pasted phrase into 12 fields |
-| `onRecover` | Validate BIP-39, call recover API |
-| `onAddMint` | Test and add mint |
-| `onRemoveMint` | Remove mint from list |
-| `onContinue` | Advance Step 4 to Step 5 |
-| `onBack` | Go to previous step |
-| `onFinishSetup` | Save mints, complete, redirect to `/markets` |
+## Expected User Flows
 
-### Files to Reference
-- `product-plan/sections/wallet-setup/README.md`
-- `product-plan/sections/wallet-setup/components/`
+### Flow 1: Create New Wallet
+1. User sees Welcome page, clicks "Next"
+2. User sees PWA confirmation, clicks "Next"
+3. User selects "Create New Wallet"
+4. User sees 12 seed words, checks "I have saved", clicks Continue
+5. User verifies words #3, #7, #12 correctly
+6. User sees Mint Setup with pre-connected mint
+7. User clicks "Finish Setup"
+**Outcome:** Wallet created, navigates to Portfolio
 
-### Done When
+### Flow 2: Recover Wallet
+1. User sees Welcome → PWA → selects "Recover Wallet"
+2. User enters 12 seed words (or pastes phrase)
+3. User clicks "Recover"
+4. User sees Mint Setup, clicks "Finish Setup"
+**Outcome:** Wallet recovered, navigates to Portfolio
 
-- [ ] Wizard renders without app shell on `/setup`
-- [ ] Step navigation works through all 5 steps
-- [ ] Step indicator visible on steps 3–5
-- [ ] Create flow: seed displays in 3x4 grid; checkbox gates Next
-- [ ] Recover flow: 12 inputs accept words; paste populates all fields
-- [ ] BIP-39 validation highlights invalid words inline
-- [ ] Mint URL test shows success/failure inline
-- [ ] Finish saves wallet and mints, redirects to `/markets`
+## Done When
+- [ ] Tests written for key user flows
+- [ ] All tests pass
+- [ ] 5-step wizard completes for both create and recover paths
+- [ ] Seed phrase verification validates words #3, #7, #12
+- [ ] Mint connection testing works
+- [ ] Background data loading starts at step 3
+- [ ] No shell is displayed during setup
 - [ ] Responsive on mobile
 
 ---
 
-## Milestone 8: Market Creation
+# Milestone 3: Market Discovery & Trading
 
-> **Prerequisites:** Milestone 1 complete
+## Goal
+Implement the Market Discovery & Trading section — the core marketplace where users browse and trade prediction markets.
 
-### Goal
-
-Implement a 7-step market creation wizard rendered without the app shell, starting with an oracle configuration gate.
-
-### Overview
-
-7-step full-screen wizard (no nav shell) at `/creator/new`. Step 1 is a full-screen oracle check gate before the main flow. Steps 2–7 cover market type, basic info, outcomes, fees, cost preview, and final review with submission.
+## Overview
+The default home view after onboarding. Users browse markets through a single-select tag navigation system, filter markets, and execute quick trades directly from market cards.
 
 **Key Functionality:**
-- No app shell on `/creator/new` route
-- Step 1 (Oracle Check): full-screen gate — select existing announcement or become oracle
-- Step 2 (Get Started): Yes/No or Categorical outcome type selection
-- Step 3 (Basic Info): thumbnail, title, categories, closing date, answer URLs
-- Step 4 (Outcomes): labels, thumbnails, probabilities with normalization
-- Step 5 (Market Settings): sell/buy/win fee configuration
-- Step 6 (Market Preview): estimated cost and worst-case loss (must confirm before Next)
-- Step 7 (Review & Create): description editor, full summary, submit
+- Single-select tag navigation (meta tags: Trending/Popular/New + category tags)
+- Market filtering (Market Type, Volume range, Closing date)
+- Yes/No market cards with inline trading (Buy Yes/Buy No)
+- Categorical market cards with per-outcome Yes/No buttons
+- Numeric market cards (click-only → navigate to detail page)
+- Inline card trade overlay (amount picker, predicted odds, BUY button)
+- Like button on each market card
+- Infinite scroll loading
+- Refresh button with last-updated timestamp
+- Background loading progress bar (after wallet setup)
+
+## What to Implement
 
 ### Components
-
-Copy from `product-plan/sections/market-creation/components/`:
-
-- `MarketCreationWizard` — Main wizard container
-- `OracleCheck` — Full-screen oracle gate (Step 1)
-- `GetStarted` — Market type selection (Step 2)
-- `BasicInfo` — Market details form (Step 3)
-- `OutcomesStep` — Outcome definition (Step 4)
-- `MarketSettings` — Fee configuration (Step 5)
-- `MarketPreviewStep` — Cost/risk preview (Step 6)
-- `ReviewAndCreate` — Description editor and final review (Step 7)
-- `StepIndicator` — 6-step progress indicator (steps 2–7)
-
-### Data Layer
-
-Key types: `WizardDraft`, `OracleAnnouncement`, `WizardStepOracleCheck` through `WizardStepReviewAndCreate`
-
-API endpoints:
-- `GET /oracle/announcements`
-- `POST /oracle/announcements`
-- `POST /markets/draft`
-- `POST /markets/preview`
-- `POST /markets`
-- `POST /markets/thumbnail`
+- `MarketDiscovery.tsx` — Main page component
+- `TagBar.tsx` — Horizontal tag bar (meta + category tags)
+- `FilterControls.tsx` — Filter row (market type, volume, closing date)
+- `MarketCard.tsx` — Market card with trading overlay
 
 ### Callbacks
+- `onTagSelect` — Single tag selection
+- `onSearch` — Search query
+- `onMarketTypeChange`, `onVolumeRangeChange`, `onClosingDateChange` — Filters
+- `onBuyYes` / `onBuyNo` — Yes/No market trades
+- `onBuyOutcomeYes` / `onBuyOutcomeNo` — Categorical market trades
+- `onViewMarket` — Navigate to market detail
+- `onLoadMore` — Infinite scroll
+- `onRefreshConditions` — Refresh market data from mint
 
-| Callback | What to do |
-|----------|------------|
-| `onOracleChoiceSelect` | Record oracle path choice |
-| `onAnnouncementSelect` | Select oracle announcement |
-| `onExit` | Confirm exit with warning, navigate to `/creator` |
-| `onNext` | Validate step, save draft, advance |
-| `onBack` | Go to previous step, preserve state |
-| `onOutcomeTypeSelect` | Record market type |
-| `onTitleChange` | Update title in draft |
-| `onCategoryTagsChange` | Update category tags |
-| `onClosingDateChange` | Update closing date |
-| `onAnswerUrlsChange` | Update answer source URLs |
-| `onThumbnailUpload` | Upload image, store URL in draft |
-| `onAddOutcome` | Add outcome entry |
-| `onRemoveOutcome` | Remove outcome |
-| `onOutcomeLabelChange` | Update outcome label |
-| `onOutcomeProbabilityChange` | Update probability, normalize others |
-| `onSellFeeChange` | Update sell fee % |
-| `onBuyFeeChange` | Update buy fee % |
-| `onWinFeeChange` | Update win fee % |
-| `onCalculatePreview` | Call preview API, display result |
-| `onConfirmPreview` | Mark preview confirmed, advance |
-| `onDescriptionChange` | Update description text |
-| `onCreateMarket` | Submit market, navigate to new market detail |
+## Expected User Flows
 
-### Files to Reference
-- `product-plan/sections/market-creation/README.md`
-- `product-plan/sections/market-creation-and-management/tests.md` (wizard section)
-- `product-plan/sections/market-creation/components/`
+### Flow 1: Browse and Quick Trade (Yes/No)
+1. User lands on page, sees Trending markets
+2. User clicks "Buy Yes" on a market card
+3. Card transforms to trade overlay with amount picker
+4. User selects amount, sees predicted odds, clicks "BUY"
+**Outcome:** Trade executed, card returns to normal
 
-### Done When
+### Flow 2: Navigate to Market Detail
+1. User clicks on market card (outside buttons)
+**Outcome:** Navigates to `/markets/:id`
 
-- [ ] Wizard renders without app shell on `/creator/new`
-- [ ] Oracle check gate requires selection before advancing
-- [ ] Step indicator visible on steps 2–7
-- [ ] Back/Next navigation preserves draft state
-- [ ] Step 3: thumbnail upload, title, categories, date, URLs functional
-- [ ] Step 4: Yes/No advances cleanly; Categorical allows adding/removing outcomes with probability normalization
-- [ ] Step 5 fee inputs validate numeric range
-- [ ] Step 6 preview calculated and confirmed before Next
-- [ ] Step 7 description editor functional; full summary shown
-- [ ] Submit creates market and navigates to new market detail page
-- [ ] Exit shows confirmation dialog
-- [ ] Validation errors inline on each step
-- [ ] Responsive on mobile
+### Flow 3: Filter Markets
+1. User clicks filter icon, filter row appears
+2. User selects "Categorical" market type
+3. Markets update to show only categorical markets
 
----
-
-## Milestone 9: Deposit / Withdraw
-
-> **Prerequisites:** Milestone 4 (Portfolio) complete
-
-### Goal
-
-Implement modal overlay flows for depositing and withdrawing sats via Ecash or Lightning, triggered from the Portfolio section.
-
-### Overview
-
-The Deposit/Withdraw feature is a modal overlay system accessed from the Portfolio's Deposit and Withdraw buttons. It provides two methods for each direction: Ecash and Lightning. The flow starts with a method chooser bottom sheet, then navigates to method-specific full-screen views.
-
-**Key Functionality:**
-- Method chooser bottom sheet (Ecash vs. Lightning)
-- Deposit Ecash: Paste, Scan QR, or Request token
-- Deposit Lightning: Select mint, enter amount via numpad, create invoice
-- Send Ecash: Select mint, enter amount via numpad, send token
-- Pay Lightning: Select mint, enter/paste/scan Lightning address or invoice
-- Mint selector with balance display
-- Currency toggle (BTC/fiat) on amount displays
-- Responsive: bottom sheet on mobile, centered modal on desktop
-
-### Components
-
-Copy from `product-plan/sections/deposit-withdraw/components/`:
-
-- `DepositWithdraw` — Main router component (switches on `currentView`)
-- `MethodChooser` — Bottom sheet with Ecash / Lightning options
-- `DepositEcash` — Paste, Scan, Request actions
-- `DepositLightning` — Full-screen with mint selector, amount numpad, CREATE INVOICE
-- `SendEcash` — Full-screen with mint selector, amount numpad, SEND
-- `PayLightning` — Full-screen with mint selector, invoice/address input, QR scan
-- `MintSelector` — Dropdown showing selected mint name and balance
-- `AmountDisplay` — Large centered amount with BTC/fiat currency toggle
-- `Numpad` — 3×4 numeric keypad for amount entry
-
-### Data Layer
-
-Key types: `DepositWithdrawMode`, `MethodType`, `DepositWithdrawView`, `MintInfo`, `DepositWithdrawProps`
-
-API endpoints:
-- `GET /wallet/mints` — list available mints with balances
-- `POST /wallet/deposit/ecash/paste` — redeem a pasted Cashu token
-- `POST /wallet/deposit/ecash/request` — generate a token request
-- `POST /wallet/deposit/lightning/invoice` — create a Lightning invoice
-- `POST /wallet/withdraw/ecash/send` — create a Cashu token
-- `POST /wallet/withdraw/lightning/pay` — pay a Lightning invoice/address
-
-### Callbacks
-
-| Callback | What to do |
-|----------|------------|
-| `onSelectMethod` | Navigate to method-specific view |
-| `onNumpadPress` | Update amount state |
-| `onMintChange` | Update selected mint |
-| `onToggleCurrency` | Toggle BTC/fiat display |
-| `onCreateInvoice` | Generate Lightning invoice |
-| `onSendEcash` | Create and display Cashu token |
-| `onPaste` | Read clipboard, process token/invoice |
-| `onScan` | Open QR scanner |
-| `onRequest` | Generate token request |
-| `onScanQR` | Open QR scanner for Lightning |
-| `onLightningInputChange` | Update lightning input text |
-| `onBack` | Navigate back to method chooser |
-| `onClose` | Close modal, return to Portfolio |
-| `onToggleFullscreen` | Toggle fullscreen mode |
-
-### Files to Reference
-- `product-plan/sections/deposit-withdraw/README.md`
-- `product-plan/sections/deposit-withdraw/tests.md`
-- `product-plan/sections/deposit-withdraw/components/`
-- `product-plan/sections/deposit-withdraw/types.ts`
-- `product-plan/sections/deposit-withdraw/sample-data.json`
-
-### Done When
-
+## Done When
 - [ ] Tests written and passing
-- [ ] Method chooser renders for both deposit and withdraw modes
-- [ ] Deposit Ecash actions trigger correct callbacks
-- [ ] Deposit Lightning: numpad + CREATE INVOICE functional
-- [ ] Send Ecash: numpad + SEND functional
-- [ ] Pay Lightning: invoice input + QR scan functional
-- [ ] Mint selector with real balances
-- [ ] Currency toggle works
-- [ ] Modal closes and returns to Portfolio
-- [ ] Balance and activity update after operations
-- [ ] Responsive on mobile/desktop
+- [ ] Tag navigation works (single-select)
+- [ ] All three market types render correctly
+- [ ] Inline trading overlay works for Yes/No and Categorical
+- [ ] Numeric cards are click-only (no buy buttons)
+- [ ] Filters work correctly
+- [ ] Infinite scroll loads more markets
+- [ ] Refresh button re-fetches conditions
+- [ ] Background loading progress bar shows when applicable
+- [ ] Responsive on mobile
 
 ---
 
-## Final Verification Checklist
+# Milestone 4: Market Detail
 
-After completing all milestones:
+## Goal
+Implement the Market Detail page — comprehensive trading view with order book, charts, and trade panel.
 
-- [ ] All routes are navigable
-- [ ] App shell is responsive on all viewports
-- [ ] `/setup` and `/creator/new` routes render without app shell
-- [ ] Market Discovery shows both market types
-- [ ] Inline trading works on market cards
-- [ ] Portfolio conditional entry (no-wallet CTA vs. dashboard) works
-- [ ] Portfolio Funds tab shows base ecash assets per mint
-- [ ] Deposit/Withdraw modal flows work from Portfolio buttons
-- [ ] Market Detail displays all sections for all market types
-- [ ] Trading panel functional with Buy/Sell and Market/Limit toggles
-- [ ] Charts render with data and all interactive features
-- [ ] Comment bubbles visible on price chart
-- [ ] Resolved markets hide trading panel and use single-column layout
-- [ ] Settings accordion groups work; changes persist and apply immediately
-- [ ] Wallet Setup wizard creates and recovers wallets correctly
-- [ ] Market Creation wizard publishes markets with oracle binding
-- [ ] ₿ symbol used consistently (not "sats" text)
-- [ ] Dark theme with #0a0a0a background applied globally
+## Overview
+Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and multiple market types (Yes/No, Categorical, Numeric).
+
+**Key Functionality:**
+- Market header with image, title, tags, countdown, creator info, metrics footer
+- Trading panel with Buy/Sell toggle + Market/Limit sub-tabs
+- Outcome selection (Yes/No buttons or categorical outcome list)
+- Trade preview with predicted odds, price impact, payout, fees
+- Optional trade comment (280 chars)
+- Price chart with timeframe selector (1H/24H/7D/1M/ALL) and Price/Volume toggle
+- Comment bubbles overlaid on price chart
+- Order book visualization
+- Resolution details section
+- Recent trades feed
+- Comments section (read-only, comments posted via trading)
+- Related markets horizontal scroll
+- Resolved market view (no trading panel, single-column layout)
+- Numeric market support (Buy Higher/Buy Lower, implied price display)
+
+## What to Implement
+
+### Components
+- `MarketDetail.tsx` — Main page layout
+- `MarketHeader.tsx` — Header with image, title, metrics
+- `TradingPanel.tsx` — Buy/Sell + Market/Limit trading interface
+- `PriceChart.tsx` — Interactive price/volume chart
+- `OrderBookSection.tsx` — Order book visualization
+- `ResolutionInfo.tsx` — Resolution criteria and status
+- `ActivityFeed.tsx` — Recent trades list
+- `CommentSection.tsx` — Comments display
+- `RelatedMarkets.tsx` — Horizontal related markets
+- `MarketStats.tsx` — Market statistics
+
+### Key Callbacks
+- `onTradeSelect` / `onTradeClear` — Select/clear outcome
+- `onAmountChange` — Trade amount input
+- `onTradeConfirm` — Execute trade
+- `onTradeSideChange` — Buy/Sell toggle
+- `onOrderTypeChange` — Market/Limit toggle
+- `onLimitPriceChange` — Limit order price
+- `onTimeframeChange` / `onChartTypeChange` — Chart controls
+- `onLikeToggle` — Like/unlike market
+- `onCommentPost` / `onCommentLike` — Comments
+- `onShare` — Share market
+
+## Expected User Flows
+
+### Flow 1: Place a Market Buy Order
+1. User views market, selects "Yes" outcome
+2. User enters amount (e.g., 1000 sats)
+3. System shows predicted odds, payout, fees
+4. User optionally adds a comment
+5. User clicks "Buy YES for ₿1,000"
+**Outcome:** Trade executed, activity updates
+
+### Flow 2: Place a Limit Sell Order
+1. User clicks "Sell" tab, then "Limit" sub-tab
+2. User sets limit price and amount
+3. User clicks "Place Sell Limit Order"
+**Outcome:** Limit order placed
+
+### Flow 3: View Resolved Market
+1. User navigates to a resolved market
+2. RESOLVED badge shown, no trading panel
+3. Single-column layout, resolution details prominent
+
+## Done When
+- [ ] Tests written and passing
+- [ ] Two-column layout (desktop), single-column (mobile)
+- [ ] Buy/Sell + Market/Limit all work correctly
+- [ ] Trade preview shows accurate calculations
+- [ ] Price chart renders with timeframe switching
+- [ ] Order book visualization works
+- [ ] Resolved markets show correctly (no trading)
+- [ ] Numeric markets show Buy Higher/Buy Lower
+- [ ] Comments displayed, posted via trades only
+- [ ] Responsive on mobile (sticky trade button)
+
+---
+
+# Milestone 5: Portfolio
+
+## Goal
+Implement the Portfolio section — personal trading dashboard with positions, P/L, activity, and created markets.
+
+## Overview
+Users view their trading performance, manage positions, and track all wallet activity. Includes a profile card with interactive P/L chart and quick-access deposit/withdraw buttons.
+
+**Key Functionality:**
+- Conditional entry: "Get Started" CTA when no wallet, full dashboard when wallet ready
+- Profile card with avatar (clickable upload), display name, joined date, view count
+- Interactive P/L chart with time range selectors (1D/1W/1M/ALL)
+- Stats row: Positions Value, Biggest Win, Predictions count
+- Deposit/Withdraw action buttons
+- Positions tab with Active/Closed sub-tabs
+- Activity feed (deposits, withdrawals, buys, sells, payouts, creator fees)
+- My Markets collapsible section
+- Sell and Claim buttons on positions
+
+## What to Implement
+
+### Components
+- `Portfolio.tsx` — Main dashboard layout
+- `ProfileCard.tsx` — User profile with avatar
+- `PLChart.tsx` — P/L chart with time range selector
+- `PositionsList.tsx` — Positions with Active/Closed tabs
+- `PositionRow.tsx` — Individual position row
+- `FundsList.tsx` — Base ecash funds list
+- `FundRow.tsx` — Individual fund row
+- `ActivityFeed.tsx` — Activity history
+- `MyMarkets.tsx` — Created markets collapsible section
+- `CreatedMarketRow.tsx` — Created market row
+
+### Key Callbacks
+- `onGetStarted` — Navigate to wallet setup
+- `onAvatarUpload` — Upload avatar
+- `onTimeRangeChange` — P/L chart time range
+- `onDeposit` / `onWithdraw` — Open deposit/withdraw modal
+- `onSellPosition` — Sell a position
+- `onClaimPayout` — Claim winning position payout
+- `onClaimCreatorFees` — Claim creator fees
+- `onViewPosition` / `onViewMarket` / `onViewActivity` — View details
+- `onPositionsTabChange` — Active/Closed tab switch
+- `onOpenSettings` — Settings gear icon
+
+## Expected User Flows
+
+### Flow 1: View Portfolio
+1. User navigates to Portfolio
+2. Sees profile card, P/L chart, stats row
+3. Browses active positions
+**Outcome:** Full portfolio overview displayed
+
+### Flow 2: Sell a Position
+1. User clicks "Sell" on an active position
+**Outcome:** Sell flow initiated
+
+### Flow 3: First-Time User (No Wallet)
+1. User navigates to Portfolio without wallet setup
+2. Sees "Get Started" CTA
+3. Clicks "Get Started"
+**Outcome:** Navigates to wallet setup
+
+## Done When
+- [ ] Tests written and passing
+- [ ] "Get Started" CTA shown when no wallet
+- [ ] Full dashboard when wallet ready
+- [ ] P/L chart with time range switching
+- [ ] Active/Closed position tabs work
+- [ ] Activity feed displays all activity types
+- [ ] My Markets section collapses/expands
+- [ ] Deposit/Withdraw buttons trigger callbacks
+- [ ] Responsive on mobile
+
+---
+
+# Milestone 6: Deposit / Withdraw
+
+## Goal
+Implement the Deposit/Withdraw flows — modal overlays for funding and cashing out via Ecash or Lightning.
+
+## Overview
+Modal overlay flows accessed from Portfolio deposit/withdraw buttons. Mirrors cashu.me's Receive/Send UX with bottom sheet method chooser and method-specific full-screen views.
+
+**Key Functionality:**
+- Method chooser bottom sheet (Ecash / Lightning)
+- Deposit Ecash: Paste, Scan, Request actions
+- Deposit Lightning: Mint selector, amount numpad, CREATE INVOICE
+- Send Ecash: Mint selector, amount numpad, SEND
+- Pay Lightning: Mint selector, invoice/address input, Scan QR
+
+## What to Implement
+
+### Components
+- `DepositWithdraw.tsx` — Main orchestrator
+- `MethodChooser.tsx` — Bottom sheet with Ecash/Lightning options
+- `DepositEcash.tsx` — Deposit Ecash actions
+- `DepositLightning.tsx` — Lightning deposit with numpad
+- `SendEcash.tsx` — Send Ecash with numpad
+- `PayLightning.tsx` — Pay Lightning invoice
+- `MintSelector.tsx` — Mint dropdown with balance
+- `Numpad.tsx` — Numeric keypad
+- `AmountDisplay.tsx` — Amount with fiat conversion
+
+### Key Callbacks
+- `onSelectMethod` — Choose Ecash/Lightning
+- `onNumpadPress` — Numpad key input
+- `onMintChange` — Switch mint
+- `onToggleCurrency` — Sats/fiat toggle
+- `onCreateInvoice` — Generate Lightning invoice
+- `onSendEcash` — Send ecash tokens
+- `onPaste` / `onScan` / `onRequest` — Deposit ecash actions
+- `onScanQR` — Scan QR for Lightning payment
+- `onClose` / `onBack` — Navigation
+
+## Expected User Flows
+
+### Flow 1: Deposit via Lightning
+1. User taps "Deposit" in Portfolio
+2. Method chooser appears, user selects "Lightning"
+3. User enters amount on numpad
+4. User taps "CREATE INVOICE"
+**Outcome:** Lightning invoice generated
+
+### Flow 2: Withdraw via Ecash
+1. User taps "Withdraw" in Portfolio
+2. Method chooser appears, user selects "Ecash"
+3. User enters amount, taps "SEND"
+**Outcome:** Ecash token generated for sharing
+
+## Done When
+- [ ] Tests written and passing
+- [ ] Method chooser bottom sheet works
+- [ ] All 4 flow views render correctly
+- [ ] Numpad accepts input and updates amount
+- [ ] Fiat/sats toggle works
+- [ ] Mint selector shows available mints
+- [ ] No shell displayed (modal overlay)
+- [ ] Responsive on mobile (bottom sheet)
+
+---
+
+# Milestone 7: Settings
+
+## Goal
+Implement the Settings section — user preferences organized into 4 collapsible category groups.
+
+## Overview
+Accessed via gear icon in Portfolio header or User dropdown menu. Manages general preferences, Cashu mint connections, Nostr identity, and oracle configuration.
+
+**Key Functionality:**
+- 4 collapsible categories (accordion, one expanded at a time)
+- General: Base currency (BTC/USD/JPY), Language (en/ja), Theme (Light/Dark/System)
+- Cashu: Connected mints list, add/remove mints, seed phrase backup
+- Nostr: Signer mode (None/NIP-07/nsec), profile preview, relay management
+- Oracle: Coming soon placeholder (visually muted)
+
+## What to Implement
+
+### Components
+- `Settings.tsx` — Main settings page with collapsible groups
+
+### Key Callbacks
+- `onCategoryToggle` — Expand/collapse category
+- `onBaseCurrencyChange`, `onLanguageChange`, `onThemeChange` — General
+- `onAddMint`, `onRemoveMint`, `onViewSeedPhrase` — Cashu
+- `onSignerModeChange`, `onNsecSubmit`, `onAddRelay`, `onRemoveRelay` — Nostr
+
+## Expected User Flows
+
+### Flow 1: Change Theme
+1. User opens Settings, General expanded by default
+2. User selects "Light" theme
+**Outcome:** Theme changes to light mode
+
+### Flow 2: Add a Mint
+1. User expands Cashu section
+2. User clicks "Add Mint", enters URL
+3. Connection test runs
+**Outcome:** Mint added to connected mints list
+
+### Flow 3: Connect Nostr
+1. User expands Nostr section
+2. User selects "NIP-07 Extension"
+3. Profile fetched and displayed
+**Outcome:** Nostr identity connected
+
+## Done When
+- [ ] Tests written and passing
+- [ ] 4 collapsible categories work (accordion behavior)
+- [ ] General settings: currency, language, theme all functional
+- [ ] Cashu: mint list, add/remove, seed backup
+- [ ] Nostr: signer mode, profile preview, relay management
+- [ ] Oracle: coming soon placeholder with muted styling
+- [ ] Responsive on mobile
+
+---
+
+# Milestone 8: Market Creation & Management (Later Phase)
+
+## Goal
+Implement the Market Creation & Management dashboard — creator tools for managing prediction markets.
+
+## Overview
+A dashboard for market creators with three tabbed views: Overview (stats + market list), Analytics (volume charts), and Add Market (CTA leading to creation wizard).
+
+**Key Functionality:**
+- Dashboard stats: active/resolved/refunded counts, total volume, fees earned/claimed
+- Paginated market list with status badges, volume, fees
+- Volume charts (daily/weekly/monthly) with aggregate/per-market toggle
+- 5-step creation wizard with persistent draft state
+- Claim fees on resolved markets
+- View market details navigation
+
+## What to Implement
+
+### Components
+- `MarketCreationDashboard.tsx` — Main dashboard with tabs
+- `StatCard.tsx` — Dashboard stat card
+- `MarketRow.tsx` — Market list row
+- `VolumeChart.tsx` — Time-series volume chart
+- `Pagination.tsx` — Paginated list controls
+
+### Key Callbacks
+- `onTabChange` — Overview/Analytics switch
+- `onViewDetails` — Navigate to market detail
+- `onCreateMarket` — Submit new market
+- `onClaimFees` — Claim creator fees
+- `onWizardStepChange` / `onSaveDraft` / `onDiscardDraft` — Wizard
+- `onTimeScaleChange` / `onChartModeChange` — Analytics
+- `onPageChange` — Pagination
+
+## Done When
+- [ ] Tests written and passing
+- [ ] Dashboard stats display correctly
+- [ ] Market list paginates correctly
+- [ ] Volume charts render with time scale switching
+- [ ] Add Market CTA navigates to creation wizard
+- [ ] Claim fees works on resolved markets
+- [ ] Responsive on mobile
+
+---
+
+# Milestone 9: Market Creation Wizard (Later Phase)
+
+## Goal
+Implement the Market Creation Wizard — 7-step wizard for creating new prediction markets.
+
+## Overview
+Accessed from the Market Creation & Management dashboard. Guides users through oracle configuration, market type, basic info, outcomes, fees, cost preview, and final review.
+
+**Key Functionality:**
+- Step 1: Oracle check (full-screen, no step indicator) — use existing announcement or become oracle
+- Steps 2-7: Main wizard with 6-step progress indicator
+- Step 2: Get Started — choose outcome type (Yes/No or Categorical)
+- Step 3: Basic Info — thumbnail, title, categories, closing date, answer URLs
+- Step 4: Outcomes — define outcomes with labels, descriptions, thumbnails, probabilities
+- Step 5: Market Settings — sell/buy/win fee percentages
+- Step 6: Market Preview — estimated cost and worst-case loss
+- Step 7: Review & Create — rich text description, AI generation, submit
+
+## What to Implement
+
+### Components
+- `MarketCreationWizard.tsx` — Wizard orchestrator
+- `OracleCheck.tsx` — Step 1: Oracle selection
+- `GetStarted.tsx` — Step 2: Outcome type
+- `BasicInfo.tsx` — Step 3: Market details
+- `OutcomesStep.tsx` — Step 4: Outcome definitions
+- `MarketSettings.tsx` — Step 5: Fee configuration
+- `MarketPreviewStep.tsx` — Step 6: Cost preview
+- `ReviewAndCreate.tsx` — Step 7: Final review
+- `StepIndicator.tsx` — 6-step progress indicator
+
+### Key Callbacks
+- `onOracleChoiceSelect` / `onAnnouncementSelect` — Oracle step
+- `onOutcomeTypeSelect` — Market type
+- `onTitleChange` / `onCategoryTagsChange` / `onClosingDateChange` — Basic info
+- `onAddOutcome` / `onRemoveOutcome` / `onOutcomeLabelChange` — Outcomes
+- `onSellFeeChange` / `onBuyFeeChange` / `onWinFeeChange` — Fees
+- `onConfirmPreview` — Cost confirmation
+- `onDescriptionChange` — Final description
+- `onCreateMarket` — Submit market
+
+## Done When
+- [ ] Tests written and passing
+- [ ] 7-step wizard navigates correctly
+- [ ] Oracle check works with both paths
+- [ ] Basic info validates required fields
+- [ ] Outcomes can be added/removed
+- [ ] Fee configuration works
+- [ ] Cost preview calculates correctly
+- [ ] Rich text description editor works
+- [ ] Final submission creates market
+- [ ] No shell displayed during wizard
+- [ ] Responsive on mobile

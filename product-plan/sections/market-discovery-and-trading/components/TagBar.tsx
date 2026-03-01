@@ -1,6 +1,21 @@
 import { useState, useRef, useEffect } from 'react'
-import { SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react'
+import { SlidersHorizontal, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import type { MetaTag, CategoryTag } from '../types'
+
+function formatRelativeTime(isoTimestamp: string): string {
+  const now = Date.now()
+  const then = new Date(isoTimestamp).getTime()
+  const diffMs = now - then
+  const diffSec = Math.floor(diffMs / 1000)
+
+  if (diffSec < 60) return 'just now'
+  const diffMin = Math.floor(diffSec / 60)
+  if (diffMin < 60) return `${diffMin} min ago`
+  const diffHr = Math.floor(diffMin / 60)
+  if (diffHr < 24) return `${diffHr} hour${diffHr > 1 ? 's' : ''} ago`
+  const diffDay = Math.floor(diffHr / 24)
+  return `${diffDay} day${diffDay > 1 ? 's' : ''} ago`
+}
 
 interface TagBarProps {
   metaTags: MetaTag[]
@@ -8,8 +23,11 @@ interface TagBarProps {
   selectedTag: string | null
   filtersVisible: boolean
   activeFilterCount: number
+  lastUpdatedAt?: string
+  isRefreshing?: boolean
   onTagSelect?: (tagId: string) => void
   onToggleFilters?: () => void
+  onRefreshConditions?: () => void
 }
 
 export function TagBar({
@@ -18,8 +36,11 @@ export function TagBar({
   selectedTag,
   filtersVisible,
   activeFilterCount,
+  lastUpdatedAt,
+  isRefreshing,
   onTagSelect,
   onToggleFilters,
+  onRefreshConditions,
 }: TagBarProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
@@ -139,6 +160,23 @@ export function TagBar({
             </span>
           )}
         </button>
+
+        {/* Refresh Button + Last Updated */}
+        <div className="flex items-center gap-2 ml-auto shrink-0">
+          {lastUpdatedAt && (
+            <span className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
+              Updated {formatRelativeTime(lastUpdatedAt)}
+            </span>
+          )}
+          <button
+            onClick={() => onRefreshConditions?.()}
+            disabled={isRefreshing}
+            className="p-2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all transform hover:scale-105 disabled:opacity-50"
+            title="Refresh markets"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
       </div>
     </div>
   )

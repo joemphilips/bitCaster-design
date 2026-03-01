@@ -1,12 +1,6 @@
 import { Heart, Share2, Clock, CheckCircle2, Droplet, Users } from 'lucide-react'
-import type { MarketDetail, MarketCreator } from '../types'
-
-function formatBtc(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
-}
+import type { MarketDetail } from '../types'
+import { formatBtc } from './format'
 
 interface MarketHeaderProps {
   market: MarketDetail

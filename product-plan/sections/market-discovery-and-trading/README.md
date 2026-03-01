@@ -1,43 +1,39 @@
 # Market Discovery & Trading
 
 ## Overview
-Core marketplace where users browse prediction markets through a single-select tag navigation system, filter and search markets, and execute quick trades directly from market cards. The default view shows Trending markets.
+Core marketplace where users browse prediction markets through a single-select tag navigation system, filter and search markets, and execute quick trades directly from market cards. This is the default home view when the user opens the app.
 
-## User Flows
-- User lands on page and sees Trending markets by default
-- User taps a tag to switch view (single-select)
-- User applies filters (Market Type, Volume range, Closing date)
-- For Yes/No markets: clicks Buy Yes/No → card transforms to trade interface
-- For categorical markets: scrolls through choices, clicks Yes/No on a choice
-- User confirms trade or cancels with × button
-- Clicking anywhere else on card navigates to market detail page
-- Infinite scroll for loading more markets
+## Screenshot
+See `MarketDiscoveryView.png` in the product spec directory.
 
-## Design Decisions
-- Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags
-- Two market types: Yes/No and Categorical
-- Fixed card height of 280px for all types
-- Trading overlay covers entire card
+## Components
+- `MarketDiscovery` — Root component for the marketplace view
+- `TagBar` — Horizontal tag navigation (meta tags + category tags, single-select)
+- `FilterControls` — Collapsible filter row (Market Type, Volume range, Closing date)
+- `MarketCard` — Individual market card with trading overlay capability
 
-## Data Used
-**Entities:** Market (YesNoMarket, CategoricalMarket), MetaTag, CategoryTag, TradeState, FilterState
-**From global model:** Bought, Sold events update market odds and volume
+## Market Card Types
 
-## Components Provided
-- `MarketDiscovery` — Main container with tag bar, filters, and market grid
-- `MarketCard` — Individual market card with trading overlay
-- `FilterControls` — Market type, volume range, and closing date filters
-- `TagBar` — Horizontal tag navigation (single-select)
+### Yes/No Markets
+Display order: title/question → chance percentage (e.g., "Chance 67.5%") → Buy Yes / Buy No buttons. Clicking a buy button transforms the card into a trading overlay with amount picker and BUY confirmation.
 
-## Callback Props
+### Categorical Markets
+Vertical scrollable list of outcomes, each with its own Yes/No buttons. Same trading overlay behavior on click.
 
-| Callback | Description |
-|----------|-------------|
-| `onSearch` | Called when user searches for markets |
-| `onTagSelect` | Called when user selects a tag |
-| `onBuyYes` | Called when user buys Yes on a yes/no market |
-| `onBuyNo` | Called when user buys No on a yes/no market |
-| `onBuyOutcomeYes` | Called when user buys Yes on a categorical outcome |
-| `onBuyOutcomeNo` | Called when user buys No on a categorical outcome |
-| `onViewMarket` | Called when user navigates to market detail |
-| `onLoadMore` | Called for infinite scroll |
+### Numeric Markets
+Large implied price with unit (e.g., "$112,500"), range context as secondary text (e.g., "Range: $0 - $200,000"). No buy buttons on the card. Entire card is clickable and navigates to the market detail page.
+
+## Key Features
+- Single-select tag bar (only one tag active at a time, defaults to "Trending")
+- Filter row hidden by default, toggled via filter icon in tag bar
+- Fixed card sizes across all market types
+- Trading overlay covers entire card (not just content area)
+- Metrics footer always visible when not in trading overlay mode
+- Infinite scroll loading
+- Like button with count in metrics footer
+- Refresh button with spinning icon during refresh
+- "Updated X min ago" timestamp
+- Background loading progress bar (footer, full-width) when post-setup data load is in progress
+
+## Configuration
+- shell: true

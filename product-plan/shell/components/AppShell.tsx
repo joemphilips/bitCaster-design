@@ -2,19 +2,7 @@ import React, { useState } from 'react'
 import { TrendingUp, Search, User, Bell, Sparkles } from 'lucide-react'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
-
-/** Format sats with ₿ prefix. Abbreviates large values. */
-function formatBtc(sats: number): string {
-  const abs = Math.abs(sats)
-  if (abs >= 1_000_000) return `₿${(sats / 1_000_000).toFixed(1)}M`
-  if (abs >= 1_000) return `₿${(sats / 1_000).toFixed(1)}K`
-  return `₿${sats.toLocaleString()}`
-}
-
-function formatBalance(sats?: number): string {
-  if (sats === undefined || sats === 0) return '₿0'
-  return formatBtc(sats)
-}
+import { formatBalance } from './format'
 
 export interface AppShellProps {
   children: React.ReactNode

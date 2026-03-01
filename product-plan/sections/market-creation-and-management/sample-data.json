@@ -10,16 +10,16 @@
       "CreatorFeeClaimed": "Market creator claims fee earnings from resolved market"
     },
     "currentState": {
-      "dashboardStats": "Aggregate metrics computed from MarketCreated, MarketResolved, MarketRefunded, Bought, Sold, and CreatorFeeClaimed events",
+      "dashboardStats": "Aggregate metrics computed from MarketCreated, MarketResolved, Bought, Sold, and CreatorFeeClaimed events",
       "creatorMarkets": "Full market details derived from MarketCreated + status events (Resolved/Refunded) + trading activity",
       "volumeChartData": "Time-series volume data aggregated from Bought and Sold events across all creator's markets",
       "wizardDraft": "Transient state for 5-step market creation wizard, persisted locally until submission"
     },
     "eventFlows": [
       "MarketCreated initiates a new market in active status with LiquidityDeposited for initial funds",
-      "Bought and Sold events accumulate volume and generate creator fees",
+      "Once active, Bought and Sold events accumulate volume and generate creator fees",
       "MarketResolved closes the market and enables CreatorFeeClaimed",
-      "MarketRefunded occurs when oracle does not attest in time, returning funds"
+      "MarketRefunded occurs when oracle does not attest in time, returning funds to participants"
     ]
   },
   "dashboardStats": {

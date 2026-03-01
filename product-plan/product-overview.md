@@ -2,91 +2,69 @@
 
 ## Summary
 
-bitCaster is a Bitcoin-native prediction market platform where anyone can create, trade, and monetize markets. All markets are denominated in sats, providing global accessibility without the barriers of traditional prediction market platforms. Built on Cashu (ecash), Nostr (social protocol), and DLC oracles (decentralized oracle attestation).
-
-## Problems & Solutions
-
-### Problem 1: High barriers to entry
-Bitcoin-only deposits enable global accessibility — anyone with Bitcoin can participate regardless of geography, bank account, or KYC requirements. No complex token swaps or platform currencies.
-
-### Problem 2: Centralized control over markets
-Freedom of market creation with a hybrid approach — permissionless creation with quality controls and dispute resolution mechanisms to maintain integrity.
-
-### Problem 3: Limited creator incentives
-Market creators can monetize their insights by collecting fees from the markets they create, encouraging diverse and high-quality market offerings.
+bitCaster is an open-source Cashu wallet with prediction market superpowers. It combines a full-featured ecash wallet — send, receive, and manage sats privately via Lightning — with a Bitcoin-native prediction market where users trade outcomes using Cashu conditional tokens (CTF). No accounts, no KYC, no bridging — just sats.
 
 ## Key Features
-- Bitcoin-only deposits with sat denomination
-- Open market creation for any user
-- Fee collection system for market creators
-- Automated market resolution and payout distribution
-- Real-time trading with live price discovery
-- Hybrid moderation (permissionless with quality controls)
-- Cashu ecash for privacy-preserving transactions
-- Nostr integration for decentralized identity and social features
-- DLC oracle attestation for trustless market resolution
+- Cashu ecash wallet — send, receive, and manage sats with full privacy
+- Lightning deposit and withdrawal — no accounts, no bridging, no gas
+- Prediction market trading — buy and sell outcome shares on a central limit order book
+- Real-time price discovery — live odds, order book depth, and price charts via SignalR
+- Portfolio tracking — positions, P/L charts, activity history, and fund management
+- Open market creation — propose markets via Nostr + DLC oracle announcements (later phase)
+- Seed phrase backup — recover wallet and positions from a BIP-39 mnemonic
+- Multi-mint support — connect to any NUT-CTF compatible Cashu mint
+- Brand motto: "FINANCE WANTS TO BE FREE | FAKE MUST BE EXPENSIVE"
 
 ## Planned Sections
 
-### 1. Market Discovery & Trading
-Core marketplace where users browse active prediction markets, view odds, and place trades in real-time. Features tag-based navigation, inline trading from market cards, and support for Yes/No and Categorical markets.
+1. **Wallet Setup** — First-time onboarding wizard for wallet creation or recovery
+2. **Market Discovery & Trading** — Core marketplace where users browse and trade prediction markets (default home view)
+3. **Market Detail** — Detailed trading view with order book, charts, and trade panel
+4. **Portfolio** — Positions, funds, P/L chart, activity feed, and created markets
+5. **Deposit / Withdraw** — Fund the wallet or cash out via Ecash or Lightning
+6. **Settings** — User preferences (currency, theme, connected mints, Nostr, seed backup)
+7. **Market Creation & Management** — Creator dashboard for managing and creating markets (later phase)
+8. **Market Creation** — 7-step wizard for creating new prediction markets (later phase)
 
-### 2. Market Creation & Management
-Tools for users to create new prediction markets via a 5-step wizard, configure parameters, set fees, and manage their markets through a dashboard with analytics.
+## Data Model
 
-### 3. Portfolio
-Trading dashboard with positions, P/L chart, deposit/withdraw, activity feed, and created markets. Replaces the earlier "MyPage" concept.
-
-### 4. Market Detail
-Comprehensive view of a single prediction market with trading panel, price charts with comment overlays, resolution details, activity feed, and related markets. Supports all market types.
-
-### 5. Settings
-User preferences and configuration organized into 4 collapsible category groups: General (currency, language, theme), Cashu (connected mints, seed backup), Nostr (signer mode, profile, relays), and Oracle (coming soon).
-
-### 6. Wallet Setup
-First-time onboarding wizard for creating a new wallet or recovering an existing one from a seed phrase. Includes PWA installation confirmation.
-
-### 7. Market Creation
-Seven-step wizard for creating new prediction markets, starting with oracle announcement check, then market type, basic info, outcomes, fee settings, cost preview, and final review.
-
-### 8. Deposit / Withdraw
-Modal overlay flows for depositing and withdrawing sats via Ecash or Lightning. Features a method chooser bottom sheet, then method-specific full-screen views: Deposit Ecash (Paste/Scan/Request), Deposit Lightning (numpad + CREATE INVOICE), Send Ecash (numpad + SEND), and Pay Lightning (invoice input + QR scan). Includes mint selector with balance display and BTC/fiat currency toggle.
-
-## Technology Stack
-- **React 19** with **TypeScript** strict mode
-- **Tailwind CSS** for styling (blue/amber/slate color scheme)
-- **lucide-react** for icons
-- Supports **light and dark mode**
-- **AMM (Automated Market Maker)** trading model
-- **Cashu** ecash protocol for token management
-- **Nostr** (NDK) for decentralized identity and social features
-- **DLC oracles** for trustless market resolution
+Core entities:
+- **Condition** — A prediction question registered on a NUT-CTF compliant mint
+- **Market** — A tradeable view combining protocol data from the mint with real-time trade data
+- **Outcome** — A possible result within a condition (maps to NUT-CTF outcome collection)
+- **Position** — A user's stake on a specific outcome (reconstructed from local ecash tokens)
+- **Order** — A buy or sell order on the order book
+- **Trade** — A completed transaction between a buyer and a seller
+- **Fund** — Base ecash balance held in the wallet (not locked to any market)
+- **Activity** — Ledger entry for deposits, withdrawals, buys, sells, and payouts
+- **Mint** — A connected Cashu mint
+- **Oracle** — A DLC oracle that announces events via Nostr
+- **Comment** — A user comment on a market
 
 ## Design System
-- **Primary**: Blue (actions, interactive elements)
-- **Secondary**: Amber (highlights, volume indicators)
-- **Neutral**: Slate (backgrounds, text)
-- **Accent**: Bitcoin orange `#f7931a`
-- **Typography**: Inter (headings, body), JetBrains Mono (balances, numbers)
 
-## Currency Display
-All values displayed in sats with the ₿ symbol prefix:
-- `₿12,500` (not "12,500 sats")
-- `₿12.5K` for thousands
-- `₿1.2M` for millions
+**Colors:**
+- Primary: `blue`
+- Secondary: `amber`
+- Neutral: `slate`
+
+**Typography:**
+- Heading: Inter
+- Body: Inter
+- Mono: JetBrains Mono
 
 ## Implementation Sequence
 
 Build this product in milestones:
 
 1. **Foundation** — Set up design tokens, data model types, routing, and application shell
-2. **Market Discovery & Trading** — Core marketplace with browsing and trading
-3. **Market Creation & Management** — Creator dashboard and market management
-4. **Portfolio** — Personal trading dashboard with positions, funds, and activity
-5. **Market Detail** — Detailed market view with trading panel and charts
-6. **Settings** — User preferences and configuration
-7. **Wallet Setup** — First-time onboarding wizard
-8. **Market Creation** — Seven-step market creation wizard
-9. **Deposit / Withdraw** — Modal overlay flows for depositing and withdrawing sats
+2. **Wallet Setup** — First-time onboarding wizard (5-step flow)
+3. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, and quick trading
+4. **Market Detail** — Comprehensive trading view with charts and order book
+5. **Portfolio** — Trading dashboard with positions, P/L, and activity feed
+6. **Deposit / Withdraw** — Modal flows for Ecash and Lightning deposit/withdrawal
+7. **Settings** — User preferences and configuration
+8. **Market Creation & Management** — Creator dashboard (later phase)
+9. **Market Creation** — 7-step market creation wizard (later phase)
 
-Each milestone has a dedicated instruction document in `instructions/incremental/`.
+Each milestone has a dedicated instruction document in `product-plan/instructions/`.

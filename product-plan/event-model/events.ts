@@ -1,166 +1,147 @@
-// Domain Events for bitCaster
-
 // =============================================================================
-// User Events
+// Domain Events
 // =============================================================================
 
 export interface UserRegistered {
+  type: 'UserRegistered'
   userId: string
-  registeredDate: string
+  timestamp: string
 }
 
 export interface UserProfileUpdated {
+  type: 'UserProfileUpdated'
   userId: string
   displayName?: string
   avatarUrl?: string
+  timestamp: string
 }
 
-// =============================================================================
-// Wallet Events
-// =============================================================================
-
 export interface DepositReceived {
+  type: 'DepositReceived'
   userId: string
   amountSats: number
   txId?: string
   lightningInvoice?: string
-  date: string
+  timestamp: string
 }
 
 export interface WithdrawalRequested {
+  type: 'WithdrawalRequested'
   userId: string
   amountSats: number
-  destinationAddress?: string
-  lightningInvoice?: string
-  date: string
+  destination: string
+  timestamp: string
 }
 
 export interface WithdrawalCompleted {
+  type: 'WithdrawalCompleted'
   userId: string
   amountSats: number
-  txId?: string
-  date: string
+  txId: string
+  timestamp: string
 }
 
-// =============================================================================
-// Market Lifecycle Events
-// =============================================================================
-
 export interface MarketCreated {
+  type: 'MarketCreated'
   marketId: string
   creatorId: string
   title: string
-  description: string
-  type: 'yesno' | 'categorical'
-  outcomes?: { id: string; label: string }[]
+  outcomes: string[]
   closingDate: string
   creatorFeePercent: number
-  initialLiquiditySats: number
-  categoryTags: string[]
-  date: string
+  timestamp: string
 }
 
 export interface MarketResolved {
+  type: 'MarketResolved'
   marketId: string
-  winningOutcomeId: string
-  resolvedDate: string
+  winningOutcome: string
+  timestamp: string
 }
 
 export interface MarketRefunded {
+  type: 'MarketRefunded'
   marketId: string
-  refundedDate: string
   refundedSats: number
+  timestamp: string
 }
 
-// =============================================================================
-// Trading Events
-// =============================================================================
-
 export interface Bought {
-  tradeId: string
+  type: 'Bought'
   userId: string
   marketId: string
-  outcomeId?: string
+  outcomeId: string
   side: 'yes' | 'no'
   amountSats: number
-  price: number
   shares: number
-  date: string
+  price: number
+  timestamp: string
 }
 
 export interface Sold {
-  tradeId: string
+  type: 'Sold'
   userId: string
   marketId: string
-  outcomeId?: string
+  outcomeId: string
   side: 'yes' | 'no'
   amountSats: number
-  price: number
   shares: number
-  date: string
+  price: number
+  timestamp: string
 }
 
 export interface LiquidityDeposited {
+  type: 'LiquidityDeposited'
   userId: string
   marketId: string
   amountSats: number
-  date: string
+  timestamp: string
 }
 
-// =============================================================================
-// Settlement Events
-// =============================================================================
-
 export interface PayoutClaimed {
+  type: 'PayoutClaimed'
   userId: string
   marketId: string
-  positionId: string
   amountSats: number
-  date: string
+  timestamp: string
 }
 
 export interface CreatorFeeClaimed {
-  userId: string
+  type: 'CreatorFeeClaimed'
+  creatorId: string
   marketId: string
   amountSats: number
-  date: string
+  timestamp: string
 }
 
-// =============================================================================
-// Social Events
-// =============================================================================
-
 export interface MarketLiked {
+  type: 'MarketLiked'
   userId: string
   marketId: string
-  date: string
+  timestamp: string
 }
 
 export interface CommentPosted {
-  commentId: string
+  type: 'CommentPosted'
   userId: string
   marketId: string
   content: string
-  date: string
+  timestamp: string
 }
 
-// =============================================================================
-// Union Type
-// =============================================================================
-
 export type DomainEvent =
-  | { type: 'UserRegistered'; payload: UserRegistered }
-  | { type: 'UserProfileUpdated'; payload: UserProfileUpdated }
-  | { type: 'DepositReceived'; payload: DepositReceived }
-  | { type: 'WithdrawalRequested'; payload: WithdrawalRequested }
-  | { type: 'WithdrawalCompleted'; payload: WithdrawalCompleted }
-  | { type: 'MarketCreated'; payload: MarketCreated }
-  | { type: 'MarketResolved'; payload: MarketResolved }
-  | { type: 'MarketRefunded'; payload: MarketRefunded }
-  | { type: 'Bought'; payload: Bought }
-  | { type: 'Sold'; payload: Sold }
-  | { type: 'LiquidityDeposited'; payload: LiquidityDeposited }
-  | { type: 'PayoutClaimed'; payload: PayoutClaimed }
-  | { type: 'CreatorFeeClaimed'; payload: CreatorFeeClaimed }
-  | { type: 'MarketLiked'; payload: MarketLiked }
-  | { type: 'CommentPosted'; payload: CommentPosted }
+  | UserRegistered
+  | UserProfileUpdated
+  | DepositReceived
+  | WithdrawalRequested
+  | WithdrawalCompleted
+  | MarketCreated
+  | MarketResolved
+  | MarketRefunded
+  | Bought
+  | Sold
+  | LiquidityDeposited
+  | PayoutClaimed
+  | CreatorFeeClaimed
+  | MarketLiked
+  | CommentPosted

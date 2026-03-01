@@ -1,5 +1,5 @@
 import type { ActivityItem, ActivityType } from '../types'
-import { formatBtc } from '../../../lib/format'
+import { formatBtc } from './format'
 import {
   ArrowDownLeft,
   ArrowUpRight,
