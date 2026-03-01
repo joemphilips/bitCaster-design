@@ -12,12 +12,13 @@ import type {
   MarketDetail as MarketDetailType,
 } from '@/../product/sections/market-detail/types'
 
-type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket'
+type MarketKey = 'yesNoMarket' | 'resolvedYesNoMarket' | 'categoricalMarket' | 'numericMarket'
 
 const marketLabels: Record<MarketKey, string> = {
   yesNoMarket: 'Yes/No Market',
   resolvedYesNoMarket: 'Resolved Market',
   categoricalMarket: 'Categorical Market',
+  numericMarket: 'Numeric Market',
 }
 
 export function MarketDetailPreview() {

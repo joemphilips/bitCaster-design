@@ -9,6 +9,7 @@ import type {
   OrderType,
   YesNoMarketDetail,
   CategoricalMarketDetail,
+  NumericMarketDetail,
 } from '@/../product/sections/market-detail/types'
 import { formatBtc } from '@/lib/format'
 
@@ -219,6 +220,92 @@ function CategoricalOutcomes({
   )
 }
 
+function NumericOutcomes({
+  market,
+  tradeSelection,
+  tradeSide,
+  onTradeSelect,
+}: {
+  market: NumericMarketDetail
+  tradeSelection: TradeSelection | null
+  tradeSide: TradeSide
+  onTradeSelect?: (selection: TradeSelection) => void
+}) {
+  const isSell = tradeSide === 'sell'
+  const formatPrice = (value: number) => {
+    if (market.unit === 'USD') return `$${value.toLocaleString()}`
+    return `${value.toLocaleString()} ${market.unit}`
+  }
+  const rangePercent = ((market.currentPrice - market.loBound) / (market.hiBound - market.loBound)) * 100
+
+  return (
+    <div className="space-y-4">
+      {/* Current implied price */}
+      <div className="text-center p-4 bg-slate-50 dark:bg-slate-900 rounded-xl">
+        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+          Implied Price
+        </div>
+        <div className="text-3xl font-bold text-slate-900 dark:text-white">
+          {formatPrice(market.currentPrice)}
+        </div>
+      </div>
+
+      {/* Range bar */}
+      <div className="px-1">
+        <div className="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 mb-1">
+          <span>{formatPrice(market.loBound)}</span>
+          <span>{formatPrice(market.hiBound)}</span>
+        </div>
+        <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div
+            className="absolute inset-y-0 left-0 bg-blue-500 rounded-full"
+            style={{ width: `${rangePercent}%` }}
+          />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-500 rounded-full shadow"
+            style={{ left: `${rangePercent}%`, transform: 'translate(-50%, -50%)' }}
+          />
+        </div>
+      </div>
+
+      {/* Higher / Lower buttons */}
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          onClick={() => onTradeSelect?.({ side: 'hi' })}
+          className={`relative p-4 rounded-xl border-2 transition-all ${
+            tradeSelection?.side === 'hi'
+              ? 'border-emerald-500 bg-emerald-500/10'
+              : 'border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 hover:bg-emerald-500/5'
+          }`}
+        >
+          <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+            {isSell ? 'Sell Higher' : 'Buy Higher'}
+          </div>
+          <div className="text-sm font-bold text-slate-900 dark:text-white">
+            HI Token
+          </div>
+        </button>
+
+        <button
+          onClick={() => onTradeSelect?.({ side: 'lo' })}
+          className={`relative p-4 rounded-xl border-2 transition-all ${
+            tradeSelection?.side === 'lo'
+              ? 'border-red-500 bg-red-500/10'
+              : 'border-slate-200 dark:border-slate-700 hover:border-red-500/50 hover:bg-red-500/5'
+          }`}
+        >
+          <div className="text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wider mb-1">
+            {isSell ? 'Sell Lower' : 'Buy Lower'}
+          </div>
+          <div className="text-sm font-bold text-slate-900 dark:text-white">
+            LO Token
+          </div>
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function BuySellToggle({
   tradeSide,
   onTradeSideChange,
@@ -419,6 +506,14 @@ export function TradingPanel({
       )}
       {market.type === 'categorical' && (
         <CategoricalOutcomes
+          market={market}
+          tradeSelection={tradeSelection}
+          tradeSide={tradeSide}
+          onTradeSelect={onTradeSelect}
+        />
+      )}
+      {market.type === 'numeric' && (
+        <NumericOutcomes
           market={market}
           tradeSelection={tradeSelection}
           tradeSide={tradeSide}

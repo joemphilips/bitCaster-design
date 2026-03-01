@@ -668,6 +668,172 @@
       }
     ]
   },
+  "numericMarket": {
+    "id": "market-btc-price-2026",
+    "type": "numeric",
+    "title": "Bitcoin price at end of 2026?",
+    "imageUrl": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800",
+    "categoryTags": [
+      {
+        "id": "crypto",
+        "label": "Crypto",
+        "marketCount": 201
+      },
+      {
+        "id": "finance",
+        "label": "Finance",
+        "marketCount": 178
+      }
+    ],
+    "loBound": 0,
+    "hiBound": 200000,
+    "precision": 0,
+    "unit": "USD",
+    "currentPrice": 112500,
+    "volume": 4125000,
+    "liquidity": 780000,
+    "traderCount": 3412,
+    "closingDate": "2026-12-31T23:59:59Z",
+    "createdDate": "2026-01-02T08:00:00Z",
+    "activeSince": "2026-01-02T09:30:00Z",
+    "likeCount": 589,
+    "isLiked": false,
+    "baseUnit": "sats",
+    "creator": {
+      "id": "creator-btc-oracle",
+      "name": "BTCOracleFeed",
+      "avatarUrl": null,
+      "reputationScore": 4.9,
+      "totalMarketsCreated": 12,
+      "feePercent": 1.0
+    },
+    "resolution": {
+      "criteria": "Market resolves based on the CoinGecko BTC/USD spot price at 2026-12-31T23:59:59Z. The oracle attests the exact price; HI token holders receive proportional payout based on where the attested value falls within the $0–$200,000 range.",
+      "source": "oracle",
+      "sourceDescription": "CoinGecko BTC/USD price feed via DLC oracle",
+      "resolutionDate": "2026-12-31T23:59:59Z",
+      "status": "open"
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": [
+        {
+          "timestamp": "2026-02-21T00:00:00Z",
+          "price": 105000,
+          "volume": 185000
+        },
+        {
+          "timestamp": "2026-02-22T00:00:00Z",
+          "price": 107200,
+          "volume": 210000
+        },
+        {
+          "timestamp": "2026-02-23T00:00:00Z",
+          "price": 106800,
+          "volume": 178000
+        },
+        {
+          "timestamp": "2026-02-24T00:00:00Z",
+          "price": 109500,
+          "volume": 245000
+        },
+        {
+          "timestamp": "2026-02-25T00:00:00Z",
+          "price": 111200,
+          "volume": 312000
+        },
+        {
+          "timestamp": "2026-02-26T00:00:00Z",
+          "price": 110800,
+          "volume": 198000
+        },
+        {
+          "timestamp": "2026-02-27T00:00:00Z",
+          "price": 112500,
+          "volume": 267000
+        }
+      ]
+    },
+    "orderBook": {
+      "bids": [
+        { "price": 56, "amount": 12000, "total": 12000 },
+        { "price": 55, "amount": 18000, "total": 30000 },
+        { "price": 54, "amount": 25000, "total": 55000 },
+        { "price": 53, "amount": 15000, "total": 70000 }
+      ],
+      "asks": [
+        { "price": 57, "amount": 10000, "total": 10000 },
+        { "price": 58, "amount": 14000, "total": 24000 },
+        { "price": 59, "amount": 20000, "total": 44000 },
+        { "price": 60, "amount": 12000, "total": 56000 }
+      ],
+      "spread": 1
+    },
+    "recentTrades": [
+      {
+        "id": "trade-n1",
+        "userId": "user-n1",
+        "userDisplayName": "btc_maximalist",
+        "side": "hi",
+        "amount": 5000,
+        "price": 56.25,
+        "timestamp": "2026-02-27T16:45:00Z"
+      },
+      {
+        "id": "trade-n2",
+        "userId": "user-n2",
+        "userDisplayName": "bear_market_bob",
+        "side": "lo",
+        "amount": 3200,
+        "price": 43.75,
+        "timestamp": "2026-02-27T15:20:00Z"
+      },
+      {
+        "id": "trade-n3",
+        "userId": "user-n3",
+        "userDisplayName": "anon_q7m",
+        "side": "hi",
+        "amount": 8500,
+        "price": 55.50,
+        "timestamp": "2026-02-27T13:10:00Z"
+      }
+    ],
+    "comments": [
+      {
+        "id": "comment-n1",
+        "userId": "user-n6",
+        "userDisplayName": "MacroTrader",
+        "content": "The halving effect usually peaks 12-18 months after. We could easily see $120K+ by year end.",
+        "timestamp": "2026-02-27T12:00:00Z",
+        "likeCount": 34,
+        "isLiked": false
+      },
+      {
+        "id": "comment-n2",
+        "userId": "user-n7",
+        "userDisplayName": "RiskManager",
+        "content": "Implied price sitting at $112K seems fair given spot is around $95K now. Market pricing in continued momentum.",
+        "timestamp": "2026-02-26T18:30:00Z",
+        "likeCount": 21,
+        "isLiked": true
+      }
+    ],
+    "relatedMarkets": [
+      {
+        "id": "rel-n1",
+        "title": "Will Bitcoin reach $150,000 by end of 2026?",
+        "currentOdds": { "yes": 28.5, "no": 71.5 },
+        "volume": 1890000,
+        "closingDate": "2026-12-31T23:59:59Z"
+      },
+      {
+        "id": "rel-n2",
+        "title": "Ethereum price at end of 2026?",
+        "volume": 2340000,
+        "closingDate": "2026-12-31T23:59:59Z"
+      }
+    ]
+  },
   "uiState": {
     "chartTimeframe": "7d",
     "chartType": "price",

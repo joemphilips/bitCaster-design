@@ -406,6 +406,34 @@
       "creatorFeePercent": 1.5,
       "likeCount": 45,
       "isLiked": false
+    },
+    {
+      "id": "mkt-011",
+      "title": "Bitcoin price at end of 2026?",
+      "type": "numeric",
+      "imageUrl": "/images/markets/bitcoin-price-2026.jpg",
+      "categoryTags": [
+        "crypto",
+        "finance"
+      ],
+      "metaTags": [
+        "trending",
+        "popular"
+      ],
+      "loBound": 0,
+      "hiBound": 200000,
+      "precision": 0,
+      "unit": "USD",
+      "currentPrice": 112500,
+      "volume": 4125000,
+      "liquidity": 780000,
+      "traderCount": 3412,
+      "closingDate": "2026-12-31T23:59:59Z",
+      "createdDate": "2026-01-02T08:00:00Z",
+      "activeSince": "2026-01-02T09:30:00Z",
+      "creatorFeePercent": 1.0,
+      "likeCount": 589,
+      "isLiked": false
     }
   ]
 }
