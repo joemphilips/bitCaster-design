@@ -1,7 +1,7 @@
-# Milestone 5: Portfolio
+# Milestone 3: Portfolio
 
 > **Provide alongside:** `product-overview.md`
-> **Prerequisites:** Milestones 1-4 complete
+> **Prerequisites:** Milestones 1-2 complete
 
 ---
 

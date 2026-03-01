@@ -18,11 +18,11 @@ bitCaster is an open-source Cashu wallet with prediction market superpowers. It 
 ## Planned Sections
 
 1. **Wallet Setup** — First-time onboarding wizard for wallet creation or recovery
-2. **Market Discovery & Trading** — Core marketplace where users browse and trade prediction markets (default home view)
-3. **Market Detail** — Detailed trading view with order book, charts, and trade panel
-4. **Portfolio** — Positions, funds, P/L chart, activity feed, and created markets
-5. **Deposit / Withdraw** — Fund the wallet or cash out via Ecash or Lightning
-6. **Settings** — User preferences (currency, theme, connected mints, Nostr, seed backup)
+2. **Portfolio** — Positions, funds, P/L chart, activity feed, and created markets
+3. **Deposit / Withdraw** — Fund the wallet or cash out via Ecash or Lightning
+4. **Settings** — User preferences (currency, theme, connected mints, Nostr, seed backup)
+5. **Market Discovery & Trading** — Core marketplace where users browse and trade prediction markets (default home view)
+6. **Market Detail** — Detailed trading view with order book, charts, and trade panel
 7. **Market Creation & Management** — Creator dashboard for managing and creating markets (later phase)
 8. **Market Creation** — 7-step wizard for creating new prediction markets (later phase)
 
@@ -59,11 +59,11 @@ Build this product in milestones:
 
 1. **Foundation** — Set up design tokens, data model types, routing, and application shell
 2. **Wallet Setup** — First-time onboarding wizard (5-step flow)
-3. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, and quick trading
-4. **Market Detail** — Comprehensive trading view with charts and order book
-5. **Portfolio** — Trading dashboard with positions, P/L, and activity feed
-6. **Deposit / Withdraw** — Modal flows for Ecash and Lightning deposit/withdrawal
-7. **Settings** — User preferences and configuration
+3. **Portfolio** — Trading dashboard with positions, P/L, and activity feed
+4. **Deposit / Withdraw** — Modal flows for Ecash and Lightning deposit/withdrawal
+5. **Settings** — User preferences and configuration
+6. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, and quick trading
+7. **Market Detail** — Comprehensive trading view with charts and order book
 8. **Market Creation & Management** — Creator dashboard (later phase)
 9. **Market Creation** — 7-step market creation wizard (later phase)
 

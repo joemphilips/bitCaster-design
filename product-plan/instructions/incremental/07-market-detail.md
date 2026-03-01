@@ -1,7 +1,7 @@
-# Milestone 4: Market Detail
+# Milestone 7: Market Detail
 
 > **Provide alongside:** `product-overview.md`
-> **Prerequisites:** Milestones 1-3 complete
+> **Prerequisites:** Milestones 1-6 complete
 
 ---
 

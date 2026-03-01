@@ -1,7 +1,7 @@
-# Milestone 7: Settings
+# Milestone 5: Settings
 
 > **Provide alongside:** `product-overview.md`
-> **Prerequisites:** Milestones 1-6 complete
+> **Prerequisites:** Milestones 1-4 complete
 
 ---
 

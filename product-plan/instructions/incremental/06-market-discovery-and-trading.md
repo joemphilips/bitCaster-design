@@ -1,7 +1,7 @@
-# Milestone 3: Market Discovery & Trading
+# Milestone 6: Market Discovery & Trading
 
 > **Provide alongside:** `product-overview.md`
-> **Prerequisites:** Milestones 1-2 complete
+> **Prerequisites:** Milestones 1-5 complete
 
 ---
 

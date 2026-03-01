@@ -1,7 +1,7 @@
-# Milestone 6: Deposit / Withdraw
+# Milestone 4: Deposit / Withdraw
 
 > **Provide alongside:** `product-overview.md`
-> **Prerequisites:** Milestones 1-5 complete
+> **Prerequisites:** Milestones 1-3 complete
 
 ---
 
