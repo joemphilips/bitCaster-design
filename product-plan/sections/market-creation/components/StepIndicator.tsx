@@ -9,9 +9,8 @@ const steps: { step: WizardStep; label: string; display: number }[] = [
   { step: 2, label: 'Get Started', display: 1 },
   { step: 3, label: 'Basic Info', display: 2 },
   { step: 4, label: 'Outcomes', display: 3 },
-  { step: 5, label: 'Settings', display: 4 },
-  { step: 6, label: 'Preview', display: 5 },
-  { step: 7, label: 'Review', display: 6 },
+  { step: 5, label: 'Liquidity', display: 4 },
+  { step: 6, label: 'Review', display: 5 },
 ]
 
 export function StepIndicator({ currentStep }: StepIndicatorProps) {

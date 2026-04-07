@@ -5,8 +5,7 @@ import { OracleCheck } from './OracleCheck'
 import { GetStarted } from './GetStarted'
 import { BasicInfo } from './BasicInfo'
 import { OutcomesStep } from './OutcomesStep'
-import { MarketSettings } from './MarketSettings'
-import { MarketPreviewStep } from './MarketPreviewStep'
+import { InitialLiquidity } from './InitialLiquidity'
 import { ReviewAndCreate } from './ReviewAndCreate'
 
 export function MarketCreationWizard(props: MarketCreationWizardProps) {
@@ -23,17 +22,16 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
     onTitleChange,
     onCategoryTagsChange,
     onClosingDateChange,
-    onAnswerUrlsChange,
     onThumbnailUpload,
     onAddOutcome,
     onRemoveOutcome,
     onOutcomeLabelChange,
     onOutcomeProbabilityChange,
-    onSellFeeChange,
-    onBuyFeeChange,
-    onWinFeeChange,
-    onCalculatePreview,
-    onConfirmPreview,
+    onLoBoundChange,
+    onHiBoundChange,
+    onPrecisionChange,
+    onUnitChange,
+    onLiquiditySatsChange,
     onDescriptionChange,
     onCreateMarket,
   } = props
@@ -55,7 +53,7 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
     )
   }
 
-  // Steps 2-7: Wizard with step indicator
+  // Steps 2-6: Wizard with step indicator
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       {/* Header */}
@@ -94,7 +92,6 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
             onTitleChange={onTitleChange}
             onCategoryTagsChange={onCategoryTagsChange}
             onClosingDateChange={onClosingDateChange}
-            onAnswerUrlsChange={onAnswerUrlsChange}
             onThumbnailUpload={onThumbnailUpload}
             onNext={onNext}
           />
@@ -104,40 +101,36 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
           <OutcomesStep
             outcomeType={draft.stepOutcomes.outcomeType}
             outcomes={draft.stepOutcomes.outcomes}
+            loBound={draft.stepOutcomes.loBound}
+            hiBound={draft.stepOutcomes.hiBound}
+            precision={draft.stepOutcomes.precision}
+            unit={draft.stepOutcomes.unit}
             onAddOutcome={onAddOutcome}
             onRemoveOutcome={onRemoveOutcome}
             onOutcomeLabelChange={onOutcomeLabelChange}
             onOutcomeProbabilityChange={onOutcomeProbabilityChange}
+            onLoBoundChange={onLoBoundChange}
+            onHiBoundChange={onHiBoundChange}
+            onPrecisionChange={onPrecisionChange}
+            onUnitChange={onUnitChange}
             onNext={onNext}
           />
         )}
 
-        {currentStep === 5 && draft.stepMarketSettings && (
-          <MarketSettings
-            data={draft.stepMarketSettings}
-            onSellFeeChange={onSellFeeChange}
-            onBuyFeeChange={onBuyFeeChange}
-            onWinFeeChange={onWinFeeChange}
+        {currentStep === 5 && draft.stepInitialLiquidity && (
+          <InitialLiquidity
+            liquiditySats={draft.stepInitialLiquidity.liquiditySats}
+            onLiquiditySatsChange={onLiquiditySatsChange}
             onNext={onNext}
           />
         )}
 
-        {currentStep === 6 && draft.stepMarketPreview && (
-          <MarketPreviewStep
-            data={draft.stepMarketPreview}
-            onCalculatePreview={onCalculatePreview}
-            onConfirmPreview={onConfirmPreview}
-            onNext={onNext}
-          />
-        )}
-
-        {currentStep === 7 && (
+        {currentStep === 6 && (
           <ReviewAndCreate
             description={draft.stepReviewAndCreate?.description ?? ''}
             basicInfo={draft.stepBasicInfo}
             outcomes={draft.stepOutcomes}
-            settings={draft.stepMarketSettings}
-            preview={draft.stepMarketPreview}
+            liquidity={draft.stepInitialLiquidity}
             onDescriptionChange={onDescriptionChange}
             onCreateMarket={onCreateMarket}
           />

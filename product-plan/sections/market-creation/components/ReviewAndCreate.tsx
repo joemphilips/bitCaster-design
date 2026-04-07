@@ -1,17 +1,15 @@
-import { FileText, Tag, Calendar, DollarSign, BarChart3 } from 'lucide-react'
+import { FileText, Tag, Calendar, BarChart3, Coins } from 'lucide-react'
 import type {
   WizardStepBasicInfo,
   WizardStepOutcomes,
-  WizardStepMarketSettings,
-  WizardStepMarketPreview,
+  WizardStepInitialLiquidity,
 } from '../types'
 
 interface ReviewAndCreateProps {
   description: string
   basicInfo: WizardStepBasicInfo | null
   outcomes: WizardStepOutcomes | null
-  settings: WizardStepMarketSettings | null
-  preview: WizardStepMarketPreview | null
+  liquidity: WizardStepInitialLiquidity | null
   onDescriptionChange?: (description: string) => void
   onCreateMarket?: () => void
 }
@@ -20,8 +18,7 @@ export function ReviewAndCreate({
   description,
   basicInfo,
   outcomes,
-  settings,
-  preview,
+  liquidity,
   onDescriptionChange,
   onCreateMarket,
 }: ReviewAndCreateProps) {
@@ -99,49 +96,40 @@ export function ReviewAndCreate({
               <BarChart3 className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" strokeWidth={1.5} />
               <div>
                 <p className="text-xs text-slate-400">Outcomes</p>
-                <p className="text-sm text-white capitalize">
-                  {outcomes.outcomeType === 'yesno'
-                    ? 'Yes / No'
-                    : `${outcomes.outcomes?.length ?? 0} outcomes`}
-                </p>
-                {outcomes.outcomeType === 'categorical' && outcomes.outcomes && (
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {outcomes.outcomes.map((o) => (
-                      <span key={o.id} className="px-2 py-0.5 rounded-full bg-slate-800 text-xs text-slate-300">
-                        {o.label || 'Unnamed'}
-                      </span>
-                    ))}
-                  </div>
+                {outcomes.outcomeType === 'numeric' ? (
+                  <p className="text-sm text-white">
+                    Numeric: {outcomes.loBound ?? '?'} – {outcomes.hiBound ?? '?'} {outcomes.unit ?? ''}
+                    {outcomes.precision !== undefined && ` (${outcomes.precision} decimals)`}
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-sm text-white capitalize">
+                      {outcomes.outcomeType === 'yesno'
+                        ? 'Yes / No'
+                        : `${outcomes.outcomes?.length ?? 0} outcomes`}
+                    </p>
+                    {outcomes.outcomes && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {outcomes.outcomes.map((o) => (
+                          <span key={o.id} className="px-2 py-0.5 rounded-full bg-slate-800 text-xs text-slate-300">
+                            {o.label || 'Unnamed'}{o.probability !== undefined ? ` (${o.probability}%)` : ''}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
           )}
 
-          {/* Fees */}
-          {settings && (
+          {/* Liquidity */}
+          {liquidity && (
             <div className="flex items-start gap-3">
-              <DollarSign className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" strokeWidth={1.5} />
+              <Coins className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" strokeWidth={1.5} />
               <div>
-                <p className="text-xs text-slate-400">Fees</p>
-                <p className="text-sm text-white">
-                  Sell {settings.sellFeePercent}% / Buy {settings.buyFeePercent}% / Win {settings.winFeePercent}%
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Cost/Risk */}
-          {preview && (
-            <div className="pt-3 mt-3 border-t border-slate-700/50">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-slate-400">Initial Cost</p>
-                  <p className="text-sm font-semibold text-white">{preview.estimatedInitialCost.toLocaleString()} sats</p>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400">Worst Case Loss</p>
-                  <p className="text-sm font-semibold text-amber-400">{preview.worstCaseLoss.toLocaleString()} sats</p>
-                </div>
+                <p className="text-xs text-slate-400">Initial Liquidity</p>
+                <p className="text-sm font-semibold text-white">{liquidity.liquiditySats.toLocaleString()} sats</p>
               </div>
             </div>
           )}

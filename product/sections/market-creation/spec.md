@@ -1,7 +1,7 @@
 # Market Creation Wizard Specification
 
 ## Overview
-A 7-step wizard for creating new prediction markets. Accessed from the "Create Market" button on the Market Creation & Management dashboard. The wizard guides the user through oracle configuration, market type selection, basic info, outcomes, fee settings, cost preview, and final review.
+A 6-step wizard for creating new prediction markets. Accessed from the "Create Market" button on the Market Creation & Management dashboard. The wizard guides the user through oracle configuration, market type selection, basic info, outcomes, initial liquidity, and final review.
 
 ## User Flows
 
@@ -10,26 +10,26 @@ A 7-step wizard for creating new prediction markets. Accessed from the "Create M
 - **"Yes, use existing"**: Shows list of oracle announcements (Nostr kind 88 events). Selecting one and clicking Continue shows a TBD placeholder.
 - **"No / I want to be an oracle"**: Shows info card explaining oracle configuration. User can go to Settings or continue if already configured.
 
-### Steps 2-7: Main Wizard (with 6-step indicator)
-2. **Get Started** (display 1/6): Choose market outcome type (Yes/No or Categorical)
-3. **Basic Info** (display 2/6): Upload thumbnail, enter title, select category tags, set closing date, add answer URLs
-4. **Outcomes** (display 3/6): Define outcomes with labels, thumbnails, probabilities. Yes/No markets skip this step's outcome definition.
-5. **Market Settings** (display 4/6): Configure sell/buy/win fees (no liquidity field)
-6. **Market Preview** (display 5/6): Review estimated initial cost and worst-case loss
-7. **Review & Create** (display 6/6): Write description, review full summary, submit
+### Steps 2-6: Main Wizard (with 5-step indicator)
+2. **Get Started** (display 1/5): Choose market outcome type (Yes/No, Categorical, or Numeric)
+3. **Basic Info** (display 2/5): Upload thumbnail, enter title, select category tags, set closing date
+4. **Outcomes** (display 3/5): Define outcomes with labels, probabilities (Yes/No and Categorical have editable probabilities with Normalize button). Numeric markets configure LO bound, HI bound, unit, and precision.
+5. **Initial Liquidity** (display 4/5): Set initial liquidity in sats to seed the market (quick-amount buttons: 1k, 5k, 10k, 50k)
+6. **Review & Create** (display 5/5): Write description, review full summary including liquidity, submit
 
 ## UI Requirements
 - Step 1 is a full-screen gate with no step indicator
-- Steps 2-7 use a shared layout with back button and 6-step progress indicator
+- Steps 2-6 use a shared layout with back button and 5-step progress indicator
 - Step indicator: completed=green checkmark, active=blue circle+number, future=grey
 - Dark theme with slate backgrounds matching the design system
 - Form inputs: dark fields with subtle borders and helper text
-- Fees: split into Sell/Buy/Win with percentage display
+- Yes/No outcomes have editable probability inputs (not hardcoded 50%)
+- "Normalize" button on non-numeric outcome types scales all probabilities to sum to 100%
 - Outcomes: card rows with thumbnail upload, label, probability, delete button
 - "Create Market" green primary button on the final step
 
 ## Navigation
-- Back button available on steps 3-7
+- Back button available on steps 3-6
 - Forward via "Next" or "Continue" buttons
 - Step indicator shows progress but is not clickable
 

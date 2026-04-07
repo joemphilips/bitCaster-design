@@ -1,4 +1,4 @@
-import { ToggleLeft, LayoutGrid } from 'lucide-react'
+import { ToggleLeft, LayoutGrid, SlidersHorizontal } from 'lucide-react'
 import type { OutcomeType } from '@/../product/sections/market-creation/types'
 
 interface GetStartedProps {
@@ -6,6 +6,27 @@ interface GetStartedProps {
   onOutcomeTypeSelect?: (type: OutcomeType) => void
   onNext?: () => void
 }
+
+const options: { type: OutcomeType; icon: typeof ToggleLeft; label: string; description: string }[] = [
+  {
+    type: 'yesno',
+    icon: ToggleLeft,
+    label: 'Yes / No',
+    description: 'A simple binary market with two outcomes. Example: "Will Bitcoin reach $200k by 2027?"',
+  },
+  {
+    type: 'categorical',
+    icon: LayoutGrid,
+    label: 'Categorical',
+    description: 'Multiple possible outcomes. Example: "Which team will win the Champions League?"',
+  },
+  {
+    type: 'numeric',
+    icon: SlidersHorizontal,
+    label: 'Numeric',
+    description: 'A range-based market. Example: "What will be the price of BTC on June 30?"',
+  },
+]
 
 export function GetStarted({ outcomeType, onOutcomeTypeSelect, onNext }: GetStartedProps) {
   return (
@@ -16,47 +37,27 @@ export function GetStarted({ outcomeType, onOutcomeTypeSelect, onNext }: GetStar
       </p>
 
       <div className="space-y-4 mb-8">
-        <button
-          onClick={() => onOutcomeTypeSelect?.('yesno')}
-          className={`w-full p-5 rounded-xl border-2 transition-all text-left ${
-            outcomeType === 'yesno'
-              ? 'border-blue-500 bg-blue-500/10'
-              : 'border-slate-700 bg-slate-900 hover:border-slate-600'
-          }`}
-        >
-          <div className="flex items-start gap-4">
-            <div className={`p-2.5 rounded-lg ${outcomeType === 'yesno' ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
-              <ToggleLeft className={`w-6 h-6 ${outcomeType === 'yesno' ? 'text-blue-400' : 'text-slate-500'}`} strokeWidth={1.5} />
+        {options.map(({ type, icon: Icon, label, description }) => (
+          <button
+            key={type}
+            onClick={() => onOutcomeTypeSelect?.(type)}
+            className={`w-full p-5 rounded-xl border-2 transition-all text-left ${
+              outcomeType === type
+                ? 'border-blue-500 bg-blue-500/10'
+                : 'border-slate-700 bg-slate-900 hover:border-slate-600'
+            }`}
+          >
+            <div className="flex items-start gap-4">
+              <div className={`p-2.5 rounded-lg ${outcomeType === type ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
+                <Icon className={`w-6 h-6 ${outcomeType === type ? 'text-blue-400' : 'text-slate-500'}`} strokeWidth={1.5} />
+              </div>
+              <div>
+                <p className="font-semibold text-white mb-1">{label}</p>
+                <p className="text-sm text-slate-400">{description}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold text-white mb-1">Yes / No</p>
-              <p className="text-sm text-slate-400">
-                A simple binary market with two outcomes. Example: "Will Bitcoin reach $200k by 2027?"
-              </p>
-            </div>
-          </div>
-        </button>
-
-        <button
-          onClick={() => onOutcomeTypeSelect?.('categorical')}
-          className={`w-full p-5 rounded-xl border-2 transition-all text-left ${
-            outcomeType === 'categorical'
-              ? 'border-blue-500 bg-blue-500/10'
-              : 'border-slate-700 bg-slate-900 hover:border-slate-600'
-          }`}
-        >
-          <div className="flex items-start gap-4">
-            <div className={`p-2.5 rounded-lg ${outcomeType === 'categorical' ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
-              <LayoutGrid className={`w-6 h-6 ${outcomeType === 'categorical' ? 'text-blue-400' : 'text-slate-500'}`} strokeWidth={1.5} />
-            </div>
-            <div>
-              <p className="font-semibold text-white mb-1">Categorical</p>
-              <p className="text-sm text-slate-400">
-                Multiple possible outcomes. Example: "Which team will win the Champions League?"
-              </p>
-            </div>
-          </div>
-        </button>
+          </button>
+        ))}
       </div>
 
       <button

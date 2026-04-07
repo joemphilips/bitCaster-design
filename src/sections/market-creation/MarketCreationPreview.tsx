@@ -49,13 +49,11 @@ export function MarketCreationPreview() {
     onNext: () => {
       const { currentStep } = draft
       if (currentStep === 1) {
-        // Moving from Oracle Check to Get Started
         setStep(2)
         if (!draft.stepGetStarted) {
           updateDraft({ currentStep: 2, stepGetStarted: { outcomeType: null } })
         }
       } else if (currentStep === 2) {
-        // Moving from Get Started to Basic Info
         updateDraft({
           currentStep: 3,
           stepBasicInfo: draft.stepBasicInfo ?? {
@@ -63,45 +61,38 @@ export function MarketCreationPreview() {
             title: '',
             categoryTags: [],
             closingDate: '',
-            answerUrls: [],
           },
         })
       } else if (currentStep === 3) {
-        // Moving from Basic Info to Outcomes
         const outcomeType = draft.stepGetStarted?.outcomeType ?? 'yesno'
         updateDraft({
           currentStep: 4,
           stepOutcomes: draft.stepOutcomes ?? {
             outcomeType,
-            outcomes: outcomeType === 'categorical'
+            outcomes: outcomeType === 'yesno'
               ? [
-                  { id: 'o1', label: '', description: '', probability: 50 },
-                  { id: 'o2', label: '', description: '', probability: 50 },
+                  { id: 'yes', label: 'Yes', description: 'The condition is met', probability: 50 },
+                  { id: 'no', label: 'No', description: 'The condition is not met', probability: 50 },
                 ]
-              : null,
+              : outcomeType === 'categorical'
+                ? [
+                    { id: 'o1', label: '', description: '', probability: 50 },
+                    { id: 'o2', label: '', description: '', probability: 50 },
+                  ]
+                : null,
+            ...(outcomeType === 'numeric' ? { loBound: 0, hiBound: 100, precision: 0, unit: '' } : {}),
           },
         })
       } else if (currentStep === 4) {
         updateDraft({
           currentStep: 5,
-          stepMarketSettings: draft.stepMarketSettings ?? {
-            sellFeePercent: 1,
-            buyFeePercent: 1,
-            winFeePercent: 2,
+          stepInitialLiquidity: draft.stepInitialLiquidity ?? {
+            liquiditySats: 0,
           },
         })
       } else if (currentStep === 5) {
         updateDraft({
           currentStep: 6,
-          stepMarketPreview: draft.stepMarketPreview ?? {
-            estimatedInitialCost: 0,
-            worstCaseLoss: 0,
-            confirmed: false,
-          },
-        })
-      } else if (currentStep === 6) {
-        updateDraft({
-          currentStep: 7,
           stepReviewAndCreate: draft.stepReviewAndCreate ?? { description: '' },
         })
       }
@@ -134,11 +125,6 @@ export function MarketCreationPreview() {
     onClosingDateChange: (date: string) => {
       if (draft.stepBasicInfo) {
         updateDraft({ stepBasicInfo: { ...draft.stepBasicInfo, closingDate: date } })
-      }
-    },
-    onAnswerUrlsChange: (urls: string[]) => {
-      if (draft.stepBasicInfo) {
-        updateDraft({ stepBasicInfo: { ...draft.stepBasicInfo, answerUrls: urls } })
       }
     },
     onThumbnailUpload: () => {
@@ -195,37 +181,31 @@ export function MarketCreationPreview() {
       }
     },
 
-    // Market Settings
-    onSellFeeChange: (percent: number) => {
-      if (draft.stepMarketSettings) {
-        updateDraft({ stepMarketSettings: { ...draft.stepMarketSettings, sellFeePercent: percent } })
+    // Numeric outcomes
+    onLoBoundChange: (value: number) => {
+      if (draft.stepOutcomes) {
+        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, loBound: value } })
       }
     },
-    onBuyFeeChange: (percent: number) => {
-      if (draft.stepMarketSettings) {
-        updateDraft({ stepMarketSettings: { ...draft.stepMarketSettings, buyFeePercent: percent } })
+    onHiBoundChange: (value: number) => {
+      if (draft.stepOutcomes) {
+        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, hiBound: value } })
       }
     },
-    onWinFeeChange: (percent: number) => {
-      if (draft.stepMarketSettings) {
-        updateDraft({ stepMarketSettings: { ...draft.stepMarketSettings, winFeePercent: percent } })
+    onPrecisionChange: (value: number) => {
+      if (draft.stepOutcomes) {
+        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, precision: value } })
+      }
+    },
+    onUnitChange: (value: string) => {
+      if (draft.stepOutcomes) {
+        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, unit: value } })
       }
     },
 
-    // Market Preview
-    onCalculatePreview: () => {
-      updateDraft({
-        stepMarketPreview: {
-          estimatedInitialCost: 10000,
-          worstCaseLoss: 11000,
-          confirmed: false,
-        },
-      })
-    },
-    onConfirmPreview: (confirmed: boolean) => {
-      if (draft.stepMarketPreview) {
-        updateDraft({ stepMarketPreview: { ...draft.stepMarketPreview, confirmed } })
-      }
+    // Initial Liquidity
+    onLiquiditySatsChange: (sats: number) => {
+      updateDraft({ stepInitialLiquidity: { liquiditySats: sats } })
     },
 
     // Review
@@ -243,9 +223,8 @@ export function MarketCreationPreview() {
     2: 'Get Started',
     3: 'Basic Info',
     4: 'Outcomes',
-    5: 'Settings',
-    6: 'Preview',
-    7: 'Review',
+    5: 'Liquidity',
+    6: 'Review',
   }
 
   return (
@@ -257,7 +236,7 @@ export function MarketCreationPreview() {
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
               Step:
             </span>
-            {([1, 2, 3, 4, 5, 6, 7] as WizardStep[]).map((step) => (
+            {([1, 2, 3, 4, 5, 6] as WizardStep[]).map((step) => (
               <button
                 key={step}
                 onClick={() => {
@@ -267,18 +246,18 @@ export function MarketCreationPreview() {
                     updateDraft({ stepGetStarted: { outcomeType: 'yesno' } })
                   }
                   if (step >= 3 && !draft.stepBasicInfo) {
-                    updateDraft({ stepBasicInfo: { imageFile: null, title: 'Will Bitcoin exceed $150,000 by Q2 2026?', categoryTags: ['Crypto'], closingDate: '2026-06-30T23:59', answerUrls: [] } })
+                    updateDraft({ stepBasicInfo: { imageFile: null, title: 'Will Bitcoin exceed $150,000 by Q2 2026?', categoryTags: ['Crypto'], closingDate: '2026-06-30T23:59' } })
                   }
                   if (step >= 4 && !draft.stepOutcomes) {
-                    updateDraft({ stepOutcomes: { outcomeType: 'yesno', outcomes: null } })
+                    updateDraft({ stepOutcomes: { outcomeType: 'yesno', outcomes: [
+                      { id: 'yes', label: 'Yes', description: 'The condition is met', probability: 50 },
+                      { id: 'no', label: 'No', description: 'The condition is not met', probability: 50 },
+                    ] } })
                   }
-                  if (step >= 5 && !draft.stepMarketSettings) {
-                    updateDraft({ stepMarketSettings: { sellFeePercent: 1, buyFeePercent: 1, winFeePercent: 2 } })
+                  if (step >= 5 && !draft.stepInitialLiquidity) {
+                    updateDraft({ stepInitialLiquidity: { liquiditySats: 10000 } })
                   }
-                  if (step >= 6 && !draft.stepMarketPreview) {
-                    updateDraft({ stepMarketPreview: { estimatedInitialCost: 10000, worstCaseLoss: 11000, confirmed: true } })
-                  }
-                  if (step >= 7 && !draft.stepReviewAndCreate) {
+                  if (step >= 6 && !draft.stepReviewAndCreate) {
                     updateDraft({ stepReviewAndCreate: { description: '' } })
                   }
                 }}
