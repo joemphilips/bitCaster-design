@@ -151,7 +151,7 @@ Base ecash balance held in the wallet — not locked to any market outcome.
 | Field | Type | Description |
 |---|---|---|
 | id | string | Unique identifier |
-| unit | `sats` \| `usd` | Token denomination |
+| unit | `sats` | Token denomination |
 | amount | number | Balance |
 | mintUrl | string | Mint that issued the tokens |
 

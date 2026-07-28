@@ -224,12 +224,6 @@
       "unit": "sats",
       "amount": 48000,
       "mintUrl": "https://testnut.cashu.space"
-    },
-    {
-      "id": "fund-003",
-      "unit": "usd",
-      "amount": 2500,
-      "mintUrl": "https://mint.bitcaster.io"
     }
   ],
   "activity": [

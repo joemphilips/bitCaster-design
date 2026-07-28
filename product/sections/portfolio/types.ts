@@ -68,7 +68,7 @@ export interface Position {
 
 export interface Fund {
   id: string
-  unit: 'sats' | 'usd'
+  unit: 'sats'
   amount: number
   mintUrl: string
 }
