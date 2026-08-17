@@ -62,24 +62,14 @@ export interface CategoricalMarket extends BaseMarket {
   outcomes: Outcome[]
 }
 
-// Numeric market type (NUT-CTF-numeric: HI/LO token pair with proportional payout)
-export interface NumericMarket extends BaseMarket {
-  type: 'numeric'
-  loBound: number    // Lower bound of the outcome range
-  hiBound: number    // Upper bound of the outcome range
-  precision: number  // Decimal places for display
-  unit: string       // Display unit (e.g. "USD", "BTC")
-  currentPrice: number // Implied price derived from HI token order book
-}
-
 // Union type for all market types
-export type Market = YesNoMarket | CategoricalMarket | NumericMarket
+export type Market = YesNoMarket | CategoricalMarket
 
 // =============================================================================
 // Filter Types
 // =============================================================================
 
-export type MarketType = 'yesno' | 'categorical' | 'numeric'
+export type MarketType = 'yesno' | 'categorical'
 
 export interface VolumeRange {
   min?: number

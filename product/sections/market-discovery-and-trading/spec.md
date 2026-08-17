@@ -9,7 +9,7 @@ Core marketplace where users browse prediction markets through a single-select t
 - User can apply filters to show only certain markets (Market Type, Volume range, Closing date).
 - For Yes/No markets: User clicks Buy Yes/No button → card transforms to trade interface
 - For categorical markets: User scrolls vertically through choices, clicks Yes/No on a specific choice → card transforms to trade interface
-- For numeric markets: Card is click-only (no Buy buttons on card) → user clicks card → navigates to full market detail page where trading happens
+- Numeric markets are disabled until an authoritative trade representation exists.
 - User confirms trade or cancels with × button to return card to normal state
 - User clicks anywhere else on market card → navigates to full market detail page
 - User scrolls down → more markets load automatically (infinite scroll)
@@ -17,12 +17,12 @@ Core marketplace where users browse prediction markets through a single-select t
 ## UI Requirements
 - Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags (Sports, Politics, etc.) - only one tag can be selected at a time
 - Filter row is hidden by default; user clicks a slider/filter icon in the tag bar to reveal/collapse it
-- Three filter controls: Market Type dropdown (Yes/No, Categorical, Numeric), Volume range, Closing date slider
+- Three filter controls: Market Type dropdown (Yes/No, Categorical), Volume range, Closing date slider
 - Market cards showing: image, title/question, current odds, action buttons, and metrics footer
 - Volume displayed with ₿ symbol (e.g., "₿0.05")
 - Yes/No market cards: display order must be title/question → chance (odds shown inline, e.g., "Chance 67.5%") → Buy Yes/Buy No buttons
 - Categorical market cards: vertical scrollable list of choices, each with its own Yes/No buttons
-- Numeric market cards: large current implied price with unit displayed prominently (e.g., "$112,500"), range context shown as secondary text (e.g., "Range: $0 – $200,000"), no Buy buttons — entire card is clickable to navigate to detail page
+- Numeric market cards are not part of the supported discovery flow.
 - Inline card transformation for quick trading with × cancel, predicted odds, amount picker, BUY button
 - Market Card should not show tag information (tags are only for market detail page)
 - Each market card includes a 'like' button with count in the metrics footer

@@ -44,11 +44,9 @@
 5. Verify single-column layout (no right sidebar).
 6. Verify Resolution Info section appears above the chart.
 
-### Flow 6 — Numeric Market
-1. Render with a numeric market (`type: 'numeric'`).
-2. Verify implied price displays with unit (e.g., "$112,500") instead of percentage.
-3. Verify trading panel shows "Buy Higher" and "Buy Lower" buttons.
-4. Verify range bar visualization shows current price position within `[loBound, hiBound]`.
+### Flow 6 — Unsupported numeric market
+1. Confirm the supported market data types do not include numeric markets.
+2. Confirm the detail UI does not display a synthetic numeric current value or numeric trading controls.
 
 ### Failure — Trade with 0 Amount
 1. Select an outcome. Leave `tradeAmount` at 0.

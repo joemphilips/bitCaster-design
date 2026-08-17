@@ -505,7 +505,7 @@ The default home view after onboarding. Users browse markets through a single-se
 - Market filtering (Market Type, Volume range, Closing date)
 - Yes/No market cards with inline trading (Buy Yes/Buy No)
 - Categorical market cards with per-outcome Yes/No buttons
-- Numeric market cards (click-only → navigate to detail page)
+- Numeric markets are disabled until an authoritative trade representation exists.
 - Inline card trade overlay (amount picker, predicted odds, BUY button)
 - Like button on each market card
 - Infinite scroll loading
@@ -551,9 +551,8 @@ The default home view after onboarding. Users browse markets through a single-se
 ## Done When
 - [ ] Tests written and passing
 - [ ] Tag navigation works (single-select)
-- [ ] All three market types render correctly
+- [ ] Yes/No and Categorical market types render correctly
 - [ ] Inline trading overlay works for Yes/No and Categorical
-- [ ] Numeric cards are click-only (no buy buttons)
 - [ ] Filters work correctly
 - [ ] Infinite scroll loads more markets
 - [ ] Refresh button re-fetches conditions
@@ -568,7 +567,7 @@ The default home view after onboarding. Users browse markets through a single-se
 Implement the Market Detail page — comprehensive trading view with order book, charts, and trade panel.
 
 ## Overview
-Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and multiple market types (Yes/No, Categorical, Numeric).
+Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and Yes/No and Categorical markets.
 
 **Key Functionality:**
 - Market header with image, title, tags, countdown, creator info, metrics footer
@@ -584,7 +583,7 @@ Accessed by clicking on a market card. Provides full market analysis and trading
 - Comments section (read-only, comments posted via trading)
 - Related markets horizontal scroll
 - Resolved market view (no trading panel, single-column layout)
-- Numeric market support (Buy Higher/Buy Lower, implied price display)
+- Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists.
 
 ## What to Implement
 
@@ -641,7 +640,6 @@ Accessed by clicking on a market card. Provides full market analysis and trading
 - [ ] Price chart renders with timeframe switching
 - [ ] Order book visualization works
 - [ ] Resolved markets show correctly (no trading)
-- [ ] Numeric markets show Buy Higher/Buy Lower
 - [ ] Comments displayed, posted via trades only
 - [ ] Responsive on mobile (sticky trade button)
 

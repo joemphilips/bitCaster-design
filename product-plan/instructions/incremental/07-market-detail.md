@@ -35,7 +35,7 @@
 Implement the Market Detail page — comprehensive trading view with order book, charts, and trade panel.
 
 ## Overview
-Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and multiple market types (Yes/No, Categorical, Numeric).
+Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and Yes/No and Categorical markets.
 
 **Key Functionality:**
 - Market header with image, title, tags, countdown, creator info, metrics footer
@@ -51,7 +51,7 @@ Accessed by clicking on a market card. Provides full market analysis and trading
 - Comments section (read-only, comments posted via trading)
 - Related markets horizontal scroll
 - Resolved market view (no trading panel, single-column layout)
-- Numeric market support (Buy Higher/Buy Lower, implied price display)
+- Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists.
 
 ## What to Implement
 
@@ -108,6 +108,5 @@ Accessed by clicking on a market card. Provides full market analysis and trading
 - [ ] Price chart renders with timeframe switching
 - [ ] Order book visualization works
 - [ ] Resolved markets show correctly (no trading)
-- [ ] Numeric markets show Buy Higher/Buy Lower
 - [ ] Comments displayed, posted via trades only
 - [ ] Responsive on mobile (sticky trade button)

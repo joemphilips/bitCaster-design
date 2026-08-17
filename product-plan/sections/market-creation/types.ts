@@ -22,7 +22,7 @@ export interface WizardStepOracleCheck {
 // Get Started Types (Step 2)
 // =============================================================================
 
-export type OutcomeType = 'yesno' | 'categorical' | 'numeric'
+export type OutcomeType = 'yesno' | 'categorical'
 
 export interface WizardStepGetStarted {
   outcomeType: OutcomeType | null
@@ -52,23 +52,22 @@ export interface WizardOutcome {
 
 export interface WizardStepOutcomes {
   outcomeType: OutcomeType
-  outcomes: WizardOutcome[] | null  // null for numeric
-  loBound?: number
-  hiBound?: number
-  precision?: number
-  unit?: string
+  outcomes: WizardOutcome[] | null  // null for yes/no
 }
 
 // =============================================================================
-// Initial Liquidity Types (Step 5)
+// Post-create funding handoff
 // =============================================================================
 
-export interface WizardStepInitialLiquidity {
-  liquiditySats: number
+export type PostCreateFundingChoice = 'none' | 'preset' | 'custom'
+
+export interface PostCreateFundingHandoffProps {
+  marketId: string
+  onComplete?: (choice: PostCreateFundingChoice, amountSats?: number) => void
 }
 
 // =============================================================================
-// Review & Create Types (Step 6)
+// Review & Create Types (Step 5)
 // =============================================================================
 
 export interface WizardStepReviewAndCreate {
@@ -79,7 +78,7 @@ export interface WizardStepReviewAndCreate {
 // Top-level Wizard Draft
 // =============================================================================
 
-export type WizardStep = 1 | 2 | 3 | 4 | 5 | 6
+export type WizardStep = 1 | 2 | 3 | 4 | 5
 
 export interface WizardDraft {
   currentStep: WizardStep
@@ -88,7 +87,6 @@ export interface WizardDraft {
   stepGetStarted: WizardStepGetStarted | null
   stepBasicInfo: WizardStepBasicInfo | null
   stepOutcomes: WizardStepOutcomes | null
-  stepInitialLiquidity: WizardStepInitialLiquidity | null
   stepReviewAndCreate: WizardStepReviewAndCreate | null
 }
 
@@ -161,27 +159,8 @@ export interface MarketCreationWizardProps {
   /** Called when user updates an outcome label */
   onOutcomeLabelChange?: (outcomeId: string, label: string) => void
 
-  /** Called when user updates numeric low bound */
-  onLoBoundChange?: (value: number) => void
-
-  /** Called when user updates numeric high bound */
-  onHiBoundChange?: (value: number) => void
-
-  /** Called when user updates numeric precision */
-  onPrecisionChange?: (value: number) => void
-
-  /** Called when user updates numeric unit */
-  onUnitChange?: (value: string) => void
-
   // -------------------------------------------------------------------------
-  // Initial Liquidity Callbacks (Step 5)
-  // -------------------------------------------------------------------------
-
-  /** Called when user updates liquidity amount */
-  onLiquiditySatsChange?: (sats: number) => void
-
-  // -------------------------------------------------------------------------
-  // Review Callbacks (Step 6)
+  // Review Callbacks (Step 5)
   // -------------------------------------------------------------------------
 
   /** Called when user updates the description */
@@ -189,4 +168,13 @@ export interface MarketCreationWizardProps {
 
   /** Called when user clicks Create Market */
   onCreateMarket?: () => void
+
+  /** True after registration succeeds. Funding is a separate durable flow. */
+  creationSucceeded?: boolean
+
+  /** Identifier of the newly registered market for the funding handoff. */
+  createdMarketId?: string
+
+  /** Called after the optional post-create funding flow completes. */
+  onPostCreateFundingComplete?: (choice: PostCreateFundingChoice, amountSats?: number) => void
 }

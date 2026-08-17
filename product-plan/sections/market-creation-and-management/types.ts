@@ -113,7 +113,7 @@ export type ChartMode = 'aggregate' | 'per-market'
 // Wizard Types
 // =============================================================================
 
-export type OutcomeType = 'yesno' | 'categorical' | 'numeric'
+export type OutcomeType = 'yesno' | 'categorical'
 
 export interface WizardOutcome {
   id: string
@@ -132,20 +132,17 @@ export interface WizardStep1Data {
 
 export interface WizardStep2Data {
   outcomeType: OutcomeType
-  outcomes: WizardOutcome[] | null // null for yesno, array for categorical/numeric
+  outcomes: WizardOutcome[] | null // null for yesno, array for categorical
 }
 
 export interface WizardStep3Data {
-  liquiditySats: number
   buyFeePercent: number
   sellFeePercent: number
   winFeePercent: number
 }
 
 export interface WizardStep4Data {
-  // Review step - computed from previous steps
-  estimatedInitialCost: number
-  worstCaseLoss: number
+  // Review step state is computed from metadata and outcomes.
   confirmed: boolean
 }
 

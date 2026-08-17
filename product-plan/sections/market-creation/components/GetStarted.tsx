@@ -1,4 +1,4 @@
-import { ToggleLeft, LayoutGrid, SlidersHorizontal } from 'lucide-react'
+import { ToggleLeft, LayoutGrid } from 'lucide-react'
 import type { OutcomeType } from '../types'
 
 interface GetStartedProps {
@@ -19,12 +19,6 @@ const options: { type: OutcomeType; icon: typeof ToggleLeft; label: string; desc
     icon: LayoutGrid,
     label: 'Categorical',
     description: 'Multiple possible outcomes. Example: "Which team will win the Champions League?"',
-  },
-  {
-    type: 'numeric',
-    icon: SlidersHorizontal,
-    label: 'Numeric',
-    description: 'A range-based market. Example: "What will be the price of BTC on June 30?"',
   },
 ]
 

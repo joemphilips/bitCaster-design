@@ -30,10 +30,9 @@
 3. Click "Yes" on a specific outcome → card transforms to trading overlay.
 4. Enter amount and click "BUY" → `onBuyOutcomeYes` fires with `(marketId, outcomeId, amount)`.
 
-### Flow 5 — Numeric Market Card Click
-1. Locate a Numeric market card. Verify it shows the current implied price (e.g., "$112,500") and range text.
-2. Verify no "Buy Yes" / "Buy No" buttons are present on the card.
-3. Click anywhere on the card → `onViewMarket` fires with the market ID.
+### Flow 5 — Unsupported numeric market
+1. Confirm the supported market data types do not include numeric markets.
+2. Confirm the discovery UI does not display a synthetic numeric current value or numeric trading controls.
 
 ### Flow 6 — Filter by Market Type
 1. Open filter controls (click filter icon in tag bar).
@@ -98,7 +97,6 @@ import type {
   CategoryTag,
   YesNoMarket,
   CategoricalMarket,
-  NumericMarket,
 } from './types'
 import type { BackgroundDataLoad } from '../wallet-setup/types'
 
@@ -156,29 +154,6 @@ const sampleCategoricalMarket: CategoricalMarket = {
   ],
 }
 
-const sampleNumericMarket: NumericMarket = {
-  id: 'mkt-3',
-  type: 'numeric',
-  title: 'BTC price at halving?',
-  imageUrl: '/images/btc-price.png',
-  categoryTags: ['crypto'],
-  metaTags: ['trending'],
-  volume: 200000,
-  liquidity: 100000,
-  traderCount: 156,
-  closingDate: '2028-04-01T00:00:00Z',
-  createdDate: '2026-02-01T10:00:00Z',
-  activeSince: '2026-02-01T10:00:00Z',
-  creatorFeePercent: 0.5,
-  likeCount: 72,
-  isLiked: false,
-  loBound: 0,
-  hiBound: 200000,
-  precision: 0,
-  unit: 'USD',
-  currentPrice: 112500,
-}
-
 const backgroundDataLoad: BackgroundDataLoad = {
   mintUrl: 'https://mint.bitcaster.app',
   status: 'loaded',
@@ -188,7 +163,7 @@ const backgroundDataLoad: BackgroundDataLoad = {
 const sampleProps: MarketDiscoveryProps = {
   metaTags,
   categoryTags,
-  markets: [sampleYesNoMarket, sampleCategoricalMarket, sampleNumericMarket],
+  markets: [sampleYesNoMarket, sampleCategoricalMarket],
   selectedTag: 'trending',
   backgroundDataLoad,
   lastUpdatedAt: '2026-03-01T09:58:00Z',

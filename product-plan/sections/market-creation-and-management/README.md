@@ -1,7 +1,7 @@
 # Market Creation & Management
 
 ## Overview
-Creator dashboard for managing prediction markets. Markets go live immediately after creation with no approval gate. Features dashboard stats, paginated market list, volume analytics, and a CTA to create new markets via the market-creation wizard.
+Creator dashboard for managing prediction markets. Markets go live as ordinary `Open` markets after registration with no approval gate. Features dashboard stats, paginated market list, volume analytics, and a CTA to create new markets via the market-creation flow.
 
 If the oracle does not attest an outcome in time, the market is refunded.
 
@@ -15,7 +15,9 @@ If the oracle does not attest an outcome in time, the market is refunded.
 ## Tabs
 - **Overview** — Dashboard stats and paginated market list
 - **Analytics** — Volume charts with time scale selector (daily/weekly/monthly)
-- **Add Market** — Styled as a filled CTA button (not a standard tab), navigates to market-creation wizard
+- **Add Market** — Styled as a filled CTA button (not a standard tab), navigates to the market-creation flow
+
+Market registration accepts metadata, oracle details, and canonical Yes/No or categorical outcomes. It does not include probability, numeric configuration, or funding. After registration succeeds, the market remains Open and the UI can offer the creator an optional post-create bot funding handoff. The same durable LIQUIDITY flow can run again from market detail for any user. It is not restricted to the creator.
 
 ## Dashboard Stats
 - Active markets count

@@ -5,7 +5,7 @@ import { OracleCheck } from './OracleCheck'
 import { GetStarted } from './GetStarted'
 import { BasicInfo } from './BasicInfo'
 import { OutcomesStep } from './OutcomesStep'
-import { InitialLiquidity } from './InitialLiquidity'
+import { PostCreateFundingHandoff } from './PostCreateFundingHandoff'
 import { ReviewAndCreate } from './ReviewAndCreate'
 
 export function MarketCreationWizard(props: MarketCreationWizardProps) {
@@ -26,16 +26,25 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
     onAddOutcome,
     onRemoveOutcome,
     onOutcomeLabelChange,
-    onLoBoundChange,
-    onHiBoundChange,
-    onPrecisionChange,
-    onUnitChange,
-    onLiquiditySatsChange,
     onDescriptionChange,
     onCreateMarket,
+    creationSucceeded,
+    createdMarketId,
+    onPostCreateFundingComplete,
   } = props
 
   const { currentStep } = draft
+
+  if (creationSucceeded) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-start justify-center px-4 py-16">
+        <PostCreateFundingHandoff
+          marketId={createdMarketId ?? 'new-market'}
+          onComplete={onPostCreateFundingComplete}
+        />
+      </div>
+    )
+  }
 
   // Step 1: Oracle Check — full-screen standalone
   if (currentStep === 1) {
@@ -52,7 +61,7 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
     )
   }
 
-  // Steps 2-6: Wizard with step indicator
+  // Steps 2-5: Wizard with step indicator
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       {/* Header */}
@@ -100,35 +109,18 @@ export function MarketCreationWizard(props: MarketCreationWizardProps) {
           <OutcomesStep
             outcomeType={draft.stepOutcomes.outcomeType}
             outcomes={draft.stepOutcomes.outcomes}
-            loBound={draft.stepOutcomes.loBound}
-            hiBound={draft.stepOutcomes.hiBound}
-            precision={draft.stepOutcomes.precision}
-            unit={draft.stepOutcomes.unit}
             onAddOutcome={onAddOutcome}
             onRemoveOutcome={onRemoveOutcome}
             onOutcomeLabelChange={onOutcomeLabelChange}
-            onLoBoundChange={onLoBoundChange}
-            onHiBoundChange={onHiBoundChange}
-            onPrecisionChange={onPrecisionChange}
-            onUnitChange={onUnitChange}
             onNext={onNext}
           />
         )}
 
-        {currentStep === 5 && draft.stepInitialLiquidity && (
-          <InitialLiquidity
-            liquiditySats={draft.stepInitialLiquidity.liquiditySats}
-            onLiquiditySatsChange={onLiquiditySatsChange}
-            onNext={onNext}
-          />
-        )}
-
-        {currentStep === 6 && (
+        {currentStep === 5 && (
           <ReviewAndCreate
             description={draft.stepReviewAndCreate?.description ?? ''}
             basicInfo={draft.stepBasicInfo}
             outcomes={draft.stepOutcomes}
-            liquidity={draft.stepInitialLiquidity}
             onDescriptionChange={onDescriptionChange}
             onCreateMarket={onCreateMarket}
           />

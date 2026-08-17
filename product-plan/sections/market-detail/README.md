@@ -23,8 +23,8 @@ Two large outcome buttons (Yes % / No %). Single-line price chart. Current perce
 ### Categorical Markets
 Vertical list of outcomes with per-outcome Buy Yes/No. Multi-line price chart. Leading outcome shown as current percentage.
 
-### Numeric Markets
-Implied price with unit (e.g., "$112,500") instead of percentage. "Buy Higher" / "Buy Lower" buttons. Range bar visualization. Price chart Y-axis in market unit.
+### Future market types
+Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists. The detail UI supports Yes/No and Categorical markets.
 
 ## Trading Panel Layout
 Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Amount input → Quick amounts (100, 500, 1000, 5000) → Trade preview → Optional comment (280 chars) → Confirm button

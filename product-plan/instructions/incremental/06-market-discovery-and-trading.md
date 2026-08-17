@@ -42,7 +42,7 @@ The default home view after onboarding. Users browse markets through a single-se
 - Market filtering (Market Type, Volume range, Closing date)
 - Yes/No market cards with inline trading (Buy Yes/Buy No)
 - Categorical market cards with per-outcome Yes/No buttons
-- Numeric market cards (click-only → navigate to detail page)
+- Numeric markets are disabled until an authoritative trade representation exists.
 - Inline card trade overlay (amount picker, predicted odds, BUY button)
 - Like button on each market card
 - Infinite scroll loading
@@ -88,9 +88,8 @@ The default home view after onboarding. Users browse markets through a single-se
 ## Done When
 - [ ] Tests written and passing
 - [ ] Tag navigation works (single-select)
-- [ ] All three market types render correctly
+- [ ] Yes/No and Categorical market types render correctly
 - [ ] Inline trading overlay works for Yes/No and Categorical
-- [ ] Numeric cards are click-only (no buy buttons)
 - [ ] Filters work correctly
 - [ ] Infinite scroll loads more markets
 - [ ] Refresh button re-fetches conditions

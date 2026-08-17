@@ -8,20 +8,8 @@ import { ActivityFeed } from './ActivityFeed'
 import { RelatedMarkets } from './RelatedMarkets'
 import { CommentSection } from './CommentSection'
 
-function formatNumericPrice(value: number, unit: string): string {
-  if (unit === 'USD') return `$${value.toLocaleString()}`
-  return `${value.toLocaleString()} ${unit}`
-}
-
 function computeCurrentDisplay(market: MarketDetailProps['market']): string {
   const isResolved = market.resolution.status === 'resolved'
-
-  if (market.type === 'numeric') {
-    if (isResolved && market.attestedValue != null) {
-      return `Resolved: ${formatNumericPrice(market.attestedValue, market.unit)}`
-    }
-    return formatNumericPrice(market.currentPrice, market.unit)
-  }
 
   if (isResolved && market.resolution.finalOutcome) {
     return `Resolved: ${market.resolution.finalOutcome}`
@@ -144,7 +132,6 @@ export function MarketDetail({
               outcomes={outcomes}
               currentDisplay={currentDisplay}
               comments={market.comments}
-              unit={market.type === 'numeric' ? market.unit : undefined}
             />
 
             {/* Resolution Info (in normal position for open markets) */}

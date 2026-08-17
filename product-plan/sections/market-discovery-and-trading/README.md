@@ -20,8 +20,8 @@ Display order: title/question → chance percentage (e.g., "Chance 67.5%") → B
 ### Categorical Markets
 Vertical scrollable list of outcomes, each with its own Yes/No buttons. Same trading overlay behavior on click.
 
-### Numeric Markets
-Large implied price with unit (e.g., "$112,500"), range context as secondary text (e.g., "Range: $0 - $200,000"). No buy buttons on the card. Entire card is clickable and navigates to the market detail page.
+### Future market types
+Numeric markets are disabled until an authoritative trade representation exists. The discovery UI supports Yes/No and Categorical markets.
 
 ## Key Features
 - Single-select tag bar (only one tag active at a time, defaults to "Trending")

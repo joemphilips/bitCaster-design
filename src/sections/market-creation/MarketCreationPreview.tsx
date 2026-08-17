@@ -8,10 +8,12 @@ import type {
   OutcomeType,
   OracleAnnouncement,
   MarketCreationWizardProps,
+  PostCreateFundingChoice,
 } from '@/../product/sections/market-creation/types'
 
 export function MarketCreationPreview() {
   const [draft, setDraft] = useState<WizardDraft>(data.draft as WizardDraft)
+  const [creationSucceeded, setCreationSucceeded] = useState(false)
 
   const updateDraft = (patch: Partial<WizardDraft>) => {
     setDraft((prev) => ({ ...prev, ...patch, lastModified: new Date().toISOString() }))
@@ -80,19 +82,11 @@ export function MarketCreationPreview() {
                     { id: 'o2', label: '', description: '' },
                   ]
                 : null,
-            ...(outcomeType === 'numeric' ? { loBound: 0, hiBound: 100, precision: 0, unit: '' } : {}),
           },
         })
       } else if (currentStep === 4) {
         updateDraft({
           currentStep: 5,
-          stepInitialLiquidity: draft.stepInitialLiquidity ?? {
-            liquiditySats: 0,
-          },
-        })
-      } else if (currentStep === 5) {
-        updateDraft({
-          currentStep: 6,
           stepReviewAndCreate: draft.stepReviewAndCreate ?? { description: '' },
         })
       }
@@ -168,40 +162,18 @@ export function MarketCreationPreview() {
         })
       }
     },
-    // Numeric outcomes
-    onLoBoundChange: (value: number) => {
-      if (draft.stepOutcomes) {
-        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, loBound: value } })
-      }
-    },
-    onHiBoundChange: (value: number) => {
-      if (draft.stepOutcomes) {
-        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, hiBound: value } })
-      }
-    },
-    onPrecisionChange: (value: number) => {
-      if (draft.stepOutcomes) {
-        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, precision: value } })
-      }
-    },
-    onUnitChange: (value: string) => {
-      if (draft.stepOutcomes) {
-        updateDraft({ stepOutcomes: { ...draft.stepOutcomes, unit: value } })
-      }
-    },
-
-    // Initial Liquidity
-    onLiquiditySatsChange: (sats: number) => {
-      updateDraft({ stepInitialLiquidity: { liquiditySats: sats } })
-    },
-
     // Review
     onDescriptionChange: (description: string) => {
       updateDraft({ stepReviewAndCreate: { description } })
     },
     onCreateMarket: () => {
       console.log('Create market:', draft)
-      alert('Market created! Would navigate to market detail page.')
+      setCreationSucceeded(true)
+    },
+    creationSucceeded,
+    createdMarketId: 'mkt-preview-001',
+    onPostCreateFundingComplete: (choice: PostCreateFundingChoice, amountSats?: number) => {
+      console.log('Post-create funding handoff:', { choice, amountSats })
     },
   }
 
@@ -210,8 +182,7 @@ export function MarketCreationPreview() {
     2: 'Get Started',
     3: 'Basic Info',
     4: 'Outcomes',
-    5: 'Liquidity',
-    6: 'Review',
+    5: 'Review & Create',
   }
 
   return (
@@ -223,7 +194,7 @@ export function MarketCreationPreview() {
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
               Step:
             </span>
-            {([1, 2, 3, 4, 5, 6] as WizardStep[]).map((step) => (
+            {([1, 2, 3, 4, 5] as WizardStep[]).map((step) => (
               <button
                 key={step}
                 onClick={() => {
@@ -241,10 +212,7 @@ export function MarketCreationPreview() {
                       { id: 'no', label: 'No', description: 'The condition is not met' },
                     ] } })
                   }
-                  if (step >= 5 && !draft.stepInitialLiquidity) {
-                    updateDraft({ stepInitialLiquidity: { liquiditySats: 10000 } })
-                  }
-                  if (step >= 6 && !draft.stepReviewAndCreate) {
+                  if (step >= 5 && !draft.stepReviewAndCreate) {
                     updateDraft({ stepReviewAndCreate: { description: '' } })
                   }
                 }}

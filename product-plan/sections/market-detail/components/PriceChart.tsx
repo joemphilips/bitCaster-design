@@ -15,8 +15,6 @@ interface PriceChartProps {
   currentDisplay?: string
   // Comments to display as bubbles on the chart
   comments?: Comment[]
-  // Unit for numeric markets (e.g. "USD") — changes Y-axis labels
-  unit?: string
 }
 
 const TIMEFRAMES: ChartTimeframe[] = ['1h', '24h', '7d', '30d', 'all']
@@ -48,7 +46,6 @@ export function PriceChart({
   outcomes,
   currentDisplay,
   comments,
-  unit,
 }: PriceChartProps) {
   const [hoveredCommentId, setHoveredCommentId] = useState<string | null>(null)
 
@@ -192,8 +189,6 @@ export function PriceChart({
           {(() => {
             const formatLabel = (value: number) => {
               if (chartType !== 'price') return value.toFixed(0)
-              if (unit === 'USD') return `$${value.toLocaleString()}`
-              if (unit) return `${value.toLocaleString()} ${unit}`
               return `${value.toFixed(0)}%`
             }
             return (

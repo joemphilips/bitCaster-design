@@ -166,13 +166,8 @@ Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
 - Multi-line price chart with color-coded outcomes
 - Current percentage shows leading outcome
 
-### Numeric Markets
-- Price display shows current implied price with unit instead of a percentage (e.g., "$112,500" not "56.3%")
-- Implied price formula: `loBound + (hiTokenPrice / 100) * (hiBound - loBound)`
-- Trading panel shows two buttons: **"Buy Higher"** and **"Buy Lower"** (not "Buy Yes" / "Buy No" or "HI" / "LO")
-- Range bar visualization below the price display showing current implied price position within `[loBound, hiBound]`
-- Price chart Y-axis is denominated in the market's unit (e.g., USD) rather than 0–100%
-- Resolution displays the oracle-attested value (e.g., "Resolved: $98,450") and the proportional payout per token
+### Numeric markets (future)
+Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists. Do not display a synthetic numeric current value or offer numeric trading controls.
 
 ## Responsive Behavior
 

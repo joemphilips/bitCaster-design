@@ -1,10 +1,11 @@
 {
   "_meta": {
     "events": {
-      "MarketCreated": "User creates a new prediction market with question, outcomes, resolution date, fee structure, and parameters",
+      "MarketCreated": "User registers a new prediction market with metadata, oracle details, and canonical outcomes",
       "MarketResolved": "Outcome determined and market closed",
       "MarketRefunded": "Oracle did not attest in time, all participants refunded",
-      "LiquidityDeposited": "Creator deposits initial liquidity when creating market",
+      "LiquidityDeposited": "Optional bot liquidity is deposited through a separate durable LIQUIDITY flow; any user can repeat it from market detail",
+      "PostCreateFundingSelected": "Creator selects the immediate optional bot funding handoff after registration; any user can repeat the durable LIQUIDITY flow from market detail",
       "Bought": "User buys shares, contributing to market volume",
       "Sold": "User sells shares, contributing to market volume",
       "CreatorFeeClaimed": "Market creator claims fee earnings from resolved market"
@@ -16,7 +17,8 @@
       "wizardDraft": "Transient state for 5-step market creation wizard, persisted locally until submission"
     },
     "eventFlows": [
-      "MarketCreated initiates a new market in active status with LiquidityDeposited for initial funds",
+      "MarketCreated registers a new market in ordinary Open status without funding or a price",
+      "The creator's immediate post-create selection may start the separate durable LIQUIDITY flow; any user can repeat it from market detail",
       "Once active, Bought and Sold events accumulate volume and generate creator fees",
       "MarketResolved closes the market and enables CreatorFeeClaimed",
       "MarketRefunded occurs when oracle does not attest in time, returning funds to participants"
@@ -327,7 +329,6 @@
       "outcomes": null
     },
     "step3": {
-      "liquiditySats": 100000,
       "buyFeePercent": 1.0,
       "sellFeePercent": 1.0,
       "winFeePercent": 2.0

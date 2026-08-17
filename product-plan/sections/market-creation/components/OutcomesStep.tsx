@@ -4,115 +4,20 @@ import type { WizardOutcome, OutcomeType } from '../types'
 interface OutcomesStepProps {
   outcomeType: OutcomeType
   outcomes: WizardOutcome[] | null
-  loBound?: number
-  hiBound?: number
-  precision?: number
-  unit?: string
   onAddOutcome?: () => void
   onRemoveOutcome?: (outcomeId: string) => void
   onOutcomeLabelChange?: (outcomeId: string, label: string) => void
-  onLoBoundChange?: (value: number) => void
-  onHiBoundChange?: (value: number) => void
-  onPrecisionChange?: (value: number) => void
-  onUnitChange?: (value: string) => void
   onNext?: () => void
 }
 
 export function OutcomesStep({
   outcomeType,
   outcomes,
-  loBound,
-  hiBound,
-  precision,
-  unit,
   onAddOutcome,
   onRemoveOutcome,
   onOutcomeLabelChange,
-  onLoBoundChange,
-  onHiBoundChange,
-  onPrecisionChange,
-  onUnitChange,
   onNext,
 }: OutcomesStepProps) {
-  // Numeric market
-  if (outcomeType === 'numeric') {
-    const canProceed =
-      loBound !== undefined &&
-      hiBound !== undefined &&
-      hiBound > loBound
-
-    return (
-      <div className="w-full max-w-xl">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Numeric Range</h2>
-        <p className="text-sm text-slate-400 mb-8">
-          Define the range and precision for your numeric market.
-        </p>
-
-        <div className="space-y-5 mb-8">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Low Bound</label>
-              <input
-                type="number"
-                value={loBound ?? ''}
-                onChange={(e) => onLoBoundChange?.(Number(e.target.value))}
-                placeholder="0"
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">High Bound</label>
-              <input
-                type="number"
-                value={hiBound ?? ''}
-                onChange={(e) => onHiBoundChange?.(Number(e.target.value))}
-                placeholder="100"
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Unit</label>
-            <input
-              type="text"
-              value={unit ?? ''}
-              onChange={(e) => onUnitChange?.(e.target.value)}
-              placeholder="e.g. USD, BTC, %"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Precision (decimal places)</label>
-            <input
-              type="number"
-              min={0}
-              max={8}
-              value={precision ?? ''}
-              onChange={(e) => onPrecisionChange?.(Number(e.target.value))}
-              placeholder="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-colors"
-            />
-            <p className="text-xs text-slate-500 mt-1.5">Number of decimal places for the outcome value</p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => onNext?.()}
-          disabled={!canProceed}
-          className={`w-full py-3 rounded-full font-semibold text-sm transition-colors ${
-            canProceed
-              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/25'
-              : 'bg-slate-800 text-slate-500 cursor-not-allowed'
-          }`}
-        >
-          Next
-        </button>
-      </div>
-    )
-  }
-
   // Yes/No market — labels are fixed by the selected outcome type.
   if (outcomeType === 'yesno' && outcomes) {
     const canProceedYesNo = outcomes.every((outcome) => outcome.label.trim().length > 0)
