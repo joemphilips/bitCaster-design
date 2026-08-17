@@ -9,7 +9,7 @@ A section for market creators to manage their prediction markets. Markets go liv
 - Analyze market performance with time-series volume charts (combined or per-market toggle) at daily/weekly/monthly/yearly scales
 - Create a new market via 5-step wizard with persistent state across navigation:
   1. **Basic Info**: Upload thumbnail, enter title, select category tags, set end datetime, add answer URLs (sources of truth)
-  2. **Market Outcomes**: Choose Yes/No, Numeric, or Categorical. Add outcomes with description (required), thumbnail (optional), probability (optional). View normalized probability preview. Numeric outcomes auto-sort.
+  2. **Market Outcomes**: Choose Yes/No, Numeric, or Categorical. Add outcomes with description (required) and thumbnail (optional). Numeric outcomes auto-sort.
   3. **Market Parameters**: Set liquidity (sats to deposit) and fees (sell/buy/win)
   4. **Review**: Summary of all settings with "Initial Cost / Worst Case Loss" calculation (liquidity + 1000 for now)
   5. **Final Review**: Rich text description editor with "Generate with AI" button, then submit

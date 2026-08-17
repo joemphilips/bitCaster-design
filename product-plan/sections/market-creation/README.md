@@ -7,7 +7,7 @@
 1. **Oracle Check** (full-screen, no step indicator) — Choose existing oracle announcement or become an oracle
 2. **Get Started** (indicator: 1/6) — Select market outcome type: Yes/No or Categorical
 3. **Basic Info** (indicator: 2/6) — Upload thumbnail, enter title, select category tags, set closing date, add answer URLs
-4. **Outcomes** (indicator: 3/6) — Define outcomes with labels, thumbnails, probabilities (skip for Yes/No)
+4. **Outcomes** (indicator: 3/6) — Define outcome labels and thumbnails
 5. **Market Settings** (indicator: 4/6) — Configure sell/buy/win fee percentages
 6. **Market Preview** (indicator: 5/6) — Review estimated initial cost and worst-case loss
 7. **Review & Create** (indicator: 6/6) — Write description with optional AI generation, review summary, submit

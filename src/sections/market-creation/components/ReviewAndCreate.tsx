@@ -112,7 +112,7 @@ export function ReviewAndCreate({
                       <div className="flex flex-wrap gap-1 mt-1">
                         {outcomes.outcomes.map((o) => (
                           <span key={o.id} className="px-2 py-0.5 rounded-full bg-slate-800 text-xs text-slate-300">
-                            {o.label || 'Unnamed'}{o.probability !== undefined ? ` (${o.probability}%)` : ''}
+                            {o.label || 'Unnamed'}
                           </span>
                         ))}
                       </div>

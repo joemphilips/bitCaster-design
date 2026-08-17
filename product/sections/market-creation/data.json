@@ -9,7 +9,7 @@
       "ThumbnailUploaded": "User uploads a market thumbnail image",
       "OutcomeAdded": "User adds a new outcome to the market",
       "OutcomeRemoved": "User removes an outcome from the market",
-      "OutcomeUpdated": "User updates an outcome label or probability",
+      "OutcomeUpdated": "User updates an outcome label",
       "NumericBoundsUpdated": "User updates numeric market LO/HI bounds, precision, or unit",
       "LiquiditySatsUpdated": "User updates the initial liquidity amount",
       "DescriptionUpdated": "User updates the market description",

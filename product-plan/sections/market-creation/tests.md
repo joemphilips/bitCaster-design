@@ -33,8 +33,8 @@
 2. At step 4 (Outcomes), verify outcome list is rendered.
 3. Click "Add Outcome" → `onAddOutcome` fires. A new outcome row appears.
 4. Enter label "Yankees" → `onOutcomeLabelChange(outcomeId, 'Yankees')` fires.
-5. Set probability to 30 → `onOutcomeProbabilityChange(outcomeId, 30)` fires.
-6. Add another outcome. Verify normalized probability preview updates.
+5. Add another outcome and verify its label can be edited.
+6. Verify the review step lists canonical outcome names without price inputs.
 7. Click remove on an outcome → `onRemoveOutcome(outcomeId)` fires.
 
 ### Failure — Submit with Empty Title
@@ -71,7 +71,7 @@
 
 - **Step 1 is not numbered**: The Oracle Check step has no step indicator. The 6-step indicator begins at wizard step 2.
 - **Yes/No market skips detailed outcomes**: When outcome type is `yesno`, step 4 may show simplified content (no outcome definition cards).
-- **Probability normalization**: When multiple outcomes are defined, probabilities should sum to 100%. The UI shows a normalized preview.
+- **Outcome registration**: Market creation sends canonical outcome names. Registration does not set a price.
 - **Wizard draft persistence**: When `draft` has pre-filled steps, the wizard resumes from `draft.currentStep` with all previous step data intact.
 - **Exit from oracle check**: Clicking "Go to Settings" exits the wizard entirely via `onExit`.
 

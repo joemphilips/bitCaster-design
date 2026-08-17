@@ -13,7 +13,7 @@ A 6-step wizard for creating new prediction markets. Accessed from the "Create M
 ### Steps 2-6: Main Wizard (with 5-step indicator)
 2. **Get Started** (display 1/5): Choose market outcome type (Yes/No, Categorical, or Numeric)
 3. **Basic Info** (display 2/5): Upload thumbnail, enter title, select category tags, set closing date
-4. **Outcomes** (display 3/5): Define outcomes with labels, probabilities (Yes/No and Categorical have editable probabilities with Normalize button). Numeric markets configure LO bound, HI bound, unit, and precision.
+4. **Outcomes** (display 3/5): Define outcome labels. Numeric markets configure LO bound, HI bound, unit, and precision.
 5. **Initial Liquidity** (display 4/5): Set initial liquidity in sats to seed the market (quick-amount buttons: 1k, 5k, 10k, 50k)
 6. **Review & Create** (display 5/5): Write description, review full summary including liquidity, submit
 
@@ -23,9 +23,8 @@ A 6-step wizard for creating new prediction markets. Accessed from the "Create M
 - Step indicator: completed=green checkmark, active=blue circle+number, future=grey
 - Dark theme with slate backgrounds matching the design system
 - Form inputs: dark fields with subtle borders and helper text
-- Yes/No outcomes have editable probability inputs (not hardcoded 50%)
-- "Normalize" button on non-numeric outcome types scales all probabilities to sum to 100%
-- Outcomes: card rows with thumbnail upload, label, probability, delete button
+- Yes/No outcomes use canonical outcome names. Registration does not set a price.
+- Outcomes: card rows with thumbnail upload, label, and delete button
 - "Create Market" green primary button on the final step
 
 ## Navigation

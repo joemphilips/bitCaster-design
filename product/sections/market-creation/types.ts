@@ -48,7 +48,6 @@ export interface WizardOutcome {
   label: string
   description: string
   imageUrl?: string
-  probability?: number // 0-100
 }
 
 export interface WizardStepOutcomes {
@@ -161,9 +160,6 @@ export interface MarketCreationWizardProps {
 
   /** Called when user updates an outcome label */
   onOutcomeLabelChange?: (outcomeId: string, label: string) => void
-
-  /** Called when user updates an outcome probability */
-  onOutcomeProbabilityChange?: (outcomeId: string, probability: number) => void
 
   /** Called when user updates numeric low bound */
   onLoBoundChange?: (value: number) => void

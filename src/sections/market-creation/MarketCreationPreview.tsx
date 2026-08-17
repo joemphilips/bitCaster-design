@@ -71,13 +71,13 @@ export function MarketCreationPreview() {
             outcomeType,
             outcomes: outcomeType === 'yesno'
               ? [
-                  { id: 'yes', label: 'Yes', description: 'The condition is met', probability: 50 },
-                  { id: 'no', label: 'No', description: 'The condition is not met', probability: 50 },
+                  { id: 'yes', label: 'Yes', description: 'The condition is met' },
+                  { id: 'no', label: 'No', description: 'The condition is not met' },
                 ]
               : outcomeType === 'categorical'
                 ? [
-                    { id: 'o1', label: '', description: '', probability: 50 },
-                    { id: 'o2', label: '', description: '', probability: 50 },
+                    { id: 'o1', label: '', description: '' },
+                    { id: 'o2', label: '', description: '' },
                   ]
                 : null,
             ...(outcomeType === 'numeric' ? { loBound: 0, hiBound: 100, precision: 0, unit: '' } : {}),
@@ -141,7 +141,7 @@ export function MarketCreationPreview() {
         updateDraft({
           stepOutcomes: {
             ...draft.stepOutcomes,
-            outcomes: [...draft.stepOutcomes.outcomes, { id, label: '', description: '', probability: 0 }],
+            outcomes: [...draft.stepOutcomes.outcomes, { id, label: '', description: '' }],
           },
         })
       }
@@ -168,19 +168,6 @@ export function MarketCreationPreview() {
         })
       }
     },
-    onOutcomeProbabilityChange: (outcomeId: string, probability: number) => {
-      if (draft.stepOutcomes?.outcomes) {
-        updateDraft({
-          stepOutcomes: {
-            ...draft.stepOutcomes,
-            outcomes: draft.stepOutcomes.outcomes.map((o) =>
-              o.id === outcomeId ? { ...o, probability } : o
-            ),
-          },
-        })
-      }
-    },
-
     // Numeric outcomes
     onLoBoundChange: (value: number) => {
       if (draft.stepOutcomes) {
@@ -250,8 +237,8 @@ export function MarketCreationPreview() {
                   }
                   if (step >= 4 && !draft.stepOutcomes) {
                     updateDraft({ stepOutcomes: { outcomeType: 'yesno', outcomes: [
-                      { id: 'yes', label: 'Yes', description: 'The condition is met', probability: 50 },
-                      { id: 'no', label: 'No', description: 'The condition is not met', probability: 50 },
+                      { id: 'yes', label: 'Yes', description: 'The condition is met' },
+                      { id: 'no', label: 'No', description: 'The condition is not met' },
                     ] } })
                   }
                   if (step >= 5 && !draft.stepInitialLiquidity) {
