@@ -21,7 +21,7 @@ Polymarket and Predyx run proprietary systems that lock users into a single plat
 - Cashu ecash wallet — send, receive, and manage sats with full privacy
 - Lightning deposit and withdrawal — no accounts, no bridging, no gas
 - Prediction market trading — buy and sell outcome shares on a central limit order book
-- Real-time price discovery — live odds, order book depth, and price charts via SignalR
+- Confirmed price discovery — nullable current prices and history come only from confirmed settlement fills
 - Portfolio tracking — positions, P/L charts, activity history, and fund management
 - Open market creation — propose markets via Nostr + DLC oracle announcements (later phase)
 - Seed phrase backup — recover wallet and positions from a BIP-39 mnemonic
@@ -30,10 +30,12 @@ Polymarket and Predyx run proprietary systems that lock users into a single plat
 
 ## Sections
 - **Wallet Setup** — First-time onboarding wizard for wallet creation or recovery
-- **Markets** — Market discovery and trading (default home view)
-- **Market Detail** — Detailed trading view with order book, charts, and trade panel
+- **Markets** — Market discovery with cards that open market detail (default home view)
+- **Market Detail** — BUY, SELL, and LIQUIDITY routes with explicit empty, unavailable, and closed states
 - **Portfolio** — Positions, funds, P/L chart, activity feed, and created markets
 - **Deposit / Withdraw** — Fund the wallet or cash out via Ecash or Lightning
 - **Settings** — User preferences (currency, theme, connected mints, Nostr, seed backup)
 - **Market Creation & Management** — Creator dashboard for managing and creating markets (later phase)
 - **Market Creation** — 7-step wizard for creating new prediction markets (later phase)
+
+Funding adds bot capacity. It does not itself guarantee executable orders, immediate order-book depth, or a confirmed price. Repeatable funding implementation remains Phase 9 work.

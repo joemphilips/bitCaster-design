@@ -215,6 +215,10 @@
           "yes": 45.2,
           "no": 54.8
         },
+        "priceAuthority": {
+          "state": "confirmed",
+          "latestFillId": "fill-rel-1"
+        },
         "volume": 78000,
         "closingDate": "2025-12-31T23:59:59Z"
       },
@@ -224,6 +228,10 @@
         "currentOdds": {
           "yes": 72.1,
           "no": 27.9
+        },
+        "priceAuthority": {
+          "state": "confirmed",
+          "latestFillId": "fill-rel-2"
         },
         "volume": 56000,
         "closingDate": "2025-03-31T23:59:59Z"
@@ -235,10 +243,18 @@
           "yes": 88.5,
           "no": 11.5
         },
+        "priceAuthority": {
+          "state": "confirmed",
+          "latestFillId": "fill-rel-3"
+        },
         "volume": 34000,
         "closingDate": "2025-01-31T23:59:59Z"
       }
-    ]
+    ],
+    "priceAuthority": {
+      "state": "confirmed",
+      "latestFillId": "trade-1"
+    }
   },
   "categoricalMarket": {
     "id": "market-superbowl-winner",
@@ -262,37 +278,37 @@
       {
         "id": "chiefs",
         "label": "Kansas City Chiefs",
-        "odds": 28.5
+        "odds": null
       },
       {
         "id": "eagles",
         "label": "Philadelphia Eagles",
-        "odds": 22.3
+        "odds": null
       },
       {
         "id": "lions",
         "label": "Detroit Lions",
-        "odds": 18.7
+        "odds": null
       },
       {
         "id": "bills",
         "label": "Buffalo Bills",
-        "odds": 15.2
+        "odds": null
       },
       {
         "id": "ravens",
         "label": "Baltimore Ravens",
-        "odds": 10.1
+        "odds": null
       },
       {
         "id": "other",
         "label": "Other Team",
-        "odds": 5.2
+        "odds": null
       }
     ],
-    "volume": 89000,
+    "volume": 0,
     "liquidity": 32000,
-    "traderCount": 567,
+    "traderCount": 0,
     "closingDate": "2025-02-09T23:30:00Z",
     "createdDate": "2024-09-01T12:00:00Z",
     "activeSince": "2024-09-01T15:30:00Z",
@@ -317,74 +333,7 @@
       "timeframe": "7d",
       "data": []
     },
-    "outcomePriceHistories": {
-      "chiefs": {
-        "timeframe": "7d",
-        "data": [
-          {
-            "timestamp": "2025-01-20T00:00:00Z",
-            "price": 26.5
-          },
-          {
-            "timestamp": "2025-01-21T00:00:00Z",
-            "price": 27.2
-          },
-          {
-            "timestamp": "2025-01-22T00:00:00Z",
-            "price": 27.8
-          },
-          {
-            "timestamp": "2025-01-23T00:00:00Z",
-            "price": 28.1
-          },
-          {
-            "timestamp": "2025-01-24T00:00:00Z",
-            "price": 28.3
-          },
-          {
-            "timestamp": "2025-01-25T00:00:00Z",
-            "price": 28.5
-          },
-          {
-            "timestamp": "2025-01-26T00:00:00Z",
-            "price": 28.5
-          }
-        ]
-      },
-      "eagles": {
-        "timeframe": "7d",
-        "data": [
-          {
-            "timestamp": "2025-01-20T00:00:00Z",
-            "price": 21.0
-          },
-          {
-            "timestamp": "2025-01-21T00:00:00Z",
-            "price": 21.5
-          },
-          {
-            "timestamp": "2025-01-22T00:00:00Z",
-            "price": 22.0
-          },
-          {
-            "timestamp": "2025-01-23T00:00:00Z",
-            "price": 22.1
-          },
-          {
-            "timestamp": "2025-01-24T00:00:00Z",
-            "price": 22.2
-          },
-          {
-            "timestamp": "2025-01-25T00:00:00Z",
-            "price": 22.3
-          },
-          {
-            "timestamp": "2025-01-26T00:00:00Z",
-            "price": 22.3
-          }
-        ]
-      }
-    },
+    "outcomePriceHistories": {},
     "orderBook": {
       "bids": [],
       "asks": [],
@@ -419,28 +368,7 @@
         "spread": 1
       }
     },
-    "recentTrades": [
-      {
-        "id": "trade-s1",
-        "userId": "user-s1",
-        "userDisplayName": "chiefs_fan",
-        "side": "yes",
-        "outcomeId": "chiefs",
-        "amount": 2500,
-        "price": 28.5,
-        "timestamp": "2025-01-26T16:00:00Z"
-      },
-      {
-        "id": "trade-s2",
-        "userId": "user-s2",
-        "userDisplayName": "philly_4eva",
-        "side": "yes",
-        "outcomeId": "eagles",
-        "amount": 1800,
-        "price": 22.3,
-        "timestamp": "2025-01-26T15:30:00Z"
-      }
-    ],
+    "recentTrades": [],
     "comments": [
       {
         "id": "comment-s1",
@@ -456,6 +384,9 @@
       {
         "id": "rel-s1",
         "title": "Super Bowl LIX MVP?",
+        "priceAuthority": {
+          "state": "no-trades"
+        },
         "volume": 45000,
         "closingDate": "2025-02-09T23:30:00Z"
       },
@@ -466,10 +397,17 @@
           "yes": 52.1,
           "no": 47.9
         },
+        "priceAuthority": {
+          "state": "confirmed",
+          "latestFillId": "fill-rel-s2"
+        },
         "volume": 28000,
         "closingDate": "2025-02-09T18:00:00Z"
       }
-    ]
+    ],
+    "priceAuthority": {
+      "state": "no-trades"
+    }
   },
   "resolvedYesNoMarket": {
     "id": "market-btc-50k",
@@ -490,8 +428,8 @@
       }
     ],
     "currentOdds": {
-      "yes": 100,
-      "no": 0
+      "yes": 94.2,
+      "no": 5.8
     },
     "volume": 245000,
     "liquidity": 0,
@@ -574,11 +512,6 @@
           "timestamp": "2025-01-01T00:00:00Z",
           "price": 94.2,
           "volume": 52000
-        },
-        {
-          "timestamp": "2025-01-15T00:00:00Z",
-          "price": 100.0,
-          "volume": 68000
         }
       ]
     },
@@ -653,6 +586,10 @@
           "yes": 67.5,
           "no": 32.5
         },
+        "priceAuthority": {
+          "state": "confirmed",
+          "latestFillId": "fill-market-btc-100k"
+        },
         "volume": 125000,
         "closingDate": "2025-12-31T23:59:59Z"
       },
@@ -663,10 +600,18 @@
           "yes": 45.2,
           "no": 54.8
         },
+        "priceAuthority": {
+          "state": "confirmed",
+          "latestFillId": "fill-rel-eth"
+        },
         "volume": 78000,
         "closingDate": "2025-12-31T23:59:59Z"
       }
-    ]
+    ],
+    "priceAuthority": {
+      "state": "confirmed",
+      "latestFillId": "trade-r1"
+    }
   },
   "uiState": {
     "chartTimeframe": "7d",
@@ -674,7 +619,9 @@
     "activityTab": "trades",
     "tradeSelection": null,
     "tradeAmount": 0,
-    "tradePreview": null
+    "tradePreview": null,
+    "tradeTab": "buy",
+    "hasExecutableLiquidity": true
   },
   "tradePreviewExample": {
     "amount": 1000,
@@ -692,5 +639,19 @@
     "creatorFee": 5,
     "platformFee": 0,
     "totalCost": 1000
+  },
+  "unavailablePriceExample": {
+    "priceAuthority": {
+      "state": "unavailable"
+    },
+    "currentOdds": {
+      "yes": null,
+      "no": null
+    },
+    "priceHistory": {
+      "timeframe": "7d",
+      "data": []
+    },
+    "displayText": "Price unavailable"
   }
 }

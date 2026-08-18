@@ -51,7 +51,7 @@ bitCaster is an open-source Cashu wallet with prediction market superpowers. It 
 - Cashu ecash wallet — send, receive, and manage sats with full privacy
 - Lightning deposit and withdrawal — no accounts, no bridging, no gas
 - Prediction market trading — buy and sell outcome shares on a central limit order book
-- Real-time price discovery — live odds, order book depth, and price charts via SignalR
+- Confirmed price discovery — nullable current prices and history come only from confirmed settlement fills
 - Portfolio tracking — positions, P/L charts, activity history, and fund management
 - Open market creation — propose markets via Nostr + DLC oracle announcements (later phase)
 - Seed phrase backup — recover wallet and positions from a BIP-39 mnemonic
@@ -105,8 +105,8 @@ Build this product in milestones:
 3. **Portfolio** — Trading dashboard with positions, P/L, and activity feed
 4. **Deposit / Withdraw** — Modal flows for Ecash and Lightning deposit/withdrawal
 5. **Settings** — User preferences and configuration
-6. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, and quick trading
-7. **Market Detail** — Comprehensive trading view with charts and order book
+6. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, price states, and market-detail navigation
+7. **Market Detail** — BUY, SELL, and LIQUIDITY routes with charts and order book
 8. **Market Creation & Management** — Creator dashboard (later phase)
 9. **Market Creation** — 7-step market creation wizard (later phase)
 
@@ -495,153 +495,114 @@ Accessed via gear icon in Portfolio header or User dropdown menu. Manages genera
 # Milestone 6: Market Discovery & Trading
 
 ## Goal
-Implement the Market Discovery & Trading section — the core marketplace where users browse and trade prediction markets.
+Implement the marketplace where users browse markets and open market detail.
 
-## Overview
-The default home view after onboarding. Users browse markets through a single-select tag navigation system, filter markets, and execute quick trades directly from market cards.
+## Required Semantics
 
-**Key Functionality:**
-- Single-select tag navigation (meta tags: Trending/Popular/New + category tags)
-- Market filtering (Market Type, Volume range, Closing date)
-- Yes/No market cards with inline trading (Buy Yes/Buy No)
-- Categorical market cards with per-outcome Yes/No buttons
-- Numeric markets are disabled until an authoritative trade representation exists.
-- Inline card trade overlay (amount picker, predicted odds, BUY button)
-- Like button on each market card
-- Infinite scroll loading
-- Refresh button with last-updated timestamp
-- Background loading progress bar (after wallet setup)
+- Market cards navigate to market detail.
+- Market cards do not contain inline trading.
+- `confirmed` shows the latest confirmed settlement-fill price.
+- `no-trades` shows `No trades yet` with null prices.
+- `unavailable` shows `Price unavailable` with null prices.
+- Do not use `50%` or another synthetic fallback.
+- Do not derive current price from an order, quote, midpoint, registration value, or funding result.
+- Numeric markets remain disabled until an authoritative trade representation exists.
 
-## What to Implement
+## Key Functionality
 
-### Components
-- `MarketDiscovery.tsx` — Main page component
-- `TagBar.tsx` — Horizontal tag bar (meta + category tags)
-- `FilterControls.tsx` — Filter row (market type, volume, closing date)
-- `MarketCard.tsx` — Market card with trading overlay
-
-### Callbacks
-- `onTagSelect` — Single tag selection
-- `onSearch` — Search query
-- `onMarketTypeChange`, `onVolumeRangeChange`, `onClosingDateChange` — Filters
-- `onBuyYes` / `onBuyNo` — Yes/No market trades
-- `onBuyOutcomeYes` / `onBuyOutcomeNo` — Categorical market trades
-- `onViewMarket` — Navigate to market detail
-- `onLoadMore` — Infinite scroll
-- `onRefreshConditions` — Refresh market data from mint
+- Single-select tags and market filters
+- Yes/No and categorical cards
+- Market-detail navigation
+- Explicit confirmed, no-trade, and unavailable price states
+- Like, infinite-scroll, and refresh actions
+- Background loading status
 
 ## Expected User Flows
 
-### Flow 1: Browse and Quick Trade (Yes/No)
-1. User lands on page, sees Trending markets
-2. User clicks "Buy Yes" on a market card
-3. Card transforms to trade overlay with amount picker
-4. User selects amount, sees predicted odds, clicks "BUY"
-**Outcome:** Trade executed, card returns to normal
+### Browse And Open A Market
 
-### Flow 2: Navigate to Market Detail
-1. User clicks on market card (outside buttons)
-**Outcome:** Navigates to `/markets/:id`
+1. The user lands on Trending.
+2. The user sees each market's explicit price state.
+3. The user selects a card or card action.
+4. The app opens `/markets/:id`.
 
-### Flow 3: Filter Markets
-1. User clicks filter icon, filter row appears
-2. User selects "Categorical" market type
-3. Markets update to show only categorical markets
+### Filter Markets
+
+1. The user opens the filters.
+2. The user selects a market type.
+3. The market list updates.
 
 ## Done When
-- [ ] Tests written and passing
-- [ ] Tag navigation works (single-select)
-- [ ] Yes/No and Categorical market types render correctly
-- [ ] Inline trading overlay works for Yes/No and Categorical
-- [ ] Filters work correctly
-- [ ] Infinite scroll loads more markets
-- [ ] Refresh button re-fetches conditions
-- [ ] Background loading progress bar shows when applicable
-- [ ] Responsive on mobile
+
+- [ ] Tests pass.
+- [ ] Tags and filters work.
+- [ ] Confirmed, no-trade, and unavailable states remain distinct.
+- [ ] Null prices never become `50%`.
+- [ ] Every card action navigates to market detail.
+- [ ] No card contains an order form.
+- [ ] Infinite scroll and refresh work.
+- [ ] The view is responsive.
 
 ---
 
 # Milestone 7: Market Detail
 
 ## Goal
-Implement the Market Detail page — comprehensive trading view with order book, charts, and trade panel.
+Implement market detail with BUY, SELL, and LIQUIDITY routes.
 
-## Overview
-Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and Yes/No and Categorical markets.
+## Required Semantics
 
-**Key Functionality:**
-- Market header with image, title, tags, countdown, creator info, metrics footer
-- Trading panel with Buy/Sell toggle + Market/Limit sub-tabs
-- Outcome selection (Yes/No buttons or categorical outcome list)
-- Trade preview with predicted odds, price impact, payout, fees
-- Optional trade comment (280 chars)
-- Price chart with timeframe selector (1H/24H/7D/1M/ALL) and Price/Volume toggle
-- Comment bubbles overlaid on price chart
-- Order book visualization
-- Resolution details section
-- Recent trades feed
-- Comments section (read-only, comments posted via trading)
-- Related markets horizontal scroll
-- Resolved market view (no trading panel, single-column layout)
-- Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists.
+- Only a confirmed settlement fill creates or changes the current price.
+- `no-trades` and `unavailable` are different states.
+- Both states use null prices.
+- Do not use a `50%` fallback.
+- An open market shows BUY, SELL, and LIQUIDITY.
+- Empty BUY and SELL show guidance without an order form.
+- A closed market shows no trading or funding action.
+- Funding adds bot capacity without an order, depth, or price guarantee.
+- Repeatable funding implementation remains Phase 9 work.
 
-## What to Implement
+## Key Functionality
 
-### Components
-- `MarketDetail.tsx` — Main page layout
-- `MarketHeader.tsx` — Header with image, title, metrics
-- `TradingPanel.tsx` — Buy/Sell + Market/Limit trading interface
-- `PriceChart.tsx` — Interactive price/volume chart
-- `OrderBookSection.tsx` — Order book visualization
-- `ResolutionInfo.tsx` — Resolution criteria and status
-- `ActivityFeed.tsx` — Recent trades list
-- `CommentSection.tsx` — Comments display
-- `RelatedMarkets.tsx` — Horizontal related markets
-- `MarketStats.tsx` — Market statistics
-
-### Key Callbacks
-- `onTradeSelect` / `onTradeClear` — Select/clear outcome
-- `onAmountChange` — Trade amount input
-- `onTradeConfirm` — Execute trade
-- `onTradeSideChange` — Buy/Sell toggle
-- `onOrderTypeChange` — Market/Limit toggle
-- `onLimitPriceChange` — Limit order price
-- `onTimeframeChange` / `onChartTypeChange` — Chart controls
-- `onLikeToggle` — Like/unlike market
-- `onCommentPost` / `onCommentLike` — Comments
-- `onShare` — Share market
+- Market header and metrics
+- Explicit price-authority state
+- BUY, SELL, and LIQUIDITY routes
+- Order controls only when executable liquidity exists
+- Confirmed fill-backed price history and activity
+- Order book, resolution, comments, and related markets
+- Closed-market action suppression
 
 ## Expected User Flows
 
-### Flow 1: Place a Market Buy Order
-1. User views market, selects "Yes" outcome
-2. User enters amount (e.g., 1000 sats)
-3. System shows predicted odds, payout, fees
-4. User optionally adds a comment
-5. User clicks "Buy YES for ₿1,000"
-**Outcome:** Trade executed, activity updates
+### Submit An Order
 
-### Flow 2: Place a Limit Sell Order
-1. User clicks "Sell" tab, then "Limit" sub-tab
-2. User sets limit price and amount
-3. User clicks "Place Sell Limit Order"
-**Outcome:** Limit order placed
+1. The user selects BUY or SELL.
+2. The page verifies executable liquidity.
+3. The page labels pre-submit pricing as an execution quote.
+4. The current price stays unchanged until a settlement fill confirms.
 
-### Flow 3: View Resolved Market
-1. User navigates to a resolved market
-2. RESOLVED badge shown, no trading panel
-3. Single-column layout, resolution details prominent
+### Add Capacity
+
+1. The user selects LIQUIDITY.
+2. The user completes the durable funding flow.
+3. The page reports added bot capacity without an execution or price promise.
+
+### View A Closed Market
+
+1. The user opens a closed market.
+2. The page hides BUY, SELL, LIQUIDITY, and funding actions.
+3. The page keeps historical and resolution information.
 
 ## Done When
-- [ ] Tests written and passing
-- [ ] Two-column layout (desktop), single-column (mobile)
-- [ ] Buy/Sell + Market/Limit all work correctly
-- [ ] Trade preview shows accurate calculations
-- [ ] Price chart renders with timeframe switching
-- [ ] Order book visualization works
-- [ ] Resolved markets show correctly (no trading)
-- [ ] Comments displayed, posted via trades only
-- [ ] Responsive on mobile (sticky trade button)
+
+- [ ] Tests pass.
+- [ ] Confirmed, no-trade, and unavailable price states remain distinct.
+- [ ] BUY, SELL, and LIQUIDITY route correctly.
+- [ ] Empty BUY and SELL contain no order form.
+- [ ] Closed markets contain no trading or funding action.
+- [ ] Funding copy makes no order, depth, or price guarantee.
+- [ ] Charts contain confirmed fill-backed prices only.
+- [ ] The view is responsive.
 
 ---
 

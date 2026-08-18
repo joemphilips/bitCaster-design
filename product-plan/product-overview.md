@@ -8,7 +8,7 @@ bitCaster is an open-source Cashu wallet with prediction market superpowers. It 
 - Cashu ecash wallet — send, receive, and manage sats with full privacy
 - Lightning deposit and withdrawal — no accounts, no bridging, no gas
 - Prediction market trading — buy and sell outcome shares on a central limit order book
-- Real-time price discovery — live odds, order book depth, and price charts via SignalR
+- Confirmed price discovery — nullable current prices and history come only from confirmed settlement fills
 - Portfolio tracking — positions, P/L charts, activity history, and fund management
 - Open market creation — propose markets via Nostr + DLC oracle announcements (later phase)
 - Seed phrase backup — recover wallet and positions from a BIP-39 mnemonic
@@ -21,8 +21,8 @@ bitCaster is an open-source Cashu wallet with prediction market superpowers. It 
 2. **Portfolio** — Positions, funds, P/L chart, activity feed, and created markets
 3. **Deposit / Withdraw** — Fund the wallet or cash out via Ecash or Lightning
 4. **Settings** — User preferences (currency, theme, connected mints, Nostr, seed backup)
-5. **Market Discovery & Trading** — Core marketplace where users browse and trade prediction markets (default home view)
-6. **Market Detail** — Detailed trading view with order book, charts, and trade panel
+5. **Market Discovery & Trading** — Core marketplace with cards that open market detail (default home view)
+6. **Market Detail** — BUY, SELL, and LIQUIDITY routes with explicit empty, unavailable, and closed states
 7. **Market Creation & Management** — Creator dashboard for managing and creating markets (later phase)
 8. **Market Creation** — 7-step wizard for creating new prediction markets (later phase)
 
@@ -62,9 +62,11 @@ Build this product in milestones:
 3. **Portfolio** — Trading dashboard with positions, P/L, and activity feed
 4. **Deposit / Withdraw** — Modal flows for Ecash and Lightning deposit/withdrawal
 5. **Settings** — User preferences and configuration
-6. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, and quick trading
-7. **Market Detail** — Comprehensive trading view with charts and order book
+6. **Market Discovery & Trading** — Core marketplace with tag navigation, filters, price states, and market-detail navigation
+7. **Market Detail** — BUY, SELL, and LIQUIDITY routes with charts and order book
 8. **Market Creation & Management** — Creator dashboard (later phase)
 9. **Market Creation** — 7-step market creation wizard (later phase)
 
 Each milestone has a dedicated instruction document in `product-plan/instructions/`.
+
+Funding adds bot capacity. It does not itself guarantee executable orders, immediate order-book depth, or a confirmed price. Repeatable funding implementation remains Phase 9 work.

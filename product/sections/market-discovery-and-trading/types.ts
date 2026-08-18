@@ -21,15 +21,24 @@ export type Tag = MetaTag | CategoryTag
 // Market Data Types
 // =============================================================================
 
+/** Price values are probability numerators from confirmed settlement fills. */
 export interface CurrentOdds {
-  yes: number
-  no: number
+  yes: number | null
+  no: number | null
+}
+
+/** Keep a valid empty market separate from a broken price authority. */
+export type PriceAuthorityState = 'confirmed' | 'no-trades' | 'unavailable'
+
+export interface PriceAuthority {
+  state: PriceAuthorityState
+  latestFillId?: string
 }
 
 export interface Outcome {
   id: string
   label: string
-  odds: number
+  odds: number | null
 }
 
 // Base market properties shared by all market types
@@ -48,6 +57,7 @@ interface BaseMarket {
   creatorFeePercent: number
   likeCount: number
   isLiked: boolean
+  priceAuthority: PriceAuthority
 }
 
 // Yes/No market type
@@ -93,7 +103,6 @@ export interface TradeState {
   outcomeId?: string // For categorical markets
   side: 'yes' | 'no'
   amount: number
-  predictedOdds: number
 }
 
 // =============================================================================
@@ -136,18 +145,6 @@ export interface MarketDiscoveryProps {
 
   /** Called when user changes closing date filter */
   onClosingDateChange?: (days?: number) => void
-
-  /** Called when user clicks Buy Yes on a yes/no market (triggers Bought event) */
-  onBuyYes?: (marketId: string, amount: number) => void
-
-  /** Called when user clicks Buy No on a yes/no market (triggers Bought event) */
-  onBuyNo?: (marketId: string, amount: number) => void
-
-  /** Called when user buys Yes on a specific outcome in a categorical market */
-  onBuyOutcomeYes?: (marketId: string, outcomeId: string, amount: number) => void
-
-  /** Called when user buys No on a specific outcome in a categorical market */
-  onBuyOutcomeNo?: (marketId: string, outcomeId: string, amount: number) => void
 
   /** Called when user navigates to market detail page */
   onViewMarket?: (marketId: string) => void

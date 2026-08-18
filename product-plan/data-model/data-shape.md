@@ -51,12 +51,15 @@ A tradeable view of a Condition — combines protocol-level data from the mint w
 | categoryTags | string[] | Category labels (matching engine metadata) |
 | metaTags | string[] | Meta labels — Trending, Popular, New (matching engine) |
 | volume | number | Total traded volume in sats (matching engine) |
-| liquidity | number | Current liquidity in sats (matching engine) |
+| liquidity | number | Accepted bot capacity in sats; it does not guarantee executable orders or immediate depth |
 | traderCount | number | Number of unique traders (matching engine) |
-| currentOdds | CurrentOdds | Live odds derived from order book (matching engine) |
+| currentOdds | CurrentOdds | Nullable prices from the latest confirmed settlement fill |
+| priceAuthority | PriceAuthority | `confirmed`, `no-trades`, or `unavailable` |
 | creatorFeePercent | number | Fee taken by the market creator |
 
-> **Design principle:** Static data (description, outcomes, closing date, resolution) lives in the Condition and comes from the mint. The matching engine only provides real-time trade data (volume, liquidity, odds, trader count) and display metadata (image, tags). Keep the matching engine as thin as possible.
+`no-trades` is a valid empty market. It uses null odds and displays `No trades yet`. `unavailable` is an authority failure. It uses null odds and displays `Price unavailable`. Do not use `50%`, an order-book midpoint, a quote, registration data, or funding data as a fallback.
+
+> **Design principle:** Static data comes from the Condition. Confirmed settlement fills are the only current-price authority. Funding adds bot capacity but does not itself create an order, immediate depth, or a confirmed price.
 
 **Source:** `market-discovery-and-trading/types.ts` (BaseMarket), NUT-CTF `Condition Info`
 
@@ -72,9 +75,9 @@ A possible result within a condition. Maps to a NUT-CTF **outcome collection** �
 | outcome_collection_id | hex string | 32-byte unique identifier (from NUT-CTF) |
 | keyset_id | string | Conditional keyset ID for this outcome collection |
 | label | string | Display name (e.g. "Yes", "No", "Trump") |
-| odds | number | Current odds (0–100, from matching engine) |
+| odds | number \| null | Current price from the latest confirmed settlement fill, or null |
 
-> **Note:** `outcome_collection`, `outcome_collection_id`, and `keyset_id` come from the mint (NUT-CTF). `label` is a display-friendly version of the outcome collection string. `odds` is real-time data from the matching engine.
+> **Note:** `outcome_collection`, `outcome_collection_id`, and `keyset_id` come from the mint. `label` is a display-friendly value. `odds` is nullable and must follow the market price-authority state.
 
 **Source:** NUT-CTF spec (outcome collections, conditional keysets), `market-discovery-and-trading/types.ts` (Outcome)
 
@@ -98,10 +101,10 @@ Each Position maps 1:1 to a set of conditional ecash tokens the user holds for a
 | outcomeLabel | string? | Outcome label (categorical markets) |
 | shares | number | Number of shares (sum of token amounts) |
 | avgBuyPrice | number | Average entry price (tracked locally) |
-| currentPrice | number | Current market price (from matching engine) |
-| currentValueSats | number | Current value in sats |
-| profitLossSats | number | Unrealised P/L in sats |
-| profitLossPercent | number | Unrealised P/L as percentage |
+| currentPrice | number \| null | Latest confirmed settlement-fill price, or null |
+| currentValueSats | number \| null | Current value in sats, or null without price authority |
+| profitLossSats | number \| null | Unrealised P/L in sats, or null without price authority |
+| profitLossPercent | number \| null | Unrealised P/L percentage, or null without price authority |
 | status | `active` \| `closed` | Whether the position is still open |
 | acquiredDate | string | When the position was opened |
 | mintUrl | string | Mint that issued the conditional tokens |
@@ -127,7 +130,7 @@ A buy or sell order placed on the order book.
 
 ## Trade
 
-A completed transaction between a buyer and a seller.
+A transaction that completed settlement. Only a confirmed settlement fill can update the current price and price history.
 
 | Field | Type | Description |
 |---|---|---|

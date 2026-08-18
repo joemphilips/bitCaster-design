@@ -7,6 +7,7 @@ import type {
   CurrentOdds,
   Outcome,
   CategoryTag,
+  PriceAuthority,
 } from '../market-discovery-and-trading/types'
 
 // =============================================================================
@@ -110,6 +111,8 @@ export interface RelatedMarket {
   title: string
   imageUrl?: string
   currentOdds?: CurrentOdds
+  /** Missing or non-confirmed authority keeps the compact price unavailable. */
+  priceAuthority?: PriceAuthority
   volume: number
   closingDate: string
 }
@@ -139,6 +142,7 @@ interface BaseMarketDetail {
   recentTrades: Trade[]
   comments: Comment[]
   relatedMarkets: RelatedMarket[]
+  priceAuthority: PriceAuthority
 }
 
 export interface YesNoMarketDetail extends BaseMarketDetail {
@@ -186,7 +190,7 @@ export interface TradeSelection {
 
 export interface TradePreview {
   amount: number
-  predictedOdds: number // Odds after trade
+  predictedOdds: number // Execution quote only; never the current market price
   priceImpact: number // Change in odds
   potentialPayout: number
   creatorFee: number
@@ -262,6 +266,18 @@ export interface MarketDetailProps {
   /** Current buy/sell trade side */
   tradeSide: TradeSide
 
+  /** Current detail route. Funding is available only while the market is open. */
+  tradeTab?: TradeTab
+
+  /** Called when the user selects BUY, SELL, or LIQUIDITY. */
+  onTradeTabChange?: (tab: TradeTab) => void
+
+  /** Whether the selected route has executable bids or asks. */
+  hasExecutableLiquidity?: boolean
+
+  /** Called after the existing durable funding handoff completes. */
+  onFundingComplete?: (choice: string, amountSats?: number) => void
+
   /** Called when user toggles between buy and sell */
   onTradeSideChange?: (side: TradeSide) => void
 
@@ -283,3 +299,5 @@ export interface MarketDetailProps {
   /** Number of shares the user currently holds (for sell percentage calculation) */
   userHoldings?: number
 }
+
+export type TradeTab = TradeSide | 'liquidity'

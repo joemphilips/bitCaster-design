@@ -1,191 +1,120 @@
 # Market Detail Specification
 
 ## Overview
-The Market Detail page provides a comprehensive view of a single prediction market, enabling users to analyze market data, execute trades, and track activity. Accessed by clicking on any market card from the discovery view, this page serves as the primary trading interface for all market types (Yes/No and Categorical). The trading panel supports both AMM-based market orders (instant execution with price impact) and order book limit orders (placed at a specific price, filled when the market reaches that level).
 
-## User Flows
+Market detail shows one prediction market. It is the only market screen that contains trading and funding actions. It supports Yes/No and categorical markets.
 
-### Entry Points
-- User clicks on a market card (outside of Yes/No buttons) in Market Discovery
-- User follows a direct link to a market
+## Entry Points
 
-### Trading Flow
-1. User views current odds displayed as a prominent percentage in the chart header
-2. User selects outcome (Yes/No for binary, specific outcome for categorical)
-3. User enters trade amount in sats
-4. System displays predicted odds after trade, potential payout, and fees
-5. User confirms or cancels trade
-6. Trade executes and activity feed updates
+- The user selects a market card.
+- The user follows a direct market link.
 
-### Analysis Flow
-- User views price history chart with current percentage displayed prominently
-- User switches chart timeframes (1h, 24h, 7d, 30d, All)
-- User toggles between price chart and volume chart
-- Key metrics (volume, liquidity, traders, like count) are displayed in the header footer
+## Price Authority
 
-### Activity Flow
-- User scrolls through recent trades in the trades section
-- User views and posts comments in the standalone comments section at the bottom
-- User can like the market via the header metrics footer
+The page reads one explicit price-authority state.
 
-## UI Requirements
+- `confirmed` shows the latest confirmed settlement-fill price and its fill-backed history.
+- `no-trades` shows `No trades yet` and an empty price history.
+- `unavailable` shows `Price unavailable` and does not present the state as a valid empty market.
 
-### Header Section
-- Large market title/question prominently displayed
-- Market image (if available) as header background with gradient overlay
-- Category tags displayed below title
-- Close date with countdown timer (if closing soon)
-- Share button
-- Creator info (avatar, name, reputation, markets created)
-- **Metrics footer bar** at the bottom of the header matching MarketCard footer style:
-  - Volume (BTC format, amber color)
-  - Liquidity (droplet icon)
-  - Traders (users icon)
-  - Like button with count (heart icon)
+The current price and current odds are nullable. Do not derive them from an order, quote, midpoint, registration value, outcome target, funding result, or resolution outcome. Do not use a `50%` fallback.
 
-### Trading Panel (Right Sidebar on Desktop)
+## Trading And Funding Routes
 
-#### Buy/Sell Toggle
-- Top-level tab row spanning full width: `[Buy] [Sell]`
-- Buy active: emerald accent (`bg-emerald-500/10 text-emerald-600 border-b-2 border-emerald-500`)
-- Sell active: red accent (`bg-red-500/10 text-red-600 border-b-2 border-red-500`)
-- When Sell is active, outcome buttons change context (e.g., "Sell Yes" / "Sell No")
-- Sell mode: amount label changes to "Shares to sell", preview shows proceeds after fees
+Show one top-level route row for an open market:
 
-#### Market/Limit Sub-tabs
-- Segmented control below Buy/Sell: `[Market] [Limit]` pill toggle
-- Active state: `bg-blue-600 text-white`, inactive: transparent
-- Matches PriceChart timeframe selector style
+`[BUY] [SELL] [LIQUIDITY]`
 
-#### Layout Order
-Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Trade form
+### BUY And SELL With Executable Liquidity
 
-#### Buy + Market (Default)
-- Current odds display:
-  - **Yes/No markets**: Two large buttons showing Yes % and No %
-  - **Categorical markets**: Vertical list of outcomes with odds
-- Order amount input with sats denomination
-- Quick amount buttons (100, 500, 1000, 5000 sats)
-- Predicted odds after trade (shows price impact)
-- Potential payout calculation
-- Creator fee display (e.g., "0.5% creator fee")
-- Confirm button: "Buy YES for ₿X"
+- Show the available order controls.
+- Show market and limit controls when the market supports them.
+- Label a pre-submit value as an execution quote.
+- Do not label an execution quote as the current price.
+- Update the current price only after a settlement fill is confirmed.
 
-#### Buy + Limit
-- Set limit price (1-99%) with number input and range slider
-- Amount input (same as market order)
-- Preview shows: limit price, shares if filled, fees, total cost
-- Disclaimer: "Order will fill when market price reaches your specified level"
-- Confirm button: "Place Limit Order for ₿X"
+### Empty BUY And SELL
 
-#### Sell + Market
-- Select shares to sell (outcome buttons show "Sell Yes" / "Sell No")
-- Amount label: "Shares to sell"
-- Preview shows proceeds after fees (not potential payout)
-- Confirm button: "Sell YES for ₿X"
+When the selected side has no executable liquidity, show guidance and an action that opens LIQUIDITY.
 
-#### Sell + Limit
-- Set limit price + amount
-- Preview shows limit sell details
-- Confirm button: "Place Sell Limit Order for ₿X"
+- Do not show an amount input.
+- Do not show an outcome order form.
+- Do not show a confirm-order action.
+- Keep BUY, SELL, and LIQUIDITY selectable while the market is open.
 
-#### Common Elements
-- Optional comment textarea (280 character limit) between trade preview and confirm button
-  - Placeholder: "Share your reasoning..."
-  - Character counter shown below textarea
-  - Comment is posted alongside the trade on confirm
-- Cancel button to clear selection
+### LIQUIDITY
 
-### Price Chart Section
-- **Current percentage** displayed prominently as the section header (replaces "Price Chart" text):
-  - Yes/No markets: shows current yes odds (e.g., "67.5%")
-  - Categorical markets: shows leading outcome with odds (e.g., "Chiefs 28.5%")
-  - Resolved markets: shows final outcome text (e.g., "Resolved: Yes")
-- Line chart showing price history
-- Timeframe selector: 1H | 24H | 7D | 1 Month | ALL
-- Toggle: Price / Volume
-- **Comment speech bubbles** overlaid on price chart (price mode only):
-  - Positioned horizontally by comment timestamp relative to visible time range
-  - Size: 24–40px based on like count (more likes = larger bubble)
-  - Opacity: 0.4–1.0 based on like count (more likes = more opaque)
-  - Tooltip on hover showing username, content preview, and like count
-  - Only comments within the visible timeframe are shown
-- For categorical markets: multi-line chart with legend
+LIQUIDITY opens the durable funding flow for the current market.
 
-### Resolution Details Section
-- Resolution criteria (how the market resolves)
-- Resolution source (oracle, manual, etc.)
-- Resolution date/time
-- Current resolution status (Open, Pending Resolution, Resolved)
-- For resolved markets: Final outcome displayed prominently
+- Any authenticated user can use the funding flow.
+- Accepted funding adds bot capacity.
+- Funding does not itself create an order.
+- Funding does not guarantee an executable order.
+- Funding does not guarantee immediate order-book depth.
+- Funding does not create a confirmed price.
+- Repeatable funding implementation remains Phase 9 work.
 
-### Creator Info Section
-- Creator avatar and name
-- Creator reputation score (if available)
-- Total markets created
-- Creator fee percentage
-- Link to creator's profile
+### Closed Market
 
-### Recent Trades Section
-- Shows recent trades without tab navigation (trades only)
-- Each trade shows: user (anonymized), side, amount, price, timestamp
-- Infinite scroll with "Load more" button
+A closed market has no trading or funding action.
 
-### Related Markets Section
-- Horizontal scrollable list of related markets
-- Based on same category tags
-- Shows mini market cards with quick stats
+- Hide BUY, SELL, and LIQUIDITY.
+- Hide desktop and mobile trade controls.
+- Hide the funding action.
+- Keep historical confirmed prices and activity available when their authority is available.
+- Keep resolution information visible.
 
-### Comments Section (Bottom)
-- Read-only display section at the bottom of the page (no standalone comment input)
-- Comment list with user avatar, name, timestamp
-- Like button per comment
-- Infinite scroll with "Load more" button
-- Empty state: "No comments yet. Place a trade to leave a comment!"
-- Comments are posted exclusively through the Trading Panel trade flow
+## Analysis
 
-### Resolved Market View
-- **RESOLVED badge** displayed prominently at the top of the header with a CheckCircle icon and the final outcome
-- "Resolved on [date]" replaces the countdown timer in the meta row
-- **No trading panel**: Both desktop sidebar and mobile sticky bottom bar are hidden
-- **Single-column layout**: The right sidebar grid is removed; content fills full width
-- **Resolution Info** is moved immediately after the header (above chart)
-- Comments section becomes read-only (no comment input)
-- Activity feed and related markets remain visible for historical reference
+- Show confirmed fill-backed price history.
+- Allow the user to select a supported timeframe.
+- Allow the user to switch between price and volume.
+- Show an empty chart for `no-trades`.
+- Show an unavailable state for `unavailable`.
+- Never insert a registration, funding, quote, or resolution point into price history.
+
+## Header
+
+- Show the market title.
+- Show the image when available.
+- Show category tags.
+- Show the close date or resolution date.
+- Show the share action.
+- Show creator information.
+- Show volume, accepted bot capacity, traders, and likes.
+
+## Order Book
+
+The order book can be empty even after funding is accepted. Display the observed bids and asks. Do not use the order-book midpoint as the current price.
+
+## Activity And Comments
+
+- Show only confirmed settlement fills in recent trade activity.
+- Show comments as read-only market content.
+- Allow a comment to accompany an order when the trading flow supports it.
+- Do not let an unconfirmed order or fill candidate update the current price.
 
 ## Market Type Variations
 
 ### Yes/No Markets
-- Two large outcome buttons in trading panel
-- Simple price chart with single line
-- Current percentage shows yes odds
+
+Show nullable Yes and No current prices. Complementary prices must come from the same confirmed settlement fill.
 
 ### Categorical Markets
-- Vertical list of outcomes in trading panel
-- Each outcome has its own Buy Yes/Buy No option
-- Multi-line price chart with color-coded outcomes
-- Current percentage shows leading outcome
 
-### Numeric markets (future)
-Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists. Do not display a synthetic numeric current value or offer numeric trading controls.
+Show one nullable price per outcome. Do not select a synthetic leading outcome when price authority is empty or unavailable.
+
+### Numeric Markets
+
+Keep numeric markets disabled until an authoritative finite-bin or numeric-range trade representation exists.
 
 ## Responsive Behavior
 
-### Desktop (>= 1024px)
-- Two-column layout: Content (left), Trading Panel (right sticky)
-- Chart and activity side by side below header
-
-### Tablet (768px - 1023px)
-- Single column with trading panel at top (collapsible)
-- Stacked layout: Header -> Trading -> Chart -> Activity
-
-### Mobile (< 768px)
-- Single column, vertically stacked
-- Trading panel becomes sticky bottom bar with "Trade" button
-- Tapping "Trade" opens full-screen trading modal
-- Simplified chart (touch-friendly)
-- Activity feed below chart
-- Bottom navigation bar visible (from shell)
+- Use two columns on desktop when actions are available.
+- Use one column on smaller screens.
+- Use a mobile action surface only for an open market.
+- Remove the action surface for a closed market.
 
 ## Configuration
+
 - shell: true

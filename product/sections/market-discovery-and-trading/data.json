@@ -3,22 +3,23 @@
     "events": {
       "MarketCreated": "User creates a new prediction market with question, outcomes, resolution date, fee structure, and parameters",
       "MarketRefunded": "Oracle did not attest in time, all participants refunded",
-      "Bought": "User buys shares/positions in a market outcome, updating volume, odds, and trader count",
-      "Sold": "User sells shares/positions in a market outcome, updating volume, odds, and trader count",
-      "LiquidityDeposited": "Liquidity provider adds funds to a market, improving market depth and trading"
+      "Bought": "A buy-side user flow occurs; current price changes only after a confirmed settlement fill",
+      "Sold": "A sell-side user flow occurs; current price changes only after a confirmed settlement fill",
+      "LiquidityDeposited": "The durable funding flow adds bot capacity without guaranteeing orders, immediate depth, or a confirmed price"
     },
     "currentState": {
-      "markets": "Active markets currently accepting trades, with real-time metrics reflecting all Bought, Sold, and LiquidityDeposited events",
+      "markets": "Markets expose confirmed, no-trades, or unavailable price authority; cards navigate to market detail",
       "tags": "Pre-defined category tags for filtering markets by topic",
       "metaTags": "Dynamic tags like Trending, Popular, and New based on market activity",
       "lastUpdatedAt": "ISO timestamp of last successful condition sync from mint",
       "isRefreshing": "Whether a condition refresh is currently in progress"
     },
     "eventFlows": [
-      "MarketCreated event creates a new market that is immediately active and visible in discovery",
-      "Bought and Sold events update market odds, volume, and trader counts in real-time",
-      "LiquidityDeposited events increase market liquidity and improve trading depth",
-      "Markets appear in meta tags (Trending/Popular/New) based on their trading activity and age"
+      "MarketCreated registers a market without funding or a current price",
+      "Only a confirmed settlement fill updates current price, volume, and trader activity",
+      "LiquidityDeposited adds bot capacity without guaranteeing orders, immediate depth, or a confirmed price",
+      "No-trades and unavailable are distinct null-price states",
+      "Market cards navigate to market detail and do not contain inline trading"
     ]
   },
   "metaTags": [
@@ -103,7 +104,11 @@
       "activeSince": "2025-11-15T14:20:00Z",
       "creatorFeePercent": 2.0,
       "likeCount": 342,
-      "isLiked": true
+      "isLiked": true,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-001"
+      }
     },
     {
       "id": "mkt-002",
@@ -151,7 +156,11 @@
       "activeSince": "2025-10-01T09:15:00Z",
       "creatorFeePercent": 1.5,
       "likeCount": 287,
-      "isLiked": false
+      "isLiked": false,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-002"
+      }
     },
     {
       "id": "mkt-003",
@@ -166,18 +175,21 @@
         "new"
       ],
       "currentOdds": {
-        "yes": 42.8,
-        "no": 57.2
+        "yes": null,
+        "no": null
       },
-      "volume": 567800,
+      "volume": 0,
       "liquidity": 120000,
-      "traderCount": 456,
+      "traderCount": 0,
       "closingDate": "2026-06-08T20:00:00Z",
       "createdDate": "2026-01-10T15:45:00Z",
       "activeSince": "2026-01-10T16:30:00Z",
       "creatorFeePercent": 2.5,
       "likeCount": 156,
-      "isLiked": true
+      "isLiked": true,
+      "priceAuthority": {
+        "state": "no-trades"
+      }
     },
     {
       "id": "mkt-004",
@@ -203,7 +215,11 @@
       "activeSince": "2025-12-20T13:45:00Z",
       "creatorFeePercent": 1.8,
       "likeCount": 198,
-      "isLiked": false
+      "isLiked": false,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-004"
+      }
     },
     {
       "id": "mkt-005",
@@ -228,7 +244,11 @@
       "activeSince": "2026-01-15T10:05:00Z",
       "creatorFeePercent": 2.0,
       "likeCount": 89,
-      "isLiked": false
+      "isLiked": false,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-005"
+      }
     },
     {
       "id": "mkt-006",
@@ -246,27 +266,27 @@
         {
           "id": "under-10",
           "label": "Under 10 Gwei",
-          "odds": 15.2
+          "odds": null
         },
         {
           "id": "10-20",
           "label": "10-20 Gwei",
-          "odds": 38.7
+          "odds": null
         },
         {
           "id": "20-30",
           "label": "20-30 Gwei",
-          "odds": 28.4
+          "odds": null
         },
         {
           "id": "30-50",
           "label": "30-50 Gwei",
-          "odds": 12.3
+          "odds": null
         },
         {
           "id": "over-50",
           "label": "Over 50 Gwei",
-          "odds": 5.4
+          "odds": null
         }
       ],
       "volume": 892300,
@@ -277,7 +297,10 @@
       "activeSince": "2026-01-05T15:15:00Z",
       "creatorFeePercent": 1.5,
       "likeCount": 124,
-      "isLiked": true
+      "isLiked": true,
+      "priceAuthority": {
+        "state": "unavailable"
+      }
     },
     {
       "id": "mkt-007",
@@ -303,7 +326,11 @@
       "activeSince": "2025-09-12T08:30:00Z",
       "creatorFeePercent": 2.0,
       "likeCount": 412,
-      "isLiked": false
+      "isLiked": false,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-007"
+      }
     },
     {
       "id": "mkt-008",
@@ -329,7 +356,11 @@
       "activeSince": "2025-11-01T11:20:00Z",
       "creatorFeePercent": 1.2,
       "likeCount": 523,
-      "isLiked": true
+      "isLiked": true,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-008"
+      }
     },
     {
       "id": "mkt-009",
@@ -354,7 +385,11 @@
       "activeSince": "2026-01-12T16:45:00Z",
       "creatorFeePercent": 2.5,
       "likeCount": 267,
-      "isLiked": false
+      "isLiked": false,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-009"
+      }
     },
     {
       "id": "mkt-010",
@@ -405,7 +440,11 @@
       "activeSince": "2026-01-08T13:10:00Z",
       "creatorFeePercent": 1.5,
       "likeCount": 45,
-      "isLiked": false
+      "isLiked": false,
+      "priceAuthority": {
+        "state": "confirmed",
+        "latestFillId": "fill-mkt-010"
+      }
     }
   ]
 }

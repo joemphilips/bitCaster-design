@@ -1,45 +1,65 @@
 # Market Detail
 
 ## Overview
-Comprehensive trading view with order book, price charts, trade panel, activity feed, and comments. Uses a two-column layout on desktop (content left, trading panel right) and single-column on mobile. Supports market and limit orders, both buy and sell sides.
+
+Market detail shows one prediction market. It contains the trading and funding actions for an open market.
 
 ## Components
-- `MarketDetail` — Root component for the detail page
-- `MarketHeader` — Title, image, tags, countdown, creator info, metrics footer
-- `TradingPanel` — Buy/Sell toggle, Market/Limit tabs, outcome selection, amount input, trade preview, confirm
-- `PriceChart` — Line chart with timeframe selector, chart type toggle, comment speech bubbles overlay
-- `OrderBookSection` — Bids/asks display with spread
-- `ResolutionInfo` — Resolution criteria, source, status, final outcome
-- `ActivityFeed` — Recent trades list with infinite scroll
-- `CommentSection` — Read-only comment display (posting via trade flow only)
-- `RelatedMarkets` — Horizontal scrollable related market cards
-- `MarketStats` — Volume, liquidity, traders, like count in header footer
+
+- `MarketDetail` is the page root.
+- `MarketHeader` shows identity and metrics.
+- `TradingPanel` shows BUY, SELL, or LIQUIDITY.
+- `PriceChart` shows confirmed settlement-fill history.
+- `OrderBookSection` shows observed bids and asks.
+- `ResolutionInfo` shows resolution details.
+- `ActivityFeed` shows confirmed settlement fills.
+- `CommentSection` shows comments.
+- `RelatedMarkets` opens other market-detail pages.
+- `MarketStats` shows volume, capacity, traders, and likes.
+
+## Price States
+
+- `confirmed` shows a nullable value backed by the latest confirmed settlement fill.
+- `no-trades` shows `No trades yet` and an empty history.
+- `unavailable` shows `Price unavailable`.
+
+Do not use a quote, order-book midpoint, registration value, funding result, resolution result, or `50%` fallback as the current price.
+
+## Action Routes
+
+An open market shows `[BUY] [SELL] [LIQUIDITY]`.
+
+- BUY and SELL show an order form only when executable liquidity exists.
+- Empty BUY and SELL show guidance and an action that opens LIQUIDITY.
+- Empty BUY and SELL contain no amount input, outcome form, or confirm action.
+- LIQUIDITY uses the durable funding flow.
+- Funding adds bot capacity.
+- Funding does not guarantee orders, immediate depth, or a confirmed price.
+- Repeatable funding implementation remains Phase 9 work.
+
+A closed market hides all three routes and every funding action.
 
 ## Market Type Variations
 
 ### Yes/No Markets
-Two large outcome buttons (Yes % / No %). Single-line price chart. Current percentage shows yes odds.
+
+Use nullable complementary prices from the same confirmed settlement fill.
 
 ### Categorical Markets
-Vertical list of outcomes with per-outcome Buy Yes/No. Multi-line price chart. Leading outcome shown as current percentage.
 
-### Future market types
-Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists. The detail UI supports Yes/No and Categorical markets.
+Use nullable per-outcome prices. Do not invent a leading outcome for an empty or unavailable state.
 
-## Trading Panel Layout
-Buy/Sell toggle → Market/Limit sub-tabs → Outcome selection → Amount input → Quick amounts (100, 500, 1000, 5000) → Trade preview → Optional comment (280 chars) → Confirm button
+### Future Market Types
 
-## Resolved Market View
-- RESOLVED badge with CheckCircle icon and final outcome
-- No trading panel (hidden on both desktop and mobile)
-- Single-column layout (sidebar removed)
-- Resolution info moved above chart
-- Comments section is read-only
+Keep numeric markets disabled until an authoritative trade representation exists.
 
 ## Responsive Behavior
-- Desktop (>= 1024px): Two-column layout, trading panel sticky right sidebar
-- Tablet (768-1023px): Single column, trading panel collapsible at top
-- Mobile (< 768px): Single column, sticky bottom "Trade" bar opens full-screen modal
+
+- Use a two-column layout on desktop when actions are available.
+- Use a single-column layout on smaller screens.
+- Show mobile actions only while the market is open.
+- Remove all action surfaces after close.
 
 ## Configuration
+
 - shell: true

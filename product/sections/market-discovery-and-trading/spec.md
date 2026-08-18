@@ -1,50 +1,65 @@
 # Market Discovery & Trading Specification
 
 ## Overview
-Core marketplace where users browse prediction markets through a single-select tag navigation system, filter and search markets, and execute quick trades directly from market cards. The default view shows Trending markets.
+
+The marketplace lets users browse and filter prediction markets. Each market card opens market detail. The default view shows Trending markets.
 
 ## User Flows
-- User lands on page and sees Trending markets by default (Trending tag pre-selected)
-- User taps a different tag to switch view (only one tag active at a time)
-- User can apply filters to show only certain markets (Market Type, Volume range, Closing date).
-- For Yes/No markets: User clicks Buy Yes/No button → card transforms to trade interface
-- For categorical markets: User scrolls vertically through choices, clicks Yes/No on a specific choice → card transforms to trade interface
-- Numeric markets are disabled until an authoritative trade representation exists.
-- User confirms trade or cancels with × button to return card to normal state
-- User clicks anywhere else on market card → navigates to full market detail page
-- User scrolls down → more markets load automatically (infinite scroll)
+
+- The user lands on the page and sees Trending markets.
+- The user selects one tag at a time.
+- The user can filter by market type, volume range, and closing date.
+- The user selects a Yes/No or categorical action on a card and opens market detail.
+- The user can select the rest of a card and open market detail.
+- Numeric markets remain disabled until an authoritative trade representation exists.
+- The user scrolls down to load more markets.
+
+Market cards do not contain an inline trade form. They do not show a predicted price. All order entry occurs on market detail.
+
+## Price Display
+
+The card reads an explicit price-authority state.
+
+- `confirmed` shows the latest price from a confirmed settlement fill.
+- `no-trades` shows `No trades yet` and a null price.
+- `unavailable` shows `Price unavailable` and a null price.
+
+Do not derive the current price from an order, quote, registration value, funding result, or outcome metadata. Do not use `50%` or another synthetic fallback when the price is null.
 
 ## UI Requirements
-- Single horizontal tag bar with meta tags (Trending, Popular, New) and category tags (Sports, Politics, etc.) - only one tag can be selected at a time
-- Filter row is hidden by default; user clicks a slider/filter icon in the tag bar to reveal/collapse it
-- Three filter controls: Market Type dropdown (Yes/No, Categorical), Volume range, Closing date slider
-- Market cards showing: image, title/question, current odds, action buttons, and metrics footer
-- Volume displayed with ₿ symbol (e.g., "₿0.05")
-- Yes/No market cards: display order must be title/question → chance (odds shown inline, e.g., "Chance 67.5%") → Buy Yes/Buy No buttons
-- Categorical market cards: vertical scrollable list of choices, each with its own Yes/No buttons
-- Numeric market cards are not part of the supported discovery flow.
-- Inline card transformation for quick trading with × cancel, predicted odds, amount picker, BUY button
-- Market Card should not show tag information (tags are only for market detail page)
-- Each market card includes a 'like' button with count in the metrics footer
-- Market Card should not change size when user clicks Yes/No button to toggle trading mode
-- Trading view overlay must cover the entire card (not just the content area)
-- All market types (Yes/No, Categorical) must have the same fixed card size
-- Metrics footer must always be visible when not in trading view overlay mode
-- Infinite scroll loading
+
+- Show one horizontal tag bar.
+- Allow only one selected tag.
+- Hide the filter row by default.
+- Show filters for market type, volume range, and closing date.
+- Show the image, title, current-price state, and metrics on each card.
+- Show confirmed Yes/No prices as percentages.
+- Show the explicit empty or unavailable text when the price is null.
+- Show categorical outcomes in a vertical scroll area.
+- Let every card and card action navigate to market detail.
+- Do not show an inline amount input or confirmation control.
+- Do not show tag information on a card.
+- Show a like button and count in the metrics footer.
+- Keep one fixed card size for Yes/No and categorical markets.
+- Keep the metrics footer visible.
+- Support infinite scroll.
 
 ## Background Loading Progress Bar
-If the user finishes wallet setup but condition data download is still in progress, a thin progress bar appears fixed to the **page footer** (full-width, bottom of viewport).
-- The bar shows a subtle animated stripe pattern (indeterminate) with text like "Loading market data... (3/10)"
-- Once loading completes, the bar fades out and disappears
-- If loading failed, the bar turns amber and shows "Failed to load market data" with a Retry button
 
-## Refresh Button & Last Updated Timestamp
-Next to the filter controls row (right-aligned, visible whether filters are expanded or collapsed):
-1. **Last updated timestamp** — e.g., "Updated 2 min ago" in subtle text
-2. **Refresh button** — circular `RefreshCw` icon button; clicking triggers `onRefreshConditions` callback which queries the mint for new/updated conditions and loads them into client-side DB
-- These appear in the sticky tag bar area (always visible), right side, next to the filter icon
-- The RefreshCw icon spins while refresh is in progress
-- Timestamp formatted as relative time ("just now", "2 min ago", "1 hour ago")
+Show a thin progress bar at the page footer while condition data loads after wallet setup.
+
+- Show text such as `Loading market data... (3/10)`.
+- Remove the bar after loading completes.
+- Show an amber error state and a Retry action after loading fails.
+
+## Refresh Button And Last Updated Timestamp
+
+Show the refresh action and last-updated value in the sticky tag area.
+
+- Display relative time such as `Updated 2 min ago`.
+- Call `onRefreshConditions` when the user selects refresh.
+- Animate the refresh icon while refresh is active.
 
 ## Configuration
+
 - shell: true

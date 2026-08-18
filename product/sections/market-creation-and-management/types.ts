@@ -19,15 +19,17 @@ export interface DashboardStats {
 export interface MarketOutcome {
   id: string
   label: string
-  odds: number
+  /** Null until a confirmed settlement fill exists. */
+  odds: number | null
   description?: string
   imageUrl?: string
   isWinner?: boolean // Set when market is resolved
 }
 
+/** Price values come from confirmed settlement fills. Null means no price. */
 export interface CurrentOdds {
-  yes: number
-  no: number
+  yes: number | null
+  no: number | null
 }
 
 // =============================================================================

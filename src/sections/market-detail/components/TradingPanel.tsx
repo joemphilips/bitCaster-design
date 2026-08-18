@@ -6,11 +6,13 @@ import type {
   TradePreview,
   LimitOrderPreview,
   TradeSide,
+  TradeTab,
   OrderType,
   YesNoMarketDetail,
   CategoricalMarketDetail,
 } from '@/../product/sections/market-detail/types'
 import { formatBtc } from '@/lib/format'
+import { PostCreateFundingHandoff } from '../../market-creation/components/PostCreateFundingHandoff'
 
 interface TradingPanelProps {
   market: MarketDetail
@@ -18,6 +20,8 @@ interface TradingPanelProps {
   tradeAmount: number
   tradePreview: TradePreview | null
   tradeSide: TradeSide
+  tradeTab?: TradeTab
+  hasExecutableLiquidity?: boolean
   orderType: OrderType
   limitOrderPreview?: LimitOrderPreview | null
   limitPrice?: number
@@ -28,12 +32,33 @@ interface TradingPanelProps {
   onTradeConfirm?: () => void
   onCommentPost?: (content: string) => void
   onTradeSideChange?: (side: TradeSide) => void
+  onTradeTabChange?: (tab: TradeTab) => void
+  onFundingComplete?: (choice: string, amountSats?: number) => void
   onOrderTypeChange?: (type: OrderType) => void
   onLimitPriceChange?: (price: number) => void
 }
 
 const QUICK_AMOUNTS = [100, 500, 1000, 5000]
 const QUICK_SELL_PERCENTAGES = [25, 50, 75, 100]
+
+const TRADE_ROUTES: Array<{ id: TradeTab; label: string }> = [
+  { id: 'buy', label: 'Buy' },
+  { id: 'sell', label: 'Sell' },
+  { id: 'liquidity', label: 'Liquidity' },
+]
+
+/**
+ * Only a confirmed settlement fill produces a market price. Keep `no-trades`
+ * and `unavailable` separate. Never substitute a midpoint or a synthetic value.
+ */
+function formatNullablePrice(
+  authority: MarketDetail['priceAuthority'],
+  price: number | null,
+): string {
+  if (authority.state === 'unavailable') return 'Price unavailable'
+  if (price == null || authority.state === 'no-trades') return 'No trades yet'
+  return `${price.toFixed(1)}%`
+}
 
 // Custom scrollable container with chevron buttons
 function ScrollableContainer({
@@ -134,7 +159,7 @@ function YesNoOutcomes({
           {isSell ? 'Sell Yes' : 'Yes'}
         </div>
         <div className="text-2xl font-bold text-slate-900 dark:text-white">
-          {market.currentOdds.yes.toFixed(1)}%
+          {formatNullablePrice(market.priceAuthority, market.currentOdds.yes)}
         </div>
       </button>
 
@@ -150,7 +175,7 @@ function YesNoOutcomes({
           {isSell ? 'Sell No' : 'No'}
         </div>
         <div className="text-2xl font-bold text-slate-900 dark:text-white">
-          {market.currentOdds.no.toFixed(1)}%
+          {formatNullablePrice(market.priceAuthority, market.currentOdds.no)}
         </div>
       </button>
     </div>
@@ -187,7 +212,7 @@ function CategoricalOutcomes({
                 {outcome.label}
               </span>
               <span className="text-sm font-bold text-slate-600 dark:text-slate-400">
-                {outcome.odds.toFixed(1)}%
+                {formatNullablePrice(market.priceAuthority, outcome.odds)}
               </span>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -219,35 +244,31 @@ function CategoricalOutcomes({
   )
 }
 
-function BuySellToggle({
-  tradeSide,
-  onTradeSideChange,
+function TradeRouteTabs({
+  tradeTab,
+  onSelect,
 }: {
-  tradeSide: TradeSide
-  onTradeSideChange?: (side: TradeSide) => void
+  tradeTab: TradeTab
+  onSelect: (tab: TradeTab) => void
 }) {
   return (
-    <div className="grid grid-cols-2 mb-3">
-      <button
-        onClick={() => onTradeSideChange?.('buy')}
-        className={`py-2.5 text-sm font-semibold transition-colors border-b-2 ${
-          tradeSide === 'buy'
-            ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white'
-            : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300'
-        }`}
-      >
-        Buy
-      </button>
-      <button
-        onClick={() => onTradeSideChange?.('sell')}
-        className={`py-2.5 text-sm font-semibold transition-colors border-b-2 ${
-          tradeSide === 'sell'
-            ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white'
-            : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300'
-        }`}
-      >
-        Sell
-      </button>
+    <div role="tablist" aria-label="Trade route" className="grid grid-cols-3 mb-3">
+      {TRADE_ROUTES.map((route) => (
+        <button
+          key={route.id}
+          type="button"
+          role="tab"
+          aria-selected={tradeTab === route.id}
+          onClick={() => onSelect(route.id)}
+          className={`py-2.5 text-sm font-semibold transition-colors border-b-2 ${
+            tradeTab === route.id
+              ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white'
+              : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300'
+          }`}
+        >
+          {route.label}
+        </button>
+      ))}
     </div>
   )
 }
@@ -366,6 +387,8 @@ export function TradingPanel({
   tradeAmount,
   tradePreview,
   tradeSide,
+  tradeTab,
+  hasExecutableLiquidity = true,
   orderType,
   limitOrderPreview,
   limitPrice = 50,
@@ -376,13 +399,26 @@ export function TradingPanel({
   onCommentPost,
   userHoldings,
   onTradeSideChange,
+  onTradeTabChange,
+  onFundingComplete,
   onOrderTypeChange,
   onLimitPriceChange,
 }: TradingPanelProps) {
   const [tradeComment, setTradeComment] = useState('')
-  const isSell = tradeSide === 'sell'
+  // Uncontrolled fallback. BUY and SELL follow `tradeSide`; only LIQUIDITY is
+  // held locally, so no effect has to mirror a prop into state.
+  const [liquiditySelected, setLiquiditySelected] = useState(false)
+  const activeTab: TradeTab = tradeTab ?? (liquiditySelected ? 'liquidity' : tradeSide)
+  const activeTradeSide: TradeSide = activeTab === 'sell' ? 'sell' : 'buy'
+  const isSell = activeTradeSide === 'sell'
   const isLimit = orderType === 'limit'
   const baseUnit = market.baseUnit ?? 'sats'
+
+  const selectTradeTab = (tab: TradeTab) => {
+    setLiquiditySelected(tab === 'liquidity')
+    onTradeTabChange?.(tab)
+    if (tab !== 'liquidity') onTradeSideChange?.(tab)
+  }
 
   // Build confirm button text
   const getConfirmText = () => {
@@ -397,37 +433,63 @@ export function TradingPanel({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+    <div data-trading-panel className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
       <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
         Trade
       </h3>
 
-      {/* Buy/Sell Toggle */}
-      <BuySellToggle tradeSide={tradeSide} onTradeSideChange={onTradeSideChange} />
+      {/* BUY / SELL / LIQUIDITY routes */}
+      <TradeRouteTabs tradeTab={activeTab} onSelect={selectTradeTab} />
 
-      {/* Market/Limit Sub-tabs */}
-      <MarketLimitToggle orderType={orderType} onOrderTypeChange={onOrderTypeChange} />
-
-      {/* Outcomes based on market type */}
-      {market.type === 'yesno' && (
-        <YesNoOutcomes
-          market={market}
-          tradeSelection={tradeSelection}
-          tradeSide={tradeSide}
-          onTradeSelect={onTradeSelect}
+      {activeTab === 'liquidity' ? (
+        /* LIQUIDITY reuses the durable funding handoff. Funding adds capacity
+           only. It does not create an order, depth, or a confirmed price. */
+        <PostCreateFundingHandoff
+          marketId={market.id}
+          context="liquidity"
+          onComplete={onFundingComplete}
         />
-      )}
-      {market.type === 'categorical' && (
-        <CategoricalOutcomes
-          market={market}
-          tradeSelection={tradeSelection}
-          tradeSide={tradeSide}
-          onTradeSelect={onTradeSelect}
-        />
+      ) : !hasExecutableLiquidity ? (
+        /* Empty book. The route carries guidance and one action, no order form. */
+        <div className="space-y-3 py-4">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            No executable liquidity is available for this route. Add liquidity to enable trading.
+          </p>
+          <button
+            type="button"
+            onClick={() => selectTradeTab('liquidity')}
+            className="rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition-colors"
+          >
+            Liquidity
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Market/Limit Sub-tabs */}
+          <MarketLimitToggle orderType={orderType} onOrderTypeChange={onOrderTypeChange} />
+
+          {/* Outcomes based on market type */}
+          {market.type === 'yesno' && (
+            <YesNoOutcomes
+              market={market}
+              tradeSelection={tradeSelection}
+              tradeSide={activeTradeSide}
+              onTradeSelect={onTradeSelect}
+            />
+          )}
+          {market.type === 'categorical' && (
+            <CategoricalOutcomes
+              market={market}
+              tradeSelection={tradeSelection}
+              tradeSide={activeTradeSide}
+              onTradeSelect={onTradeSelect}
+            />
+          )}
+        </>
       )}
 
-      {/* Trade Form (shown when outcome selected) */}
-      {tradeSelection && (
+      {/* Trade Form (only on a route that has executable liquidity) */}
+      {tradeSelection && activeTab !== 'liquidity' && hasExecutableLiquidity && (
         <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">

@@ -10,25 +10,28 @@ import { CommentSection } from './CommentSection'
 
 function computeCurrentDisplay(market: MarketDetailProps['market']): string {
   const isResolved = market.resolution.status === 'resolved'
+  const authority = market.priceAuthority.state
 
   if (isResolved && market.resolution.finalOutcome) {
     return `Resolved: ${market.resolution.finalOutcome}`
   }
 
+  // Fail closed. A broken price authority is not a valid empty market.
+  if (authority === 'unavailable') {
+    return 'Price unavailable'
+  }
+
   if (market.type === 'yesno') {
-    return `${market.currentOdds.yes.toFixed(1)}%`
+    return market.currentOdds.yes == null || authority === 'no-trades'
+      ? 'No trades yet'
+      : `${market.currentOdds.yes.toFixed(1)}%`
   }
 
-  if (market.type === 'categorical') {
-    const sorted = [...market.outcomes].sort((a, b) => b.odds - a.odds)
-    const leader = sorted[0]
-    if (leader) {
-      return `${leader.label} ${leader.odds.toFixed(1)}%`
-    }
-    return ''
-  }
-
-  return ''
+  // Each categorical outcome keeps its own last confirmed price. Do not pick a
+  // synthetic leader and do not renormalize independent last sales.
+  return authority === 'confirmed' && market.outcomes.some((outcome) => outcome.odds != null)
+    ? ''
+    : 'No trades yet'
 }
 
 export function MarketDetail({
@@ -39,6 +42,8 @@ export function MarketDetail({
   tradeAmount,
   tradePreview,
   tradeSide,
+  tradeTab,
+  hasExecutableLiquidity,
   orderType,
   limitOrderPreview,
   limitPrice,
@@ -57,6 +62,8 @@ export function MarketDetail({
   onRelatedMarketClick,
   onCreatorClick,
   onTradeSideChange,
+  onTradeTabChange,
+  onFundingComplete,
   onOrderTypeChange,
   onLimitPriceChange,
   userHoldings,
@@ -105,6 +112,8 @@ export function MarketDetail({
                   tradeAmount={tradeAmount}
                   tradePreview={tradePreview}
                   tradeSide={tradeSide}
+                  tradeTab={tradeTab}
+                  hasExecutableLiquidity={hasExecutableLiquidity}
                   orderType={orderType}
                   limitOrderPreview={limitOrderPreview}
                   limitPrice={limitPrice}
@@ -114,6 +123,8 @@ export function MarketDetail({
                   onTradeConfirm={onTradeConfirm}
                   onCommentPost={onCommentPost}
                   onTradeSideChange={onTradeSideChange}
+                  onTradeTabChange={onTradeTabChange}
+                  onFundingComplete={onFundingComplete}
                   onOrderTypeChange={onOrderTypeChange}
                   onLimitPriceChange={onLimitPriceChange}
                   userHoldings={userHoldings}
@@ -169,6 +180,8 @@ export function MarketDetail({
                   tradeAmount={tradeAmount}
                   tradePreview={tradePreview}
                   tradeSide={tradeSide}
+                  tradeTab={tradeTab}
+                  hasExecutableLiquidity={hasExecutableLiquidity}
                   orderType={orderType}
                   limitOrderPreview={limitOrderPreview}
                   limitPrice={limitPrice}
@@ -178,6 +191,8 @@ export function MarketDetail({
                   onTradeConfirm={onTradeConfirm}
                   onCommentPost={onCommentPost}
                   onTradeSideChange={onTradeSideChange}
+                  onTradeTabChange={onTradeTabChange}
+                  onFundingComplete={onFundingComplete}
                   onOrderTypeChange={onOrderTypeChange}
                   onLimitPriceChange={onLimitPriceChange}
                   userHoldings={userHoldings}
@@ -191,7 +206,7 @@ export function MarketDetail({
       {/* Mobile: Sticky Bottom Trade Bar (only for open markets) */}
       {isTradingEnabled && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 safe-area-pb">
-          {tradeSelection ? (
+          {tradeSelection && hasExecutableLiquidity !== false ? (
             <div className="flex items-center gap-3">
               <div className="flex-1">
                 <p className="text-xs text-slate-500 dark:text-slate-400">

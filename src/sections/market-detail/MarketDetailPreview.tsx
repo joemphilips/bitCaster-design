@@ -8,6 +8,7 @@ import type {
   TradePreview,
   LimitOrderPreview,
   TradeSide,
+  TradeTab,
   OrderType,
   MarketDetail as MarketDetailType,
 } from '@/../product/sections/market-detail/types'
@@ -30,6 +31,11 @@ export function MarketDetailPreview() {
   const [tradeSelection, setTradeSelection] = useState<TradeSelection | null>(null)
   const [tradeAmount, setTradeAmount] = useState<number>(0)
   const [tradeSide, setTradeSide] = useState<TradeSide>('buy')
+  const [tradeTab, setTradeTab] = useState<TradeTab>('buy')
+  // Preview-only switch. It shows the empty-book BUY and SELL routes.
+  const [hasExecutableLiquidity, setHasExecutableLiquidity] = useState(
+    data.uiState.hasExecutableLiquidity,
+  )
   const [orderType, setOrderType] = useState<OrderType>('market')
   const [limitPrice, setLimitPrice] = useState<number>(6500)
   const userHoldings = 1000 // Mock: user holds 1000 shares
@@ -80,6 +86,7 @@ export function MarketDetailPreview() {
                   setTradeSelection(null)
                   setTradeAmount(0)
                   setTradeSide('buy')
+                  setTradeTab('buy')
                   setOrderType('market')
                   setLimitPrice(6500)
                 }}
@@ -92,6 +99,17 @@ export function MarketDetailPreview() {
                 {marketLabels[key]}
               </button>
             ))}
+            <button
+              type="button"
+              onClick={() => setHasExecutableLiquidity((current) => !current)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap border ${
+                hasExecutableLiquidity
+                  ? 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300'
+                  : 'border-amber-500 text-amber-600 dark:text-amber-400'
+              }`}
+            >
+              {hasExecutableLiquidity ? 'Book: executable' : 'Book: empty'}
+            </button>
           </div>
         </div>
       </div>
@@ -105,6 +123,8 @@ export function MarketDetailPreview() {
         tradeAmount={tradeAmount}
         tradePreview={tradePreview}
         tradeSide={tradeSide}
+        tradeTab={tradeTab}
+        hasExecutableLiquidity={hasExecutableLiquidity}
         orderType={orderType}
         limitOrderPreview={limitOrderPreview}
         limitPrice={limitPrice}
@@ -112,6 +132,16 @@ export function MarketDetailPreview() {
         onTradeSideChange={(side) => {
           console.log('Trade side changed:', side)
           setTradeSide(side)
+        }}
+        onTradeTabChange={(tab) => {
+          console.log('Trade route changed:', tab)
+          setTradeTab(tab)
+          setTradeSelection(null)
+          setTradeAmount(0)
+        }}
+        onFundingComplete={(choice, amountSats) => {
+          console.log('Funding handoff complete:', choice, amountSats)
+          alert('Funding accepted. It adds bot capacity. It does not create an order or a price.')
         }}
         onOrderTypeChange={(type) => {
           console.log('Order type changed:', type)

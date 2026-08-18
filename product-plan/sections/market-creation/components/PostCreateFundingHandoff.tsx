@@ -13,7 +13,7 @@ const presetAmounts = [
  * The selected action is passed to the durable funding flow. It is not part
  * of the market registration request.
  */
-export function PostCreateFundingHandoff({ marketId, onComplete }: PostCreateFundingHandoffProps) {
+export function PostCreateFundingHandoff({ marketId, context = 'creation', onComplete }: PostCreateFundingHandoffProps) {
   const [choice, setChoice] = useState<PostCreateFundingChoice>('none')
   const [amountSats, setAmountSats] = useState(0)
 
@@ -21,16 +21,20 @@ export function PostCreateFundingHandoff({ marketId, onComplete }: PostCreateFun
 
   return (
     <div className="w-full max-w-xl">
-      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Market created</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+        {context === 'liquidity' ? 'Add market capacity' : 'Market created'}
+      </h2>
       <p className="text-sm text-slate-400 mb-8">
-        Market <span className="font-mono text-slate-300">{marketId}</span> is Open. Registration did not deposit funds or set a price.
+        {context === 'liquidity'
+          ? <>Use the durable funding flow for <span className="font-mono text-slate-300">{marketId}</span>. Funding adds capacity, but does not guarantee an executable order or set a confirmed price.</>
+          : <>Market <span className="font-mono text-slate-300">{marketId}</span> is Open. Registration did not deposit funds or set a price.</>}
       </p>
 
       <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-8">
         <div className="flex items-start gap-3">
           <Info className="w-5 h-5 text-blue-400 mt-0.5 shrink-0" strokeWidth={1.5} />
           <p className="text-xs text-blue-300/80 leading-relaxed">
-            A market shows No trades yet until a confirmed trade exists. After registration, the creator can use this handoff. Any user can repeat the same durable LIQUIDITY flow from market detail later. It is not restricted to the creator.
+            A market shows No trades yet until a confirmed trade exists. This handoff is separate from registration and can be repeated from the LIQUIDITY tab. Funding adds capacity; it does not itself create an order or a price.
           </p>
         </div>
       </div>

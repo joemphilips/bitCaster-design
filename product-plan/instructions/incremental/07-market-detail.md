@@ -3,110 +3,86 @@
 > **Provide alongside:** `product-overview.md`
 > **Prerequisites:** Milestones 1-6 complete
 
----
-
-## About These Instructions
-
-**What you're receiving:**
-- Finished UI designs (React components with full styling)
-- Data model definitions (TypeScript types and sample data)
-- UI/UX specifications (user flows, requirements, screenshots)
-- Design system tokens (colors, typography, spacing)
-- Test-writing instructions for each section (for TDD approach)
-
-**What you need to build:**
-- Backend API endpoints and database schema
-- Authentication and authorization
-- Data fetching and state management
-- Business logic and validation
-- Integration of the provided UI components with real data
-
-**Important guidelines:**
-- **DO NOT** redesign or restyle the provided components — use them as-is
-- **DO** wire up the callback props to your routing and API calls
-- **DO** replace sample data with real data from your backend
-- **DO** implement proper error handling and loading states
-- **DO** implement empty states when no records exist
-- **DO** use test-driven development — write tests first using `tests.md` instructions
-
----
-
 ## Goal
-Implement the Market Detail page — comprehensive trading view with order book, charts, and trade panel.
 
-## Overview
-Accessed by clicking on a market card. Provides full market analysis and trading interface supporting market orders, limit orders, buy and sell operations, and Yes/No and Categorical markets.
+Implement market detail with BUY, SELL, and LIQUIDITY routes.
 
-**Key Functionality:**
-- Market header with image, title, tags, countdown, creator info, metrics footer
-- Trading panel with Buy/Sell toggle + Market/Limit sub-tabs
-- Outcome selection (Yes/No buttons or categorical outcome list)
-- Trade preview with predicted odds, price impact, payout, fees
-- Optional trade comment (280 chars)
-- Price chart with timeframe selector (1H/24H/7D/1M/ALL) and Price/Volume toggle
-- Comment bubbles overlaid on price chart
-- Order book visualization
-- Resolution details section
-- Recent trades feed
-- Comments section (read-only, comments posted via trading)
-- Related markets horizontal scroll
-- Resolved market view (no trading panel, single-column layout)
-- Numeric markets are disabled until an authoritative finite-bin or numeric-range trade representation exists.
+## Required Semantics
 
-## What to Implement
+- Only a confirmed settlement fill creates or changes the current price.
+- `no-trades` and `unavailable` are different states.
+- Both states use null prices.
+- Do not use a `50%` fallback.
+- An open market shows BUY, SELL, and LIQUIDITY.
+- Empty BUY and SELL show guidance and an action to open LIQUIDITY.
+- Empty BUY and SELL contain no form.
+- A closed market shows no trading or funding action.
+- Funding adds bot capacity.
+- Funding does not guarantee an order, immediate depth, or a confirmed price.
+- Repeatable funding implementation remains Phase 9 work.
 
-### Components
-- `MarketDetail.tsx` — Main page layout
-- `MarketHeader.tsx` — Header with image, title, metrics
-- `TradingPanel.tsx` — Buy/Sell + Market/Limit trading interface
-- `PriceChart.tsx` — Interactive price/volume chart
-- `OrderBookSection.tsx` — Order book visualization
-- `ResolutionInfo.tsx` — Resolution criteria and status
-- `ActivityFeed.tsx` — Recent trades list
-- `CommentSection.tsx` — Comments display
-- `RelatedMarkets.tsx` — Horizontal related markets
-- `MarketStats.tsx` — Market statistics
+## Key Functionality
 
-### Key Callbacks
-- `onTradeSelect` / `onTradeClear` — Select/clear outcome
-- `onAmountChange` — Trade amount input
-- `onTradeConfirm` — Execute trade
-- `onTradeSideChange` — Buy/Sell toggle
-- `onOrderTypeChange` — Market/Limit toggle
-- `onLimitPriceChange` — Limit order price
-- `onTimeframeChange` / `onChartTypeChange` — Chart controls
-- `onLikeToggle` — Like/unlike market
-- `onCommentPost` / `onCommentLike` — Comments
-- `onShare` — Share market
+- Market header and metrics
+- Explicit price-authority state
+- BUY, SELL, and LIQUIDITY routes
+- Order controls only when executable liquidity exists
+- Confirmed fill-backed price history
+- Order-book display
+- Resolution details
+- Confirmed trade activity
+- Comments and related markets
+- Closed-market action suppression
+- Numeric-market fail-closed behavior
+
+## Components
+
+- `MarketDetail.tsx`
+- `MarketHeader.tsx`
+- `TradingPanel.tsx`
+- `PriceChart.tsx`
+- `OrderBookSection.tsx`
+- `ResolutionInfo.tsx`
+- `ActivityFeed.tsx`
+- `CommentSection.tsx`
+- `RelatedMarkets.tsx`
+- `MarketStats.tsx`
 
 ## Expected User Flows
 
-### Flow 1: Place a Market Buy Order
-1. User views market, selects "Yes" outcome
-2. User enters amount (e.g., 1000 sats)
-3. System shows predicted odds, payout, fees
-4. User optionally adds a comment
-5. User clicks "Buy YES for ₿1,000"
-**Outcome:** Trade executed, activity updates
+### Submit An Order
 
-### Flow 2: Place a Limit Sell Order
-1. User clicks "Sell" tab, then "Limit" sub-tab
-2. User sets limit price and amount
-3. User clicks "Place Sell Limit Order"
-**Outcome:** Limit order placed
+1. The user selects BUY or SELL.
+2. The page verifies executable liquidity.
+3. The user enters the order details.
+4. The page labels pre-submit pricing as an execution quote.
+5. The current price stays unchanged until a settlement fill confirms.
 
-### Flow 3: View Resolved Market
-1. User navigates to a resolved market
-2. RESOLVED badge shown, no trading panel
-3. Single-column layout, resolution details prominent
+### Add Capacity
+
+1. The user selects LIQUIDITY.
+2. The user completes the durable funding flow.
+3. The page reports added bot capacity without an execution or price promise.
+
+### View An Empty Market
+
+1. The user selects BUY or SELL.
+2. The page shows guidance without an order form.
+3. The user can open LIQUIDITY.
+
+### View A Closed Market
+
+1. The user opens a closed market.
+2. The page hides BUY, SELL, LIQUIDITY, and funding actions.
+3. The page keeps historical and resolution information.
 
 ## Done When
-- [ ] Tests written and passing
-- [ ] Two-column layout (desktop), single-column (mobile)
-- [ ] Buy/Sell + Market/Limit all work correctly
-- [ ] Trade preview shows accurate calculations
-- [ ] Price chart renders with timeframe switching
-- [ ] Order book visualization works
-- [ ] Resolved markets show correctly (no trading)
-- [ ] Comments displayed, posted via trades only
-- [ ] Responsive on mobile (sticky trade button)
+
+- [ ] Tests pass.
+- [ ] Confirmed, no-trade, and unavailable price states remain distinct.
+- [ ] BUY, SELL, and LIQUIDITY route correctly.
+- [ ] Empty BUY and SELL contain no order form.
+- [ ] Closed markets contain no trading or funding action.
+- [ ] Funding copy makes no order, depth, or price guarantee.
+- [ ] Charts contain confirmed fill-backed prices only.
+- [ ] The view is responsive.

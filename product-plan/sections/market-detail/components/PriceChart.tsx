@@ -10,7 +10,7 @@ interface PriceChartProps {
   onChartTypeChange?: (type: ChartType) => void
   // For categorical markets
   outcomePriceHistories?: Record<string, PriceHistory>
-  outcomes?: Array<{ id: string; label: string; odds: number }>
+  outcomes?: Array<{ id: string; label: string; odds: number | null }>
   // Current display: percentage or resolved outcome text
   currentDisplay?: string
   // Comments to display as bubbles on the chart

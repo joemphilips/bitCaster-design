@@ -63,6 +63,7 @@ export type PostCreateFundingChoice = 'none' | 'preset' | 'custom'
 
 export interface PostCreateFundingHandoffProps {
   marketId: string
+  context?: 'creation' | 'liquidity'
   onComplete?: (choice: PostCreateFundingChoice, amountSats?: number) => void
 }
 

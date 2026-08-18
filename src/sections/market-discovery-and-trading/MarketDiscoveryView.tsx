@@ -71,14 +71,6 @@ export default function MarketDiscoveryPreview() {
         onClosingDateChange={(days) => {
           console.log('Closing in days:', days)
         }}
-        onBuyYes={(marketId, amount) => console.log('Buy YES:', marketId, amount)}
-        onBuyNo={(marketId, amount) => console.log('Buy NO:', marketId, amount)}
-        onBuyOutcomeYes={(marketId, outcomeId, amount) =>
-          console.log('Buy outcome YES:', marketId, outcomeId, amount)
-        }
-        onBuyOutcomeNo={(marketId, outcomeId, amount) =>
-          console.log('Buy outcome NO:', marketId, outcomeId, amount)
-        }
         onViewMarket={(marketId) => console.log('View market:', marketId)}
         onLoadMore={() => console.log('Load more markets')}
         onRefreshConditions={() => {

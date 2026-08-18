@@ -16,10 +16,6 @@ export function MarketDiscovery({
   onMarketTypeChange,
   onVolumeRangeChange,
   onClosingDateChange,
-  onBuyYes,
-  onBuyNo,
-  onBuyOutcomeYes,
-  onBuyOutcomeNo,
   onViewMarket,
   onLoadMore,
   backgroundDataLoad,
@@ -121,10 +117,6 @@ export function MarketDiscovery({
               <MarketCard
                 key={market.id}
                 market={market}
-                onBuyYes={onBuyYes}
-                onBuyNo={onBuyNo}
-                onBuyOutcomeYes={onBuyOutcomeYes}
-                onBuyOutcomeNo={onBuyOutcomeNo}
                 onViewMarket={onViewMarket}
               />
             ))}

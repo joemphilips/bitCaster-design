@@ -21,6 +21,27 @@ function formatClosingDate(dateStr: string): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
+/**
+ * Compact surface. A missing price is shown as an em dash that keeps the
+ * `no-trades` and `unavailable` states separate for assistive technology.
+ */
+function compactPrice(
+  authority: RelatedMarket['priceAuthority'],
+  price: number | null,
+) {
+  if (authority?.state !== 'confirmed') {
+    return (
+      <span aria-label={authority?.state === 'no-trades' ? 'No trades yet' : 'Price unavailable'}>
+        &mdash;
+      </span>
+    )
+  }
+  if (price == null) {
+    return <span aria-label="No trades yet">&mdash;</span>
+  }
+  return <>{price.toFixed(0)}%</>
+}
+
 function RelatedMarketCard({
   market,
   onClick,
@@ -42,10 +63,10 @@ function RelatedMarketCard({
       {market.currentOdds && (
         <div className="flex gap-2 mb-3">
           <span className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-medium">
-            Yes {market.currentOdds.yes.toFixed(0)}%
+            Yes {compactPrice(market.priceAuthority, market.currentOdds.yes)}
           </span>
           <span className="px-2 py-1 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-medium">
-            No {market.currentOdds.no.toFixed(0)}%
+            No {compactPrice(market.priceAuthority, market.currentOdds.no)}
           </span>
         </div>
       )}
